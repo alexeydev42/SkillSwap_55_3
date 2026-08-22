@@ -5,7 +5,6 @@
   gap: var(--space-8); /* 8px отступ между кружком и текстом */
   cursor: pointer;
   user-select: none;
-
   font-family: var(--font-body);
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
