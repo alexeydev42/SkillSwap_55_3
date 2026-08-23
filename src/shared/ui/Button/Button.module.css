@@ -1,34 +1,31 @@
 /**
  * src/shared/ui/Button/Button.module.css — VERST-01
- * Токены — из src/app/styles/variables.css (VERST-00-A, уже смёржено в develop),
- * кроме --color-text-inverse и --color-focus-ring — их в общем наборе токенов
- * нет, поэтому они объявлены локально прямо здесь, на классе .button.
+ * Токены — из src/app/styles/variables.css (VERST-00-A, уже смёржено в develop).
  * Варианты: primary / secondary / tertiary (проп variant).
  * Размеры: sm / md / lg (проп size).
- * Состояния: default / hover / active(pressed) / focus-visible / disabled.
+ * Состояния: default / hover / active(pressed) / disabled.
+ * Focus — стандартный браузерный outline, отдельного состояния Focus
+ * в Figma нет, кастомный focus-ring не используется.
  */
 
  .button {
-  --color-text-inverse: #fff; /* текст на акцентном тёмном фоне, напр. Primary Pressed */
-  --color-focus-ring: color-mix(in srgb, var(--color-accent-pressed) 35%, transparent); /* halo вокруг кнопки при focus-visible; opacity ориентировочная, нет в Figma */
-
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-8);
-  border-radius: var(--radius-pill);
-  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
   font-family: var(--font-body);
-  font-weight: var(--font-weight-medium);
-  line-height: 1;
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body);
+  letter-spacing: 0.32px;
   cursor: pointer;
   white-space: nowrap;
   user-select: none;
   transition:
     background-color 0.15s ease,
     border-color 0.15s ease,
-    color 0.15s ease,
-    box-shadow 0.15s ease;
+    color 0.15s ease;
 }
 
 /* ---------- Размеры (проп size) ----------
@@ -43,7 +40,7 @@
 
 .size-md {
   height: var(--control-height);
-  padding: 0 var(--space-20);
+  padding: 0 var(--space-24);
   font-size: var(--font-size-body);
 }
 
@@ -83,23 +80,19 @@
 
 .primary:active:not(:disabled) {
   background-color: var(--color-accent-pressed);
-  color: var(--color-text-inverse);
+  color: var(--color-surface);
 }
 
 .primary:disabled {
   background-color: var(--color-disabled);
-  color: var(--color-disabled-text);
+  color: var(--color-caption);
   cursor: not-allowed;
-}
-
-.primary:focus-visible {
-  box-shadow: 0 0 0 4px var(--color-focus-ring);
 }
 
 /* ---------- Secondary ----------
    Фон всегда белый (--color-surface); между состояниями меняется только
    цвет обводки — он совпадает с цветом заливки Primary в том же
-   состоянии. Текст — базовый --color-text, приглушается на disabled. */
+   состоянии. Текст — базовый --color-text, приглушается на hover/disabled. */
 
 .secondary {
   background-color: var(--color-surface);
@@ -109,6 +102,7 @@
 
 .secondary:hover:not(:disabled) {
   border-color: var(--color-accent-hover);
+  color: var(--color-caption);
 }
 
 .secondary:active:not(:disabled) {
@@ -121,18 +115,12 @@
   cursor: not-allowed;
 }
 
-.secondary:focus-visible {
-  box-shadow: 0 0 0 4px var(--color-focus-ring);
-}
-
 /* ---------- Tertiary ----------
-   Только текст, без фона и обводки. */
+   Только текст, без обводки; padding задаётся классом размера. */
 
 .tertiary {
-  background-color: transparent;
+  background-color: var(--color-surface);
   border-color: transparent;
-  padding-left: var(--space-4);
-  padding-right: var(--space-4);
   color: var(--color-text);
 }
 
@@ -143,9 +131,4 @@
 .tertiary:disabled {
   color: var(--color-disabled-text);
   cursor: not-allowed;
-}
-
-.tertiary:focus-visible {
-  box-shadow: 0 0 0 4px var(--color-focus-ring);
-  border-radius: var(--radius-sm);
 }
