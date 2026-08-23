@@ -107,6 +107,7 @@
 
 .secondary:active:not(:disabled) {
   border-color: var(--color-accent-pressed);
+  color: var(--color-text);
 }
 
 .secondary:disabled {
