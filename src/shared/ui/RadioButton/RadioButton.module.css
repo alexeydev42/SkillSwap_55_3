@@ -30,7 +30,7 @@
   width: 24px;   
   height: 24px;  
   border-radius: 50%;
-  border: 2px solid var(--color-toggle); /* Рамка unchecked */
+  border: 2px solid var(--color-text); /* Рамка unchecked */
   background-color: transparent;
   position: relative;
   transition: border-color 0.2s ease, background-color 0.2s ease;
