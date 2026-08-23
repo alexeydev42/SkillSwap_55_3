@@ -1,4 +1,5 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
+import clsx from 'clsx'
 
 import styles from './Button.module.css'
 
@@ -19,10 +20,6 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children?: ReactNode
 }
 
-function cx(...classes: Array<string | false | undefined>): string {
-  return classes.filter(Boolean).join(' ')
-}
-
 export function Button({
   variant = 'primary',
   size = 'md',
@@ -36,11 +33,11 @@ export function Button({
   return (
     <button
       type={type}
-      className={cx(styles.button, styles[variant], styles[`size-${size}`], className)}
+      className={clsx(styles.button, styles[variant], styles[`size-${size}`], className)}
       {...rest}
     >
       {icon ? (
-        <span className={cx(styles.icon, styles[`icon-${iconPosition}`])} aria-hidden="true">
+        <span className={clsx(styles.icon, styles[`icon-${iconPosition}`])} aria-hidden="true">
           {icon}
         </span>
       ) : null}
