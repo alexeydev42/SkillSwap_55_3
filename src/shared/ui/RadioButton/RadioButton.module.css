@@ -54,12 +54,13 @@
 
 /* 1. Checked (выбрано) */
 .input:checked + .radio {
-  border-color: var(--color-accent-pressed);
-  background-color: var(--color-accent-pressed);
+  border-color: var(--color-accent-pressed); 
+  background-color: var(--color-surface);    
 }
 
 .input:checked + .radio::after {
   transform: translate(-50%, -50%) scale(1);
+  background-color: var(--color-accent-pressed); 
 }
 
 /* 2. Hover (только если не disabled) */
@@ -76,17 +77,17 @@
 /* 4. Disabled */
 .input:disabled + .radio {
   border-color: var(--color-disabled);
-  background-color: var(--color-disabled);
+  background-color: var(--color-surface);
   cursor: not-allowed;
 }
 
 .input:disabled:checked + .radio {
   border-color: var(--color-toggle);
-  background-color: var(--color-toggle);
+  background-color: var(--color-surface);
 }
 
 .input:disabled:checked + .radio::after {
-  background-color: var(--color-surface);
+  background-color: var(--color-toggle); 
 }
 
 .input:disabled ~ .text {
