@@ -22,6 +22,7 @@ export const Input = (props: InputProps) => {
     error,
     helperText,
     disabled,
+    className,
     showPasswordIcon,
     hidePasswordIcon,
   } = props
@@ -32,7 +33,7 @@ export const Input = (props: InputProps) => {
   const inputType = isPassword && isPasswordVisible ? 'text' : type
 
   return (
-    <div className={styles['input-container']}>
+    <div className={clsx(styles['input-container'], className)}>
       {label && <label className={styles['input-label']}>{label}</label>}
 
       <div
