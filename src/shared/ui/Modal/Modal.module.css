@@ -4,7 +4,7 @@
   left: 0;
   inline-size: 100%;
   block-size: 100%;
-  background-color: rgba(142, 142, 142, 0.6);
+  background-color: rgb(142 142 142 / 60%);
   z-index: 222;
   backdrop-filter: blur(4px);
 }
@@ -21,6 +21,6 @@
   color: var(--color-text);
   border: none;
   border-radius: var(--radius-md);
-  box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 10px 10px 15px rgb(0 0 0 / 10%);
   z-index: 333;
 }
