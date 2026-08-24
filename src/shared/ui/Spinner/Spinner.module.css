@@ -9,11 +9,6 @@
   flex-shrink: 0;
 }
 
-.centered {
-  display: block;
-  margin: auto;
-}
-
 @keyframes spin {
   0% {
     transform: rotate(0deg);
