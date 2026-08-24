@@ -1,5 +1,5 @@
-import { Textarea } from './Textarea'
-import type { StoryFn } from '@storybook/react'
+import { Textarea } from './Textarea';
+import type { StoryFn } from '@storybook/react-vite';
 
 export default {
   title: 'Shared/UI/Textarea',

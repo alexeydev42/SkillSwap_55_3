@@ -17,7 +17,7 @@ export const Textarea = (props: TextareaProps) => {
   const { label, placeholder, value, onChange, error, helperText, disabled, className } = props
 
   return (
-    <div className={styles['textarea-container']}>
+    <div className={clsx(styles['textarea-container'], className)}>
       {label && <label className={styles['textarea-label']}>{label}</label>}
 
       <div
