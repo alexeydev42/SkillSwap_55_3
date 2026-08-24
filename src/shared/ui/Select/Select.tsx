@@ -1,6 +1,25 @@
 import React, { useId } from 'react';
 import styles from './Select.module.css';
 
+export interface SelectOption {
+  value: string;
+  label: string;
+}
+
+export interface SelectProps {
+  label?: string;
+  value?: string;
+  onChange?: (value: string) => void;
+  options: SelectOption[];
+  placeholder?: string;
+  disabled?: boolean;
+  error?: string;
+  className?: string;
+  id?: string;
+  name?: string;
+  onBlur?: () => void;
+}
+
 export const Select: React.FC<SelectProps> = ({
   label,
   value,
