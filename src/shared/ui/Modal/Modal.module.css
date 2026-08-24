@@ -11,14 +11,17 @@
 
 .modal-wrapper {
   position: fixed;
-  top: 20px;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
+  inline-size: 90%;
   min-inline-size: 556px;
-  min-block-size: 480px;
+  max-block-size: 90vh;
   background-color: var(--color-surface);
   font-size: var(--font-size-body);
   color: var(--color-text);
+  padding: var(--space-32);
+  overflow-y: auto;
   border: none;
   border-radius: var(--radius-md);
   box-shadow: 10px 10px 15px rgb(0 0 0 / 10%);
