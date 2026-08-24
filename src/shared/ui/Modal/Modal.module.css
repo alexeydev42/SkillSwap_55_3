@@ -15,7 +15,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   inline-size: 90%;
-  min-inline-size: 556px;
+  max-inline-size: 556px;
   max-block-size: 90vh;
   background-color: var(--color-surface);
   font-size: var(--font-size-body);
