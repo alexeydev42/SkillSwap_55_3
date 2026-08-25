@@ -34,7 +34,6 @@ export function Select({
 
   const selectedLabel = options.find((opt) => opt.value === value)?.label;
 
-  // Закрытие при клике вне
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (rootRef.current && !rootRef.current.contains(event.target as Node)) {
@@ -45,7 +44,6 @@ export function Select({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Закрытие при нажатии Escape
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && isOpen) {
@@ -107,7 +105,7 @@ export function Select({
                 className={clsx(styles.option, {
                   [styles.optionSelected]: option.value === value,
                 })}
-                onMouseDown={(e) => e.preventDefault()} // предотвращает потерю фокуса с кнопки
+                onMouseDown={(e) => e.preventDefault()} //
                 onClick={() => handleSelect(option.value)}
               >
                 {option.label}

@@ -28,14 +28,13 @@ export default meta;
 
 type Story = StoryObj<typeof Select>;
 
-// Базовые опции для демонстрации (можно использовать любые, но для проекта важны пол и категории)
+
 const defaultOptions: SelectOption[] = [
   { value: 'option1', label: 'Опция 1' },
   { value: 'option2', label: 'Опция 2' },
   { value: 'option3', label: 'Опция 3' },
 ];
 
-// 1. Базовое состояние (без выбора)
 export const Default: Story = {
   render: (args) => {
     const [value, setValue] = useState<string>('');
@@ -47,7 +46,6 @@ export const Default: Story = {
   },
 };
 
-// 2. С лейблом
 export const WithLabel: Story = {
   render: (args) => {
     const [value, setValue] = useState<string>('');
@@ -60,7 +58,6 @@ export const WithLabel: Story = {
   },
 };
 
-// 3. Состояние ошибки
 export const WithError: Story = {
   render: (args) => {
     const [value, setValue] = useState<string>('');
@@ -74,7 +71,6 @@ export const WithError: Story = {
   },
 };
 
-// 4. Отключённое состояние
 export const Disabled: Story = {
   render: (args) => {
     const [value, setValue] = useState<string>('option1');
@@ -87,7 +83,6 @@ export const Disabled: Story = {
   },
 };
 
-// 5. Пример с полом (как на макете)
 export const Gender: Story = {
   render: (args) => {
     const [value, setValue] = useState<string>('');

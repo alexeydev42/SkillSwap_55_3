@@ -30,7 +30,7 @@
   transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
-/* В открытом состоянии убираем нижнюю границу и скругление снизу */
+
 .triggerOpen {
   border-bottom-color: transparent;
   border-radius: var(--radius-md) var(--radius-md) 0 0;
