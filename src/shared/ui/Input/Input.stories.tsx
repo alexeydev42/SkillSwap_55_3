@@ -52,7 +52,7 @@ export const Password: Story = {
   args: {
     label: 'Пароль',
     placeholder: 'Введите пароль',
-    type: 'text',
+    type: 'password',
     showPasswordIcon: <img src={iconEye} alt='' />,
     hidePasswordIcon: <img src={iconEyeSlash} alt='' />,
   },
