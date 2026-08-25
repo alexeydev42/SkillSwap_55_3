@@ -18,7 +18,7 @@
 }
 
 .textarea-wrapper:focus-within {
-  border-color: #000;
+  border-color: var(--color-text);
 }
 
 .textarea-wrapper.error {
