@@ -1,92 +1,113 @@
-.wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-8);
+.root {
+  position: relative;
   width: 100%;
+  color: var(--color-text);
+  font-family: var(--font-body);
 }
 
 .label {
-  font-family: var(--font-body);
+  display: block;
+  margin-bottom: var(--space-8);
   font-size: var(--font-size-body);
   font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-body);
   color: var(--color-text);
 }
 
-.selectContainer {
-  position: relative;
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   width: 100%;
-}
-
-.select {
-  width: 100%;
-  height: var(--control-height);
-  padding: 0 var(--space-16);
-  padding-right: 40px; /* место для стрелки */
-  font-family: var(--font-body);
-  font-size: var(--font-size-body);
-  color: var(--color-text);
+  height: 48px;
+  padding: 12px 20px;
+  border: 1px solid var(--color-caption);
+  border-radius: var(--radius-md);
   background-color: var(--color-surface);
-  border: 1px solid var(--color-toggle);
-  border-radius: var(--radius-sm);
-  appearance: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  color: inherit;
+  font: inherit;
   cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
-.select:focus {
-  outline: none;
-  border-color: var(--color-accent-pressed);
-  box-shadow: 0 0 0 3px var(--color-accent-hover);
+/* В открытом состоянии убираем нижнюю границу и скругление снизу */
+.triggerOpen {
+  border-bottom-color: transparent;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
 }
 
-.select:disabled {
+.trigger:disabled {
   background-color: var(--color-disabled);
   color: var(--color-disabled-text);
   cursor: not-allowed;
 }
 
-.select:disabled + .arrow {
-  opacity: 0.5;
-}
-
-/* Состояние ошибки */
-.error .select {
+.trigger.error {
   border-color: var(--color-error);
 }
 
-.error .select:focus {
-  border-color: var(--color-error);
-  box-shadow: 0 0 0 3px rgb(191 57 32 / 20%);
+.placeholder {
+  color: var(--color-caption);
 }
 
-/* Стрелка */
-.arrow {
+.value {
+  color: var(--color-text);
+}
+
+.chevron {
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  border-right: 1.5px solid var(--color-text);
+  border-bottom: 1.5px solid var(--color-text);
+  transform: rotate(45deg);
+  transition: transform 0.15s ease;
+}
+
+.chevronOpen {
+  transform: translateY(4px) rotate(225deg);
+}
+
+.list {
   position: absolute;
-  right: var(--space-12);
-  top: 50%;
-  transform: translateY(-50%);
-  width: 0;
-  height: 0;
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-top: 6px solid var(--color-toggle);
-  pointer-events: none;
-  transition: transform 0.2s;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  margin: 0;
+  padding: 8px 0;
+  list-style: none;
+  border: 1px solid var(--color-caption);
+  border-top: none;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  background-color: var(--color-surface);
+  max-height: 168px;
+  overflow-y: auto;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
 }
 
-/* При открытом состоянии (стилизация через класс не сработает, но можно добавить rotate при focus) */
-.select:focus + .arrow {
-  transform: translateY(-50%) rotate(180deg);
+.option {
+  min-height: 36px;
+  padding: 6px 20px;
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
 }
 
-/* Для браузеров, которые не поддерживают appearance: none, добавим кастомную стрелку */
-.select::-ms-expand {
-  display: none;
+.option:hover {
+  background-color: var(--color-accent-hover);
+}
+
+.optionSelected {
+  background-color: var(--color-accent);
+  color: var(--color-text);
 }
 
 .errorText {
-  font-family: var(--font-body);
-  font-size: var(--font-size-caption);
-  color: var(--color-error);
+  display: block;
   margin-top: var(--space-4);
+  color: var(--color-error);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }

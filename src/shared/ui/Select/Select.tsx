@@ -1,76 +1,123 @@
-import React, { useId } from 'react';
+import { useState, useRef, useEffect, useId } from 'react';
+import clsx from 'clsx';
 import styles from './Select.module.css';
 
-export interface SelectOption {
+export type SelectOption = {
   value: string;
   label: string;
-}
+};
 
-export interface SelectProps {
-  label?: string;
-  value?: string;
-  onChange?: (value: string) => void;
+export type SelectProps = {
   options: SelectOption[];
+  value: string;
+  onChange: (value: string) => void;
   placeholder?: string;
+  label?: string;
   disabled?: boolean;
   error?: string;
   className?: string;
-  id?: string;
-  name?: string;
-  onBlur?: () => void;
-}
+};
 
-export const Select: React.FC<SelectProps> = ({
-  label,
+export function Select({
+  options,
   value,
   onChange,
-  options,
-  placeholder,
+  placeholder = 'Выберите значение',
+  label,
   disabled = false,
   error,
-  className = '',
-  id,
-  name,
-  onBlur,
-}) => {
-  const generatedId = useId();
-  const selectId = id || generatedId;
+  className,
+}: SelectProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const id = useId();
 
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    onChange?.(e.target.value);
+  const selectedLabel = options.find((opt) => opt.value === value)?.label;
+
+  // Закрытие при клике вне
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (rootRef.current && !rootRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Закрытие при нажатии Escape
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isOpen) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
+
+  const handleToggle = () => {
+    if (!disabled) {
+      setIsOpen((prev) => !prev);
+    }
+  };
+
+  const handleSelect = (val: string) => {
+    onChange(val);
+    setIsOpen(false);
   };
 
   return (
-    <div className={`${styles.wrapper} ${className}`}>
+    <div className={clsx(styles.root, className)} ref={rootRef}>
       {label && (
-        <label htmlFor={selectId} className={styles.label}>
+        <label className={styles.label} htmlFor={id}>
           {label}
         </label>
       )}
-      <div className={`${styles.selectContainer} ${error ? styles.error : ''}`}>
-        <select
-          id={selectId}
-          value={value ?? ''}
-          onChange={handleChange}
-          onBlur={onBlur}
-          disabled={disabled}
-          className={styles.select}
-          name={name}
-        >
-          {placeholder && (
-            <option value="" disabled>
-              {placeholder}
-            </option>
+
+      <button
+        id={id}
+        type="button"
+        className={clsx(styles.trigger, {
+          [styles.triggerOpen]: isOpen,
+          [styles.disabled]: disabled,
+          [styles.error]: error,
+        })}
+        onClick={handleToggle}
+        disabled={disabled}
+        aria-expanded={isOpen}
+        aria-invalid={!!error}
+      >
+        <span className={selectedLabel ? styles.value : styles.placeholder}>
+          {selectedLabel ?? placeholder}
+        </span>
+        <span className={clsx(styles.chevron, { [styles.chevronOpen]: isOpen })} aria-hidden="true" />
+      </button>
+
+      {isOpen && (
+        <ul className={styles.list}>
+          {options.length === 0 ? (
+            <li className={styles.option} style={{ color: 'var(--color-disabled-text)' }}>
+              Нет доступных опций
+            </li>
+          ) : (
+            options.map((option) => (
+              <li
+                key={option.value}
+                className={clsx(styles.option, {
+                  [styles.optionSelected]: option.value === value,
+                })}
+                onMouseDown={(e) => e.preventDefault()} // предотвращает потерю фокуса с кнопки
+                onClick={() => handleSelect(option.value)}
+              >
+                {option.label}
+              </li>
+            ))
           )}
-          {options.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
-        <span className={styles.arrow} />
-      </div>
+        </ul>
+      )}
+
       {error && <span className={styles.errorText}>{error}</span>}
     </div>
   );
-};
+}
