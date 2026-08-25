@@ -33,6 +33,17 @@
   cursor: not-allowed;
 }
 
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  margin-right: var(--space-8);
+  color: var(--color-caption);
+}
+
 .input {
   width: 100%;
   padding: 0;
