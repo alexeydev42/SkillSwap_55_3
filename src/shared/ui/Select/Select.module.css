@@ -83,7 +83,7 @@
   background-color: var(--color-surface);
   max-height: 168px;
   overflow-y: auto;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 8px 20px rgb(0 0 0 / 6%);
 }
 
 .option {
