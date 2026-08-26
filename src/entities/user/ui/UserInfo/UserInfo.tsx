@@ -1,13 +1,13 @@
 import LikeIcon from '../../../../shared/assets/icons/icon-like.svg?react'
-import { IconButton } from '../../../../shared/ui/IconButton'
 import { Avatar } from '../../../../shared/ui/Avatar'
+import { IconButton } from '../../../../shared/ui/IconButton'
 import styles from './UserInfo.module.css'
 
 export interface UserInfoProps {
   avatar: string
   name: string
   city: string
-  age: number
+  age: string
   withFavoriteButton?: boolean
   onFavoriteClick?: () => void
 }
@@ -26,11 +26,9 @@ export function UserInfo({
 
       <div className={styles.info}>
         <p className={styles.name}>{name}</p>
-
-        <div className={styles.details}>
-          <span>{city},</span>
-          <span>{age}</span>
-        </div>
+        <p className={styles.details}>
+          {city}, {age}
+        </p>
       </div>
 
       {withFavoriteButton && (

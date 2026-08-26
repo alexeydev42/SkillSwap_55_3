@@ -11,7 +11,7 @@ const meta = {
     avatar: 'https://i.pravatar.cc/150?img=47',
     name: 'Анна',
     city: 'Таллин',
-    age: 24,
+    age: '24 года',
   },
 } satisfies Meta<typeof UserInfo>
 
