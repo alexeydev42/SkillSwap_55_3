@@ -2,13 +2,13 @@ import styles from './UserSkillCard.module.css';
 import { Button } from '@/shared/ui/Button';
 import { SkillTag } from '@/shared/ui/SkillTag';
 import type { SkillTagVariant } from '@/shared/ui/SkillTag/SkillTag';
+import { UserInfo } from '@/entities/user/ui/UserInfo';
 
 interface UserSkillCardData {
   name: string
   city: string
   age: number
   avatarUrl: string | null
-  bio: string
   teachTags: { label: string; variant: SkillTagVariant }[]
   learnTags: { label: string; variant: SkillTagVariant }[]
 }
@@ -31,22 +31,23 @@ function getAgeLabel(age: number): string {
 }
 
 export const UserSkillCard = (props: UserSkillCardProps) => {
-  const {user, isFavorite, onFavoriteClick, onDetailsClick} = props
+  const { user, isFavorite, onFavoriteClick, onDetailsClick } = props
 
-  return(
+  return (
     <div className={styles['card']}>
-        <div className={styles['user-info-placeholder']}>
-          <img src={user.avatarUrl ?? undefined} alt={user.name} className={styles.avatar} />
-          <div>
-            <h3>{user.name}</h3>
-            <p>{user.city}, {user.age} {getAgeLabel(user.age)}</p>
-          </div>
-          <button onClick={onFavoriteClick}>{isFavorite ? '♥' : '♡'}</button>
-          <p>{user.bio}</p>
-      </div>
+      <UserInfo
+        avatar={user.avatarUrl ?? ''}
+        name={user.name}
+        city={user.city}
+        age={`${user.age} ${getAgeLabel(user.age)}`}
+        withFavoriteButton
+        onFavoriteClick={onFavoriteClick}
+      />
+      {/* TODO: UserInfo пока не поддерживает визуальное отображение isFavorite (закрашенное/пустое сердце) — уточнить у автора компонента */}
 
+      {/* TODO: SkillTagsBlock (VERST-20) ещё не готов. Пока выводим все теги напрямую через SkillTag, без ограничения количества и счётчика +N — заменить на <SkillTagsBlock> когда компонент будет готов */}
       <div>
-        <h4>Может научить</h4>
+        <h4 className={styles['section-title']}>Может научить</h4>
         <div className={styles['tags-placeholder']}>
           {user.teachTags.map((tag) => (
             <SkillTag key={tag.label} label={tag.label} variant={tag.variant} />
@@ -55,7 +56,7 @@ export const UserSkillCard = (props: UserSkillCardProps) => {
       </div>
 
       <div>
-        <h4>Хочет научиться</h4>
+        <h4 className={styles['section-title']}>Хочет научиться</h4>
         <div className={styles['tags-placeholder']}>
           {user.learnTags.map((tag) => (
             <SkillTag key={tag.label} label={tag.label} variant={tag.variant} />
@@ -63,8 +64,9 @@ export const UserSkillCard = (props: UserSkillCardProps) => {
         </div>
       </div>
 
-      <Button onClick={onDetailsClick}>Подробнее</Button>
+      <Button onClick={onDetailsClick} className={styles['details-button']}>
+        Подробнее
+      </Button>
     </div>
-
   )
 }

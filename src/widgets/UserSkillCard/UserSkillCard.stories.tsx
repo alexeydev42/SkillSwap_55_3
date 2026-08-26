@@ -11,8 +11,8 @@ export const Default = {
       name: 'Иван',
       city: 'Санкт-Петербург',
       age: 34,
-      avatarUrl: null,
-      bio: 'Привет! Люблю ритм, кофе по утрам и людей, которые не боятся пробовать новое',
+      avatarUrl: 'https://randomuser.me/api/portraits/men/32.jpg',
+      
       teachTags: [{ label: 'Английский язык', variant: 'languages' }],
       learnTags: [
         { label: 'Тайм менеджмент', variant: 'more' },
