@@ -1,12 +1,18 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { SkillTag } from './SkillTag'
-import { SkillCategory } from '../../lib/constants'
+import { SkillTagCategory } from '../../lib/constants'
 
 const meta: Meta<typeof SkillTag> = {
-  title: 'Shared/UI/SkillTag',
+  title: 'Entities/Skill/SkillTag',
   component: SkillTag,
   parameters: {
     layout: 'centered',
+  },
+  argTypes: {
+    variant: {
+      control: 'select',
+      options: ['languages', 'education', 'health', 'business', 'creative', 'home', 'more'],
+    },
   },
 }
 
@@ -15,51 +21,40 @@ type Story = StoryObj<typeof SkillTag>
 
 export const Default: Story = {
   args: {
-    category: SkillCategory.BUSINESS,
+    variant: 'business',
+    label: 'Business',
   },
-  render: (args) => (
-    <div
-      style={{
-        fontFamily: 'Roboto, sans-serif',
-        fontSize: '12px',
-      }}
-    >
-      <SkillTag {...args} />
-    </div>
-  ),
+  render: (args) => <SkillTag {...args} />,
 }
 
 export const AllCategories: Story = {
   render: () => (
-    <div
-      style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: '8px',
-        fontFamily: 'Roboto, sans-serif',
-        fontSize: '12px',
-      }}
-    >
-      {Object.values(SkillCategory).map((category) => (
-        <SkillTag key={category} category={category} />
+    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+      {(
+        [
+          'languages',
+          'education',
+          'health',
+          'business',
+          'creative',
+          'home',
+          'more',
+        ] as SkillTagCategory[]
+      ).map((category) => (
+        <SkillTag
+          key={category}
+          variant={category}
+          label={category.charAt(0).toUpperCase() + category.slice(1)}
+        />
       ))}
     </div>
   ),
 }
 
-export const WithCustomLabel: Story = {
+export const More: Story = {
   args: {
-    category: SkillCategory.EDUCATION,
-    label: 'Обучение',
+    variant: 'more',
+    label: '+2',
   },
-  render: (args) => (
-    <div
-      style={{
-        fontFamily: 'Roboto, sans-serif',
-        fontSize: '12px',
-      }}
-    >
-      <SkillTag {...args} />
-    </div>
-  ),
+  render: (args) => <SkillTag {...args} />,
 }
