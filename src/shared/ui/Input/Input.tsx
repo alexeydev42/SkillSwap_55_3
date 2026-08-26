@@ -12,6 +12,8 @@ interface InputProps {
   className?: string
   showPasswordIcon?: ReactNode
   hidePasswordIcon?: ReactNode
+  value?: string;       
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; 
 }
 
 export const Input = (props: InputProps) => {
@@ -22,6 +24,8 @@ export const Input = (props: InputProps) => {
     error,
     helperText,
     disabled,
+    value,              
+    onChange,           
     className,
     showPasswordIcon,
     hidePasswordIcon,
@@ -48,6 +52,8 @@ export const Input = (props: InputProps) => {
           type={inputType}
           placeholder={placeholder}
           disabled={disabled}
+          value={value}           
+          onChange={onChange}    
         />
         {isPassword && (
           <button
