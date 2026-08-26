@@ -8,15 +8,17 @@ export const ROUTES = {
   REGISTER: '/register',
 } as const
 
-export enum SkillCategory {
-  BUSINESS = 'Бизнес и карьера',
-  LANGUAGES = 'Иностранные языки',
-  HOME = 'Дом и уют',
-  ART = 'Творчество и искусство',
-  EDUCATION = 'Образование и развитие',
-  HEALTH = 'Здоровье и лайфстайл',
-  OTHER = 'Другое',
-}
+export const SKILL_CATEGORIES = [
+  'Программирование',
+  'Дизайн',
+  'Языки',
+  'Музыка',
+  'Спорт',
+  'Кулинария',
+  'Фото и видео',
+  'Бизнес',
+  'Другое',
+] as const
 
 export type SkillTagCategory =
   | 'languages'
