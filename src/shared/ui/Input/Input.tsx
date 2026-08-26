@@ -1,19 +1,20 @@
-import { ReactNode, useState } from 'react'
-import styles from './Input.module.css'
-import clsx from 'clsx'
+import { ReactNode, useState } from 'react';
+import clsx from 'clsx';
+import styles from './Input.module.css';
 
 interface InputProps {
-  label?: string
-  placeholder?: string
-  type?: 'text' | 'email' | 'password'
-  error?: string
-  helperText?: string
-  disabled?: boolean
-  className?: string
-  showPasswordIcon?: ReactNode
-  hidePasswordIcon?: ReactNode
-  value?: string;       
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; 
+  label?: string;
+  placeholder?: string;
+  type?: 'text' | 'email' | 'password';
+  error?: string;
+  helperText?: string;
+  disabled?: boolean;
+  className?: string;
+  showPasswordIcon?: ReactNode;
+  hidePasswordIcon?: ReactNode;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  borderless?: boolean; 
 }
 
 export const Input = (props: InputProps) => {
@@ -24,17 +25,18 @@ export const Input = (props: InputProps) => {
     error,
     helperText,
     disabled,
-    value,              
-    onChange,           
+    value,
+    onChange,
     className,
     showPasswordIcon,
     hidePasswordIcon,
-  } = props
+    borderless, 
+  } = props;
 
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-  const isPassword = type === 'password'
-  const inputType = isPassword && isPasswordVisible ? 'text' : type
+  const isPassword = type === 'password';
+  const inputType = isPassword && isPasswordVisible ? 'text' : type;
 
   return (
     <div className={clsx(styles['input-container'], className)}>
@@ -43,8 +45,9 @@ export const Input = (props: InputProps) => {
       <div
         className={clsx(
           styles['input-wrapper'],
+          borderless && styles.borderless, 
           error && styles.error,
-          disabled && styles.disabled,
+          disabled && styles.disabled
         )}
       >
         <input
@@ -52,8 +55,8 @@ export const Input = (props: InputProps) => {
           type={inputType}
           placeholder={placeholder}
           disabled={disabled}
-          value={value}           
-          onChange={onChange}    
+          value={value}
+          onChange={onChange}
         />
         {isPassword && (
           <button
@@ -67,11 +70,12 @@ export const Input = (props: InputProps) => {
           </button>
         )}
       </div>
+
       {error ? (
         <span className={styles['error-text']}>{error}</span>
       ) : (
         helperText && <span className={styles['helper-text']}>{helperText}</span>
       )}
     </div>
-  )
-}
+  );
+};

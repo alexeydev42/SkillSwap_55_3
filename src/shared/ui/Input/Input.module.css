@@ -28,6 +28,13 @@
   border-color: var(--color-error);
 }
 
+.input-wrapper.borderless {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  padding: 12px 60px 12px 20px;
+}
+
 .input-wrapper.disabled {
   color: var(--color-disabled-text);
   cursor: not-allowed;
@@ -71,4 +78,16 @@
 .helper-text {
   color: var(--color-text);
   font-size: var(--font-size-caption);
+}
+
+/* Модификатор для удаления границ и фона */
+.borderless {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  padding: 12px 60px 12px 20px;
+}
+
+.borderless .input {
+  background-color: transparent !important;
 }
