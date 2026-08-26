@@ -1,0 +1,38 @@
+.userInfo {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100px;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+  margin-left: var(--space-12);
+}
+
+.name {
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-h2);
+  letter-spacing: -0.264px;
+}
+
+.details {
+  color: var(--color-caption);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: var(--font-weight-regular);
+  line-height: 16px;
+}
+
+.favoriteButton {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
