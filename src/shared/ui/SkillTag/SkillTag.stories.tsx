@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { SkillTag } from './SkillTag'
-import { SkillTagCategory } from '../../lib/constants'
 
 const meta: Meta<typeof SkillTag> = {
   title: 'Entities/Skill/SkillTag',
@@ -19,42 +18,16 @@ const meta: Meta<typeof SkillTag> = {
 export default meta
 type Story = StoryObj<typeof SkillTag>
 
-export const Default: Story = {
-  args: {
-    variant: 'business',
-    label: 'Business',
-  },
-  render: (args) => <SkillTag {...args} />,
-}
-
 export const AllCategories: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-      {(
-        [
-          'languages',
-          'education',
-          'health',
-          'business',
-          'creative',
-          'home',
-          'more',
-        ] as SkillTagCategory[]
-      ).map((category) => (
-        <SkillTag
-          key={category}
-          variant={category}
-          label={category.charAt(0).toUpperCase() + category.slice(1)}
-        />
-      ))}
+      <SkillTag label="Английский" variant="languages" />
+      <SkillTag label="Личная эффективность" variant="education" />
+      <SkillTag label="Йога" variant="health" />
+      <SkillTag label="Маркетинг" variant="business" />
+      <SkillTag label="Рисование" variant="creative" />
+      <SkillTag label="Ремонт" variant="home" />
+      <SkillTag label="+2" variant="more" />
     </div>
   ),
-}
-
-export const More: Story = {
-  args: {
-    variant: 'more',
-    label: '+2',
-  },
-  render: (args) => <SkillTag {...args} />,
 }

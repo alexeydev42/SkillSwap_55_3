@@ -1,10 +1,18 @@
 import React from 'react'
 import clsx from 'clsx'
-import { SkillTagCategory } from '../../lib/constants'
 import styles from './SkillTag.module.css'
 
+export type SkillTagVariant =
+  | 'languages'
+  | 'education'
+  | 'health'
+  | 'business'
+  | 'creative'
+  | 'home'
+  | 'more'
+
 interface SkillTagProps {
-  variant: SkillTagCategory
+  variant: SkillTagVariant
   label: string
 }
 

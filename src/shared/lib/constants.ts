@@ -20,15 +20,6 @@ export const SKILL_CATEGORIES = [
   'Другое',
 ] as const
 
-export type SkillTagCategory =
-  | 'languages'
-  | 'education'
-  | 'health'
-  | 'business'
-  | 'creative'
-  | 'home'
-  | 'more'
-
 export const LOCAL_STORAGE_KEYS = {
   AUTH_USER: 'skillswap_auth_user',
   FAVORITES: 'skillswap_favorites',
