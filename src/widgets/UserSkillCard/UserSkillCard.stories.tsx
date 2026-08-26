@@ -13,8 +13,11 @@ export const Default = {
       age: 34,
       avatarUrl: null,
       bio: 'Привет! Люблю ритм, кофе по утрам и людей, которые не боятся пробовать новое',
-      teachTags: ['Английский язык'],
-      learnTags: ['Тайм менеджмент', 'Медитация'],
+      teachTags: [{ label: 'Английский язык', variant: 'languages' }],
+      learnTags: [
+        { label: 'Тайм менеджмент', variant: 'more' },
+        { label: 'Медитация', variant: 'health' },
+      ],
     },
     isFavorite: false,
     onFavoriteClick: () => console.log('favorite clicked'),
