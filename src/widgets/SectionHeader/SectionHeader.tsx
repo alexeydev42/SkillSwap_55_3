@@ -14,7 +14,7 @@ export function SectionHeader({ title, showViewAllButton = false }: SectionHeade
       <h2 className={styles.title}>{title}</h2>
       {showViewAllButton && (
         <Button variant="tertiary" iconPosition="right" icon={<ChevronRightIcon />}>
-          Смотреть всё
+          Смотреть всe
         </Button>
       )}
     </div>
