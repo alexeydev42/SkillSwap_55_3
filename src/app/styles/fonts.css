@@ -7,6 +7,14 @@
 }
 
 @font-face {
+  font-family: Jost;
+  src: url('../../shared/assets/fonts/Jost-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
   font-family: Roboto;
   src: url('../../shared/assets/fonts/Roboto-Regular.ttf') format('truetype');
   font-style: normal;

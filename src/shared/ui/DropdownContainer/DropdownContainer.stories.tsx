@@ -11,7 +11,14 @@ const meta: Meta<typeof DropdownContainer> = {
 }
 
 export default meta
+
 type Story = StoryObj<typeof DropdownContainer>
+
+const dropdownDemoStyle: React.CSSProperties = {
+  top: '100%',
+  right: 0,
+  maxWidth: '70vw',
+}
 
 const DemoWrapper = ({ children }: { children: React.ReactNode }) => (
   <div
@@ -38,7 +45,7 @@ export const Default: Story = {
     ),
   ],
   render: (args) => (
-    <DropdownContainer {...args}>
+    <DropdownContainer {...args} style={dropdownDemoStyle}>
       <h4 style={{ margin: 0, marginBottom: '12px' }}>Новые уведомления</h4>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
         <div>Татьяна предлагает вам обмен</div>
@@ -56,7 +63,13 @@ export const ComplexNotificationList: Story = {
     ),
   ],
   render: (args) => (
-    <DropdownContainer {...args} style={{ width: '50vw' }}>
+    <DropdownContainer
+      {...args}
+      style={{
+        ...dropdownDemoStyle,
+        width: '50vw',
+      }}
+    >
       <div
         style={{
           display: 'flex',
@@ -66,20 +79,36 @@ export const ComplexNotificationList: Story = {
         }}
       >
         <h3 style={{ margin: 0 }}>Новые уведомления</h3>
-        <button style={{ background: 'none', border: 'none', color: '#00b606', cursor: 'pointer' }}>
+        <button
+          style={{
+            background: 'none',
+            border: 'none',
+            color: '#00b606',
+            cursor: 'pointer',
+          }}
+        >
           Прочитать все
         </button>
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-          <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#eee' }} />
+          <div
+            style={{
+              width: '24px',
+              height: '24px',
+              borderRadius: '50%',
+              background: '#eee',
+            }}
+          />
+
           <div style={{ flex: 1 }}>
             <div>Николай принял ваш обмен</div>
             <div style={{ color: '#777', fontSize: '12px' }}>
               Перейдите в профиль, чтобы обсудить детали
             </div>
           </div>
+
           <span style={{ color: '#777', fontSize: '12px' }}>сегодня</span>
         </div>
       </div>

@@ -10,23 +10,18 @@ export interface InputProps {
   helperText?: string
   disabled?: boolean
   className?: string
-
   /** Иконка слева от поля ввода (например, лупа для поиска). */
   icon?: ReactNode
-
   /**
    * Произвольный контент справа от поля (например, кнопка очистки).
-   * Игнорируется для type='password' - там используется showPasswordIcon/hidePasswordIcon.
+   * Игнорируется для type='password' — там используется showPasswordIcon/hidePasswordIcon.
    */
   trailingIcon?: ReactNode
-
   value?: string
   defaultValue?: string
   onChange?: ChangeEventHandler<HTMLInputElement>
   showPasswordIcon?: ReactNode
   hidePasswordIcon?: ReactNode
-
-  borderless?: boolean
 }
 
 export const Input = (props: InputProps) => {
@@ -45,7 +40,6 @@ export const Input = (props: InputProps) => {
     onChange,
     showPasswordIcon,
     hidePasswordIcon,
-    borderless,
   } = props
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
@@ -60,9 +54,8 @@ export const Input = (props: InputProps) => {
       <div
         className={clsx(
           styles['input-wrapper'],
-          borderless && styles.borderless,
           error && styles.error,
-          disabled && styles.disabled
+          disabled && styles.disabled,
         )}
       >
         {icon && (
@@ -70,7 +63,6 @@ export const Input = (props: InputProps) => {
             {icon}
           </span>
         )}
-
         <input
           className={styles.input}
           type={inputType}
@@ -80,7 +72,6 @@ export const Input = (props: InputProps) => {
           defaultValue={defaultValue}
           onChange={onChange}
         />
-
         {isPassword ? (
           <button
             type="button"
@@ -92,14 +83,9 @@ export const Input = (props: InputProps) => {
             {isPasswordVisible ? hidePasswordIcon : showPasswordIcon}
           </button>
         ) : (
-          trailingIcon && (
-            <span className={styles['trailing-icon']}>
-              {trailingIcon}
-            </span>
-          )
+          trailingIcon
         )}
       </div>
-
       {error ? (
         <span className={styles['error-text']}>{error}</span>
       ) : (
