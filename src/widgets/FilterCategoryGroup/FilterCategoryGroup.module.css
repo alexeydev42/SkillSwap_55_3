@@ -1,5 +1,5 @@
 .filter-category-group__sidebar {
-  inline-size: 324px;
+  inline-size: 100%;
 }
 
 .filter-category-group__header {
@@ -16,7 +16,6 @@
 
 .filter-category-group__subcategories-wrapper {
   margin-top: var(--space-12);
-  margin-left: var(--space-20);
 }
 
 .filter-category-group__subcategories-list {
