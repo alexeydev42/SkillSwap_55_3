@@ -2,7 +2,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-8);
-  padding: 12px 24px 12px 24px;
+  padding: 12px 24px;
   border-radius: var(--radius-pill);
   background-color: var(--color-surface); /* #FFFFFF */
   color: var(--color-text);
@@ -10,10 +10,6 @@
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
   white-space: nowrap;
-}
-
-.label {
-
 }
 
 .removeButton {

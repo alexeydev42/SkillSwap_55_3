@@ -6,11 +6,8 @@ import CrossIcon from '@/shared/assets/icons/icon-cross.svg?react';
 import { IconButton } from '@/shared/ui/IconButton';
 
 export interface ActiveFilterChipProps {
-  /** Текст фильтра (например, "Категория: Бизнес") */
   label: string;
-  /** Колбэк при клике на крестик */
   onRemove?: () => void;
-  /** Дополнительный CSS-класс */
   className?: string;
 }
 
