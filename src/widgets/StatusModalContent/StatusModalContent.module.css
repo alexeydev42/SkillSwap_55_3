@@ -1,0 +1,36 @@
+.modal-content__wrapper {
+  block-size: 100%;
+  inline-size: 100%;
+  color: var(--color-text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal-content__icon-wrapper {
+  block-size: 100px;
+  inline-size: 100px;
+  padding: 12.5px;
+}
+
+.modal-content__icon {
+  block-size: 100%;
+  inline-size: 100%;
+  object-fit: cover;
+}
+
+.modal-content__title {
+  margin-top: 52px;
+  margin-bottom: 12px;
+  font-family: var(--font-heading);
+  font-size: var(--font-size-h2);
+}
+
+.modal-content__text {
+  font-size: var(--font-size-body);
+}
+
+.modal-content__button {
+  margin-top: 32px;
+  inline-size: 100%;
+}
