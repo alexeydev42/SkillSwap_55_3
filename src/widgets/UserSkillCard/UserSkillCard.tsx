@@ -43,7 +43,6 @@ export const UserSkillCard = (props: UserSkillCardProps) => {
         withFavoriteButton
         onFavoriteClick={onFavoriteClick}
       />
-      {/* TODO: UserInfo пока не поддерживает визуальное отображение isFavorite (закрашенное/пустое сердце) — уточнить у автора компонента */}
 
       {/* TODO: SkillTagsBlock (VERST-20) ещё не готов. Пока выводим все теги напрямую через SkillTag, без ограничения количества и счётчика +N — заменить на <SkillTagsBlock> когда компонент будет готов */}
       <div>
