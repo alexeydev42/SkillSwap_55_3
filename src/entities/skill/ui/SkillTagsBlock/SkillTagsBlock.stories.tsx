@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { SkillTagsBlock } from './SkillTagsBlock'
+import { SkillTagsBlock } from './SkillTagsBlock.tsx'
 
 const meta: Meta<typeof SkillTagsBlock> = {
   title: 'Entities/Skill/SkillTagsBlock',

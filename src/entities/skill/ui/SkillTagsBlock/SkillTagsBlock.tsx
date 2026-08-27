@@ -1,5 +1,5 @@
 import React from 'react'
-import { SkillTag, SkillTagVariant } from '../../../shared/ui/SkillTag/SkillTag'
+import { SkillTag, SkillTagVariant } from '../../../../shared/ui/SkillTag/SkillTag'
 import styles from './SkillTagsBlock.module.css'
 
 interface SkillTagsBlockProps {
