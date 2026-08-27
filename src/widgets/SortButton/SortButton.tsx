@@ -4,12 +4,7 @@ import { Button } from '../../shared/ui/Button'
 
 export function SortButton() {
   return (
-    <Button
-      variant="secondary"
-      size="md"
-      icon={<img src={sortIcon} alt="" />}
-      iconPosition="left"
-    >
+    <Button variant="tertiary" size="md" icon={<img src={sortIcon} alt="" />} iconPosition="left">
       Сначала новые
     </Button>
   )
