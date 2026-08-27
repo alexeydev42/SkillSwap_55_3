@@ -9,7 +9,7 @@
   font-weight: var(--font-weight-medium);
   font-size: var(--font-size-h4);
   line-height: var(--line-height-h4);
-  letter-spacing: 2%;
+  letter-spacing: var(--letter-spacing-caption);
   vertical-align: middle;
 }
 
@@ -22,4 +22,5 @@
 .tagsContainer {
   display: flex;
   gap: 4px;
+  width: 284px;
 }
