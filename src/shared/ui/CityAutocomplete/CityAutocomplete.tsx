@@ -6,7 +6,7 @@ import { DropdownContainer } from '../DropdownContainer';
 import crossIcon from '../../assets/icons/icon-cross.svg';
 import styles from './CityAutocomplete.module.css';
 
-const CITIES = ['Санкт-Петербург', 'Самара', 'Саратов'];
+const CITIES = ['Санкт-Петербург', 'Самара', 'Саратов', 'Сочи'];
 
 interface CityAutocompleteProps {
   value: string;
