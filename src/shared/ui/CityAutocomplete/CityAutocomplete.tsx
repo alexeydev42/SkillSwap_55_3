@@ -6,15 +6,7 @@ import { DropdownContainer } from '../DropdownContainer';
 import crossIcon from '../../assets/icons/icon-cross.svg';
 import styles from './CityAutocomplete.module.css';
 
-const CITIES = [
-  'Москва',
-  'Санкт-Петербург',
-  'Казань',
-  'Новосибирск',
-  'Самара',
-  'Саратов',
-  'Екатеринбург',
-];
+const CITIES = ['Санкт-Петербург', 'Самара', 'Саратов'];
 
 interface CityAutocompleteProps {
   value: string;
@@ -29,10 +21,7 @@ export const CityAutocomplete = ({
   placeholder = 'Введите город',
   className,
 }: CityAutocompleteProps) => {
-  const filteredCities = CITIES.filter((city) =>
-    city.toLowerCase().includes(value.toLowerCase())
-  );
-  const isOpen = value.length > 0 && filteredCities.length > 0;
+  const isOpen = value.length > 0;
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.value);
@@ -40,10 +29,6 @@ export const CityAutocomplete = ({
 
   const handleClear = () => {
     onChange('');
-  };
-
-  const handleCitySelect = (city: string) => {
-    onChange(city);
   };
 
   return (
@@ -54,26 +39,23 @@ export const CityAutocomplete = ({
           value={value}
           onChange={handleInputChange}
           borderless
+          trailingIcon={
+            value ? (
+              <IconButton
+                icon={<img src={crossIcon} alt="" />}
+                onClick={handleClear}
+                aria-label="Очистить поле"
+              />
+            ) : null
+          }
         />
-        {value && (
-          <IconButton
-            icon={<img src={crossIcon} alt="Очистить" className={styles.crossIcon} />}
-            onClick={handleClear}
-            className={styles.clearButton}
-            aria-label="Очистить поле"
-          />
-        )}
       </div>
 
       {isOpen && (
         <DropdownContainer className={styles.dropdown}>
           <ul className={styles.cityList}>
-            {filteredCities.map((city) => (
-              <li
-                key={city}
-                className={styles.cityItem}
-                onClick={() => handleCitySelect(city)}
-              >
+            {CITIES.map((city) => (
+              <li key={city} className={styles.cityItem}>
                 {city}
               </li>
             ))}

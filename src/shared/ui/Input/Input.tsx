@@ -1,8 +1,8 @@
-import { ReactNode, useState } from 'react';
+import { ChangeEventHandler, ReactNode, useState } from 'react';
 import clsx from 'clsx';
 import styles from './Input.module.css';
 
-interface InputProps {
+export interface InputProps {
   label?: string;
   placeholder?: string;
   type?: 'text' | 'email' | 'password';
@@ -10,11 +10,14 @@ interface InputProps {
   helperText?: string;
   disabled?: boolean;
   className?: string;
+  icon?: ReactNode;
+  trailingIcon?: ReactNode;
+  value?: string;
+  defaultValue?: string;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
   showPasswordIcon?: ReactNode;
   hidePasswordIcon?: ReactNode;
-  value?: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  borderless?: boolean; 
+  borderless?: boolean;
 }
 
 export const Input = (props: InputProps) => {
@@ -25,12 +28,15 @@ export const Input = (props: InputProps) => {
     error,
     helperText,
     disabled,
-    value,
-    onChange,
     className,
+    icon,
+    trailingIcon,
+    value,
+    defaultValue,
+    onChange,
     showPasswordIcon,
     hidePasswordIcon,
-    borderless, 
+    borderless,
   } = props;
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -45,17 +51,19 @@ export const Input = (props: InputProps) => {
       <div
         className={clsx(
           styles['input-wrapper'],
-          borderless && styles.borderless, 
+          borderless && styles.borderless,
           error && styles.error,
           disabled && styles.disabled
         )}
       >
+        {icon && <span className={styles.icon}>{icon}</span>}
         <input
           className={styles.input}
           type={inputType}
           placeholder={placeholder}
           disabled={disabled}
           value={value}
+          defaultValue={defaultValue}
           onChange={onChange}
         />
         {isPassword && (
@@ -69,6 +77,7 @@ export const Input = (props: InputProps) => {
             {isPasswordVisible ? hidePasswordIcon : showPasswordIcon}
           </button>
         )}
+        {trailingIcon && <span className={styles['trailing-icon']}>{trailingIcon}</span>}
       </div>
 
       {error ? (
