@@ -1,0 +1,25 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.title {
+  font-family: var(--font-body), sans-serif;
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-h4);
+  line-height: var(--line-height-h4);
+  letter-spacing: 2%;
+  vertical-align: middle;
+}
+
+.tagsBlockContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tagsContainer {
+  display: flex;
+  gap: 4px;
+}
