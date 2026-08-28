@@ -1,14 +1,16 @@
 import styles from './UserSkillCard.module.css';
-import { Button } from '@/shared/ui/Button'
+import { Button } from '@/shared/ui/Button';
+import { SkillTagsBlock } from '@/entities/skill/ui/SkillTagsBlock';
+import type { SkillTagVariant } from '@/shared/ui/SkillTag/SkillTag';
+import { UserInfo } from '@/entities/user/ui/UserInfo';
 
 interface UserSkillCardData {
   name: string
   city: string
   age: number
   avatarUrl: string | null
-  bio: string
-  teachTags: string[]
-  learnTags: string[]
+  canTeach: { label: string; variant: SkillTagVariant }
+  learnTags: { label: string; variant: SkillTagVariant }[]
 }
 
 interface UserSkillCardProps {
@@ -28,41 +30,23 @@ function getAgeLabel(age: number): string {
   return 'лет'
 }
 
-export const UserSkillCard = (props: UserSkillCardProps) => {
-  const {user, isFavorite, onFavoriteClick, onDetailsClick} = props
-
-  return(
+export const UserSkillCard = ({ user, onFavoriteClick, onDetailsClick }: UserSkillCardProps) => {
+  return (
     <div className={styles['card']}>
-        <div className={styles['user-info-placeholder']}>
-          <img src={user.avatarUrl ?? undefined} alt={user.name} className={styles.avatar} />
-          <div>
-            <h3>{user.name}</h3>
-            <p>{user.city}, {user.age} {getAgeLabel(user.age)}</p>
-          </div>
-          <button onClick={onFavoriteClick}>{isFavorite ? '♥' : '♡'}</button>
-          <p>{user.bio}</p>
-      </div>
+      <UserInfo
+        avatar={user.avatarUrl ?? ''}
+        name={user.name}
+        city={user.city}
+        age={`${user.age} ${getAgeLabel(user.age)}`}
+        withFavoriteButton
+        onFavoriteClick={onFavoriteClick}
+      />
 
-      <div>
-        <h4>Может научить</h4>
-        <div className={styles['tags-placeholder']}>
-          {user.teachTags.map((tag)=> (
-            <span key={tag} className={styles.tag}>{tag}</span>
-          ))}
-        </div>
-      </div>
+      <SkillTagsBlock canTeach={user.canTeach} wantsToLearn={user.learnTags} />
 
-      <div>
-        <h4>Хочет научиться</h4>
-        <div className={styles['tags-placeholder']}>
-          {user.learnTags.map((tag)=> (
-            <span key={tag} className={styles.tag}>{tag}</span>
-          ))}
-        </div>
-      </div>
-
-      <Button onClick={onDetailsClick}>Подробнее</Button>
+      <Button onClick={onDetailsClick} className={styles['details-button']}>
+        Подробнее
+      </Button>
     </div>
-
   )
 }
