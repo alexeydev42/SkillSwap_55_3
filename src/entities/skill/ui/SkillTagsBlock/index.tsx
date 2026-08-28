@@ -1,0 +1,1 @@
+export { SkillTagsBlock } from './SkillTagsBlock'
