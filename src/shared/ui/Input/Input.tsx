@@ -1,110 +1,132 @@
-import { ChangeEventHandler, ReactNode, useState } from 'react'
+import { forwardRef, InputHTMLAttributes, ReactNode, useId, useState } from 'react'
 import styles from './Input.module.css'
 import clsx from 'clsx'
 
-export interface InputProps {
+type BaseInputProps = Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  'type' | 'className' | 'value' | 'defaultValue'
+> & {
   label?: string
-  placeholder?: string
   type?: 'text' | 'email' | 'password'
   error?: string
   helperText?: string
-  disabled?: boolean
   className?: string
 
-  /** Иконка слева от поля ввода (например, лупа для поиска). */
+  // Иконка слева от поля ввода.
   icon?: ReactNode
 
-  /**
-   * Произвольный контент справа от поля (например, кнопка очистки).
-   * Игнорируется для type='password' - там используется showPasswordIcon/hidePasswordIcon.
-   */
+  // Контент справа; для password используются отдельные иконки.
   trailingIcon?: ReactNode
 
-  value?: string
-  defaultValue?: string
-  onChange?: ChangeEventHandler<HTMLInputElement>
   showPasswordIcon?: ReactNode
   hidePasswordIcon?: ReactNode
 
   borderless?: boolean
 }
 
-export const Input = (props: InputProps) => {
-  const {
-    label,
-    placeholder,
-    type = 'text',
-    error,
-    helperText,
-    disabled,
-    className,
-    icon,
-    trailingIcon,
-    value,
-    defaultValue,
-    onChange,
-    showPasswordIcon,
-    hidePasswordIcon,
-    borderless,
-  } = props
+// Controlled и uncontrolled режимы не могут использоваться одновременно.
+type ControlledInputProps = {
+  value: string
+  defaultValue?: never
+}
 
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+type UncontrolledInputProps = {
+  value?: never
+  defaultValue?: string
+}
 
-  const isPassword = type === 'password'
-  const inputType = isPassword && isPasswordVisible ? 'text' : type
+export type InputProps = BaseInputProps & (ControlledInputProps | UncontrolledInputProps)
 
-  return (
-    <div className={clsx(styles['input-container'], className)}>
-      {label && <label className={styles['input-label']}>{label}</label>}
+export const Input = forwardRef<HTMLInputElement, InputProps>(
+  (
+    {
+      label,
+      type = 'text',
+      error,
+      helperText,
+      className,
+      disabled,
+      icon,
+      trailingIcon,
+      value,
+      defaultValue,
+      showPasswordIcon,
+      hidePasswordIcon,
+      borderless,
+      id,
+      ...inputProps
+    },
+    ref,
+  ) => {
+    // Используем переданный id или генерируем стабильный для связи с label.
+    const generatedId = useId()
+    const inputId = id ?? generatedId
 
-      <div
-        className={clsx(
-          styles['input-wrapper'],
-          borderless && styles.borderless,
-          error && styles.error,
-          disabled && styles.disabled
+    // Управляем видимостью значения только для поля пароля.
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+
+    const isPassword = type === 'password'
+    const inputType = isPassword && isPasswordVisible ? 'text' : type
+
+    return (
+      <div className={clsx(styles['input-container'], className)}>
+        {label && (
+          <label className={styles['input-label']} htmlFor={inputId}>
+            {label}
+          </label>
         )}
-      >
-        {icon && (
-          <span className={styles.icon} aria-hidden="true">
-            {icon}
-          </span>
-        )}
 
-        <input
-          className={styles.input}
-          type={inputType}
-          placeholder={placeholder}
-          disabled={disabled}
-          value={value}
-          defaultValue={defaultValue}
-          onChange={onChange}
-        />
-
-        {isPassword ? (
-          <button
-            type="button"
-            onClick={() => setIsPasswordVisible((prev) => !prev)}
-            disabled={disabled}
-            aria-label={isPasswordVisible ? 'Скрыть пароль' : 'Показать пароль'}
-            className={styles['password-button']}
-          >
-            {isPasswordVisible ? hidePasswordIcon : showPasswordIcon}
-          </button>
-        ) : (
-          trailingIcon && (
-            <span className={styles['trailing-icon']}>
-              {trailingIcon}
+        <div
+          className={clsx(
+            styles['input-wrapper'],
+            borderless && styles.borderless,
+            error && styles.error,
+            disabled && styles.disabled,
+          )}
+        >
+          {icon && (
+            <span className={styles.icon} aria-hidden="true">
+              {icon}
             </span>
-          )
+          )}
+
+          {/* Передаём нативные атрибуты и ref непосредственно HTMLInputElement. */}
+          <input
+            {...inputProps}
+            ref={ref}
+            id={inputId}
+            className={styles.input}
+            type={inputType}
+            disabled={disabled}
+            value={value}
+            defaultValue={defaultValue}
+          />
+
+          {isPassword ? (
+            <button
+              type="button"
+              onClick={() => setIsPasswordVisible((prev) => !prev)}
+              disabled={disabled}
+              aria-label={isPasswordVisible ? 'Скрыть пароль' : 'Показать пароль'}
+              className={styles['password-button']}
+            >
+              {isPasswordVisible ? hidePasswordIcon : showPasswordIcon}
+            </button>
+          ) : (
+            trailingIcon && <span className={styles['trailing-icon']}>{trailingIcon}</span>
+          )}
+        </div>
+
+        {/* Ошибка имеет приоритет над вспомогательным текстом. */}
+        {error ? (
+          <span className={styles['error-text']}>{error}</span>
+        ) : (
+          helperText && <span className={styles['helper-text']}>{helperText}</span>
         )}
       </div>
+    )
+  },
+)
 
-      {error ? (
-        <span className={styles['error-text']}>{error}</span>
-      ) : (
-        helperText && <span className={styles['helper-text']}>{helperText}</span>
-      )}
-    </div>
-  )
-}
+// Задаём имя компонента для корректного отображения в React DevTools.
+Input.displayName = 'Input'
