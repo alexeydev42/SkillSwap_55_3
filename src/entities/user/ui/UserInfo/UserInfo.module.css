@@ -23,6 +23,12 @@
   letter-spacing: -0.264px;
 }
 
+.userInfo:has(> .favoriteButton) .name {
+  font-size: var(--font-size-h3);
+  line-height: var(--line-height-h3);
+  letter-spacing: -0.22px;
+}
+
 .details {
   color: var(--color-caption);
   font-family: var(--font-body);

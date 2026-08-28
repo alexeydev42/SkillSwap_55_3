@@ -66,3 +66,10 @@ export const PasswordHelperText: Story = {
     helperText: 'Используйте минимум 8 символов',
   },
 }
+
+export const Borderless: Story = {
+  args: {
+    placeholder: 'Введите город',
+    borderless: true,
+  },
+}
