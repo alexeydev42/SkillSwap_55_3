@@ -1,0 +1,64 @@
+/**
+ * src/entities/request/ui/RequestCard/RequestCard.module.css — VERST-31
+ * Токены — из src/app/styles/variables.css. Разметка единая для всех
+ * состояний карточки, статусной цветной плашки на макете нет.
+ */
+
+ .card {
+  display: flex;
+  gap: var(--space-12);
+  padding: var(--space-16) 0;
+  font-family: var(--font-body);
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  color: var(--color-text);
+}
+
+.content {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-12);
+}
+
+.title {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+}
+
+.date {
+  flex-shrink: 0;
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
+  color: var(--color-caption);
+  white-space: nowrap;
+}
+
+.description {
+  margin: 0;
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
+  color: var(--color-caption);
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-8);
+  margin-top: var(--space-8);
+}
