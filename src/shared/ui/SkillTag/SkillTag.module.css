@@ -8,6 +8,9 @@
   line-height: var(--line-height-caption);
   letter-spacing: var(--letter-spacing-caption);
   color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .languages {
@@ -36,4 +39,8 @@
 
 .more {
   background-color: var(--color-tag-more);
+  flex-shrink: 0;
+  max-width: none;
+  overflow: visible;
+  text-overflow: clip;
 }

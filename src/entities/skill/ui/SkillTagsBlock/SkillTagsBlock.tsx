@@ -1,8 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { SkillTag, SkillTagVariant } from '../../../../shared/ui/SkillTag/SkillTag'
+import React from 'react'
+import clsx from 'clsx'
+
+import {
+  SkillTag,
+  type SkillTagVariant,
+} from '../../../../shared/ui/SkillTag/SkillTag'
+
 import styles from './SkillTagsBlock.module.css'
 
-interface SkillTagsBlockProps {
+export type SkillTagsBlockVariant = 'compact' | 'spacious'
+
+export interface SkillTagsBlockProps {
   canTeach: {
     variant: SkillTagVariant
     label: string
@@ -11,80 +19,90 @@ interface SkillTagsBlockProps {
     variant: SkillTagVariant
     label: string
   }>
+  variant?: SkillTagsBlockVariant
 }
 
-export const SkillTagsBlock: React.FC<SkillTagsBlockProps> = ({ canTeach, wantsToLearn }) => {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [visibleCount, setVisibleCount] = useState(0)
+// Приблизительный лимит суммарной длины названий видимых навыков.
+const CHAR_LIMITS: Record<SkillTagsBlockVariant, number> = {
+  compact: 25,
+  spacious: 21,
+}
 
-  useEffect(() => {
-    if (!wantsToLearn.length) {
-      setVisibleCount(0)
-      return
-    }
-    const container = containerRef.current
-    if (!container) {
-      return
-    }
-    const containerStyles = getComputedStyle(container)
-    const containerWidth = container.clientWidth
-    const gap = parseFloat(containerStyles.gap)
-    const rootStyles = getComputedStyle(document.documentElement)
-    const fontSize = rootStyles.getPropertyValue('--font-size-caption').trim()
-    const fontFamily = rootStyles.getPropertyValue('--font-body').trim()
-    const fontWeight = rootStyles.getPropertyValue('--font-weight-regular').trim()
-    const padding = parseFloat(rootStyles.getPropertyValue('--space-12')) * 2
-    const letterSpacing = parseFloat(rootStyles.getPropertyValue('--letter-spacing-caption').trim())
+// Определяет, сколько обычных тегов можно показать вместе с обязательным +N.
+const getVisibleCount = (
+  tags: SkillTagsBlockProps['wantsToLearn'],
+  variant: SkillTagsBlockVariant,
+) => {
+  if (!tags.length) {
+    return 0
+  }
 
-    const canvas = document.createElement('canvas')
-    const context = canvas.getContext('2d')
-    if (!context) {
-      return
-    }
+  const charLimit = CHAR_LIMITS[variant]
 
-    context.font = `${fontWeight} ${fontSize} ${fontFamily}`
+  // Первый тег показываем всегда: если он слишком длинный, SkillTag обрежет текст.
+  let usedChars = tags[0].label.length
+  let visibleCount = 1
 
-    const getTagWidth = (label: string) => {
-      const textWidth = context.measureText(label).width
-      const letterSpacingWidth = textWidth * letterSpacing
-      return textWidth + letterSpacingWidth + padding
+  for (let index = 1; index < tags.length; index++) {
+    const tag = tags[index]
+    const nextChars = usedChars + tag.label.length
+
+    if (nextChars > charLimit) {
+      break
     }
 
-    let totalWidth = 0
-    let count = 0
+    usedChars = nextChars
+    visibleCount++
+  }
 
-    for (const tag of wantsToLearn) {
-      const tagWidth = getTagWidth(tag.label)
-      const hiddenCount = wantsToLearn.length - count - 1
-      const moreWidth = hiddenCount > 0 ? getTagWidth(`+${hiddenCount}`) + gap : 0
-      const nextWidth = totalWidth + (count > 0 ? gap : 0) + tagWidth + moreWidth
-      if (nextWidth > containerWidth) {
-        break
-      }
-      totalWidth += tagWidth + (count > 0 ? gap : 0)
-      count++
-    }
-    setVisibleCount(count)
-  }, [wantsToLearn])
+  return visibleCount
+}
 
+export const SkillTagsBlock: React.FC<SkillTagsBlockProps> = ({
+  canTeach,
+  wantsToLearn,
+  variant = 'compact',
+}) => {
+  // Рассчитываем видимые и скрытые навыки для текущего варианта блока.
+  const visibleCount = getVisibleCount(wantsToLearn, variant)
   const visibleTags = wantsToLearn.slice(0, visibleCount)
   const hiddenTagsCount = wantsToLearn.length - visibleCount
 
   return (
-    <div className={styles.container}>
+    <div
+      className={clsx(styles.container, {
+        [styles.spacious]: variant === 'spacious',
+      })}
+    >
       <div className={styles.tagsBlockContainer}>
         <h3 className={styles.title}>Может научить:</h3>
+
         <div className={styles.tagsContainer}>
-          <SkillTag variant={canTeach.variant} label={canTeach.label} />
+          <SkillTag
+            variant={canTeach.variant}
+            label={canTeach.label}
+          />
         </div>
       </div>
+
       <div className={styles.tagsBlockContainer}>
         <h3 className={styles.title}>Хочет научиться:</h3>
-        <div ref={containerRef} className={styles.tagsContainer}>
+
+        <div className={styles.tagsContainer}>
           {visibleTags.map((tag, index) => (
-            <SkillTag key={`${tag.label}-${index}`} variant={tag.variant} label={tag.label} />
+            <SkillTag
+              key={`${tag.label}-${index}`}
+              variant={tag.variant}
+              label={tag.label}
+            />
           ))}
-          {hiddenTagsCount > 0 && <SkillTag variant="more" label={`+${hiddenTagsCount}`} />}
+
+          {hiddenTagsCount > 0 && (
+            <SkillTag
+              variant="more"
+              label={`+${hiddenTagsCount}`}
+            />
+          )}
         </div>
       </div>
     </div>
