@@ -6,9 +6,24 @@
 
  .card {
   display: flex;
-  gap: var(--space-12);
-  padding: var(--space-16) 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-16);
   font-family: var(--font-body);
+}
+
+.main {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-20);
+  width: 100%;
+}
+
+.message {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  gap: var(--space-8);
 }
 
 .icon {
@@ -16,49 +31,50 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 40px;
-  height: 40px;
+  width: var(--space-40);
+  height: var(--space-40);
   color: var(--color-text);
 }
 
-.content {
+.icon > * {
+  width: 100%;
+  height: 100%;
+}
+
+.text {
   display: flex;
   flex: 1;
   min-width: 0;
   flex-direction: column;
-  gap: var(--space-4);
-}
-
-.header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-12);
 }
 
 .title {
+  margin: 0;
   font-size: var(--font-size-body);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body);
+  letter-spacing: var(--letter-spacing-caption);
   color: var(--color-text);
-}
-
-.date {
-  flex-shrink: 0;
-  font-size: var(--font-size-caption);
-  line-height: var(--line-height-caption);
-  color: var(--color-caption);
-  white-space: nowrap;
 }
 
 .description {
   margin: 0;
   font-size: var(--font-size-caption);
   line-height: var(--line-height-caption);
+  letter-spacing: var(--letter-spacing-caption);
+  color: var(--color-text);
+}
+
+.date {
+  flex-shrink: 0;
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  letter-spacing: var(--letter-spacing-caption);
   color: var(--color-caption);
+  white-space: nowrap;
 }
 
 .actions {
   display: flex;
   gap: var(--space-8);
-  margin-top: var(--space-8);
 }

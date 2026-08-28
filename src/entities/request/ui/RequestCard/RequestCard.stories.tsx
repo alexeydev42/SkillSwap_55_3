@@ -1,11 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Button } from '@/shared/ui/Button'
-import iconIdea from '@/shared/assets/icons/icon-idea.svg'
+import IdeaIcon from '@/shared/assets/icons/icon-idea.svg?react'
 
 import { RequestCard } from './RequestCard'
-
-const IdeaIcon = () => <img src={iconIdea} alt="" />
 
 const meta = {
   title: 'Entities/Request/RequestCard',
@@ -23,7 +21,7 @@ export const New: Story = {
     title: 'Николай принял ваш обмен',
     description: 'Перейдите в профиль, чтобы обсудить детали',
     date: 'сегодня',
-    actions: <Button size="sm">Перейти</Button>,
+    actions: <Button>Перейти</Button>,
   },
 }
 
@@ -44,10 +42,8 @@ export const Moderation: Story = {
     date: 'сегодня',
     actions: (
       <>
-        <Button size="sm">Принять</Button>
-        <Button size="sm" variant="secondary">
-          Отклонить
-        </Button>
+        <Button>Принять</Button>
+        <Button variant="secondary">Отклонить</Button>
       </>
     ),
   },

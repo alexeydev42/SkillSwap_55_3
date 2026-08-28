@@ -30,17 +30,22 @@ export interface RequestCardProps {
 export function RequestCard({ icon, title, description, date, actions, className }: RequestCardProps) {
   return (
     <div className={clsx(styles.card, className)}>
-      <span className={styles.icon} aria-hidden="true">
-        {icon}
-      </span>
-      <div className={styles.content}>
-        <div className={styles.header}>
-          <span className={styles.title}>{title}</span>
-          <span className={styles.date}>{date}</span>
+      <div className={styles.main}>
+        <div className={styles.message}>
+          <span className={styles.icon} aria-hidden="true">
+            {icon}
+          </span>
+
+          <div className={styles.text}>
+            <p className={styles.title}>{title}</p>
+            {description && <p className={styles.description}>{description}</p>}
+          </div>
         </div>
-        {description && <p className={styles.description}>{description}</p>}
-        {actions && <div className={styles.actions}>{actions}</div>}
+
+        <span className={styles.date}>{date}</span>
       </div>
+
+      {actions && <div className={styles.actions}>{actions}</div>}
     </div>
   )
 }
