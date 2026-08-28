@@ -1,0 +1,14 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12); 
+}
+
+.containerEdit {
+  gap: var(--space-12);
+}
+
+
+.button {
+  flex-shrink: 0;
+}
