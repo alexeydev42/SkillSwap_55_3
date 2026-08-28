@@ -28,6 +28,12 @@
   border-color: var(--color-error);
 }
 
+.input-wrapper.borderless {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+}
+
 .input-wrapper.disabled {
   color: var(--color-disabled-text);
   cursor: not-allowed;
