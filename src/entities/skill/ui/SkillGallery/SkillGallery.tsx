@@ -4,7 +4,6 @@ import { Navigation } from 'swiper/modules'
 import type { SwiperRef } from 'swiper/react'
 
 import 'swiper/css'
-import 'swiper/css/navigation'
 
 import styles from './SkillGallery.module.css'
 
