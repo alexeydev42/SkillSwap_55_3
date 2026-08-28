@@ -1,8 +1,8 @@
 import type { MouseEventHandler } from 'react'
 import { IconButton } from '../../shared/ui/IconButton/IconButton'
-import likeIcon from '../../shared/assets/icons/icon-like.svg'
-import shareIcon from '../../shared/assets/icons/icon-share.svg'
-import moreIcon from '../../shared/assets/icons/icon-more-square.svg'
+import LikeIcon from '../../shared/assets/icons/icon-like.svg?react'
+import ShareIcon from '../../shared/assets/icons/icon-share.svg?react'
+import MoreIcon from '../../shared/assets/icons/icon-more-square.svg?react'
 import styles from './SkillActions.module.css'
 
 export interface SkillActionsProps {
@@ -18,9 +18,10 @@ export function SkillActions({
 }: SkillActionsProps) {
   return (
     <div className={styles.actions}>
-      <IconButton icon={<img src={likeIcon} alt="" />} onClick={onLike} />
-      <IconButton icon={<img src={shareIcon} alt="" />} onClick={onShare} />
-      <IconButton icon={<img src={moreIcon} alt="" />} onClick={onMore} />
+      <IconButton icon={<LikeIcon />} onClick={onLike} aria-label="Добавить в избранное"/>
+      <IconButton icon={<ShareIcon />} onClick={onShare} aria-label="Поделиться"/>
+      <IconButton icon={<MoreIcon/>} onClick={onMore} aria-label="Больше действий"/>
     </div>
   )
 }
+

@@ -1,4 +1,4 @@
 .actions {
  display: flex;
- gap: 16px;
+ gap: var(--space-16);
 }
