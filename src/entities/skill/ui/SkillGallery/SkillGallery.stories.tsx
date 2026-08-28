@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite' // Исправлен импорт
 import { SkillGallery } from './SkillGallery'
 
 const meta: Meta<typeof SkillGallery> = {
@@ -19,6 +19,11 @@ const imgs = [
 ]
 
 export const Default: Story = { args: { images: imgs } }
-export const ThreeImages: Story = { args: { images: imgs.slice(0, 3) } }
+
+// История с 4 изображениями: 1 главное + 3 миниатюры (полный набор видимых элементов)
+export const FourImages: Story = {
+  args: { images: imgs.slice(0, 4) },
+}
+
 export const SingleImage: Story = { args: { images: [imgs[0]] } }
 export const Empty: Story = { args: { images: [] } }

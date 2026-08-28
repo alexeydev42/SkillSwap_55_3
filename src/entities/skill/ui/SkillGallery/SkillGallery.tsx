@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation } from 'swiper/modules'
 import type { SwiperRef } from 'swiper/react'
@@ -16,14 +16,23 @@ const VISIBLE_THUMBS = 3
 
 export const SkillGallery = ({ images }: SkillGalleryProps) => {
   const mainRef = useRef<SwiperRef | null>(null)
+  const [activeIndex, setActiveIndex] = useState(0)
 
-  if (!images || images.length <= 1) {
-    return <div className={styles.main}>{images?.[0] && <img src={images[0]} alt="Skill" />}</div>
+  if (!images || images.length === 0) return null
+
+  if (images.length === 1) {
+    return (
+      <div className={styles.main}>
+        <img src={images[0]} alt="Skill" />
+      </div>
+    )
   }
 
-  const hasMore = images.length > VISIBLE_THUMBS
-  const visibleImages = hasMore ? images.slice(0, VISIBLE_THUMBS) : images
-  const hiddenCount = images.length - VISIBLE_THUMBS
+  const thumbImages = images.slice(1)
+
+  const hasMore = thumbImages.length > VISIBLE_THUMBS
+  const visibleThumbs = hasMore ? thumbImages.slice(0, VISIBLE_THUMBS) : thumbImages
+  const hiddenCount = hasMore ? thumbImages.length - VISIBLE_THUMBS : 0
 
   const goTo = (index: number) => {
     mainRef.current?.swiper?.slideTo(index)
@@ -31,6 +40,7 @@ export const SkillGallery = ({ images }: SkillGalleryProps) => {
 
   return (
     <div className={styles.gallery}>
+      {/* Главное изображение */}
       <div className={styles.main}>
         <Swiper
           ref={mainRef}
@@ -40,6 +50,7 @@ export const SkillGallery = ({ images }: SkillGalleryProps) => {
             prevEl: `.${styles.arrowPrev}`,
           }}
           className={styles.swiper}
+          onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
         >
           {images.map((src, i) => (
             <SwiperSlide key={i}>
@@ -54,14 +65,14 @@ export const SkillGallery = ({ images }: SkillGalleryProps) => {
           aria-label="Предыдущее"
         >
           <svg
-            viewBox="0 0 24 24"
+            viewBox="0 0 16 16"
             fill="none"
             stroke="currentColor"
-            strokeWidth="2"
+            strokeWidth="1.5"
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <polyline points="15 18 9 12 15 6" />
+            <path d="M10 12L6 8L10 4" />
           </svg>
         </button>
         <button
@@ -70,35 +81,39 @@ export const SkillGallery = ({ images }: SkillGalleryProps) => {
           aria-label="Следующее"
         >
           <svg
-            viewBox="0 0 24 24"
+            viewBox="0 0 16 16"
             fill="none"
             stroke="currentColor"
-            strokeWidth="2"
+            strokeWidth="1.5"
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <polyline points="9 18 15 12 9 6" />
+            <path d="M6 4L10 8L6 12" />
           </svg>
         </button>
       </div>
 
+      {/* Миниатюры */}
       <div className={styles.thumbs}>
-        {visibleImages.map((src, i) => {
-          const isLast = i === visibleImages.length - 1 && hasMore
+        {visibleThumbs.map((src, i) => {
+          const originalIndex = i + 1
+          const isActive = activeIndex === originalIndex
+
           return (
-            <div
-              key={i}
-              className={styles.thumb}
-              onClick={() => goTo(i)}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => e.key === 'Enter' && goTo(i)}
+            <button
+              key={originalIndex}
+              type="button"
+              className={`${styles.thumb} ${isActive ? styles.thumbActive : ''}`}
+              onClick={() => goTo(originalIndex)}
+              aria-label={`Показать изображение ${originalIndex + 1}`}
             >
-              <img src={src} alt={`Thumb ${i + 1}`} />
-              {isLast && <div className={styles.thumbOverlay}>+{hiddenCount}</div>}
-            </div>
+              <img src={src} alt="" />
+            </button>
           )
         })}
+
+        {/* Оверлей +N поверх последней видимой миниатюры, если есть скрытые */}
+        {hasMore && <div className={styles.thumbOverlay}>+{hiddenCount}</div>}
       </div>
     </div>
   )
