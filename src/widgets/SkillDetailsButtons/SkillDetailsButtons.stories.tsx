@@ -8,7 +8,7 @@ const meta: Meta<typeof SkillDetailsButtons> = {
     layout: 'centered',
   },
   argTypes: {
-    mode: {
+    variant: {
       control: 'radio',
       options: ['offer', 'edit'],
     },
@@ -21,14 +21,14 @@ type Story = StoryObj<typeof SkillDetailsButtons>;
 
 export const Offer: Story = {
   args: {
-    mode: 'offer',
+    variant: 'offer',
     onOffer: () => alert('Предложить обмен'),
   },
 };
 
 export const Edit: Story = {
   args: {
-    mode: 'edit',
+    variant: 'edit',
     onEdit: () => alert('Редактировать'),
     onDone: () => alert('Готово'),
   },
@@ -36,32 +36,59 @@ export const Edit: Story = {
 
 export const OfferDisabled: Story = {
   args: {
-    mode: 'offer',
+    variant: 'offer',
     disabled: true,
   },
 };
 
 export const EditDisabled: Story = {
   args: {
-    mode: 'edit',
+    variant: 'edit',
     disabled: true,
   },
 };
 
 export const BothStates: Story = {
   render: () => (
-    <div style={{ display: 'flex', gap: '40px', alignItems: 'center', flexWrap: 'wrap' }}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        <span style={{ fontSize: '12px', color: '#69735D' }}>Offer</span>
+    <div style={{ 
+      display: 'flex', 
+      gap: '40px', 
+      alignItems: 'flex-start', 
+      flexWrap: 'wrap' 
+      }}
+    >
+      <div style={{ 
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '8px',
+        width: '400px',
+        }}
+      >
+        <span style={{ 
+          fontSize: '12px',
+          color: '#69735D'
+          }}>
+            Edit/Done</span>
+
         <SkillDetailsButtons
-          mode="offer"
+          variant="offer"
           onOffer={() => alert('Предложить обмен')}
         />
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        <span style={{ fontSize: '12px', color: '#69735D' }}>Edit / Done</span>
+
+      <div style={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        gap: '8px',
+        width: '420px',
+        }}
+      >
+        <span style={{ fontSize: '12px', color: '#69735D' }}>
+          Edit / Done
+          </span>
+          
         <SkillDetailsButtons
-          mode="edit"
+          variant="edit"
           onEdit={() => alert('Редактировать')}
           onDone={() => alert('Готово')}
         />

@@ -4,10 +4,10 @@ import { Button } from '@/shared/ui/Button';
 import EditIcon from '@/shared/assets/icons/icon-edit.svg?react';
 import styles from './SkillDetailsButtons.module.css';
 
-export type SkillDetailsButtonsMode = 'offer' | 'edit';
+export type SkillDetailsButtonsVariant = 'offer' | 'edit';
 
 export interface SkillDetailsButtonsProps {
-  mode: SkillDetailsButtonsMode;
+  variant: SkillDetailsButtonsVariant;
   onOffer?: () => void;
   onEdit?: () => void;
   onDone?: () => void;
@@ -16,14 +16,14 @@ export interface SkillDetailsButtonsProps {
 }
 
 export const SkillDetailsButtons: React.FC<SkillDetailsButtonsProps> = ({
-  mode,
+  variant,
   onOffer,
   onEdit,
   onDone,
   disabled = false,
   className,
 }) => {
-  if (mode === 'offer') {
+  if (variant === 'offer') {
     return (
       <div className={clsx(styles.container, className)}>
         <Button
