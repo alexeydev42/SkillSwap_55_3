@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import styles from './AuthInfoBlock.module.css'
 
-type AuthInfoBlockProps = {
+export type AuthInfoBlockProps = {
   illustration: ReactNode
   title: string
   description: string

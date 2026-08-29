@@ -1,1 +1,2 @@
-export {AuthInfoBlock}from './AuthInfoBlock'
+export { AuthInfoBlock } from './AuthInfoBlock'
+export type { AuthInfoBlockProps } from './AuthInfoBlock'

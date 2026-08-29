@@ -24,12 +24,14 @@
   font-family: var(--font-heading);
   line-height: var(--line-height-h2);
   font-weight: var(--font-weight-medium);
+  letter-spacing: -0.264px;
 }
 
 .authInfo_description{
   font-size: var(--font-size-h4);
   font-family: var(--font-body);
-  line-height: 24px;
+  line-height: var(--line-height-h4);
   color:var(--color-text);
   font-weight: var(--font-weight-regular);
+  letter-spacing: 0.32px;
 }
