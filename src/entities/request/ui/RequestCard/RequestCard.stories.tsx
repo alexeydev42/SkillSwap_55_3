@@ -9,6 +9,13 @@ const meta = {
   title: 'Entities/Request/RequestCard',
   component: RequestCard,
   tags: ['autodocs'],
+  decorators: [
+    (Story) => (
+      <div style={{ width: '436px' }}>
+        <Story />
+      </div>
+    ),
+  ],
 } satisfies Meta<typeof RequestCard>
 
 export default meta
