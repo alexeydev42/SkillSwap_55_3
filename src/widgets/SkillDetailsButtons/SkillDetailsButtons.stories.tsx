@@ -24,6 +24,13 @@ export const Offer: Story = {
     variant: 'offer',
     onOffer: () => alert('Предложить обмен'),
   },
+  decorators: [
+  (Story) => (
+    <div style={{ width: '400px' }}>
+      <Story />
+    </div>
+  ),
+],
 };
 
 export const Edit: Story = {
@@ -32,13 +39,27 @@ export const Edit: Story = {
     onEdit: () => alert('Редактировать'),
     onDone: () => alert('Готово'),
   },
-};
+  decorators: [
+    (Story) => (
+      <div style={{ width: '420px' }}>
+        <Story />
+      </div>
+    ),
+  ],
+}
 
 export const OfferDisabled: Story = {
   args: {
     variant: 'offer',
     disabled: true,
   },
+  decorators: [
+  (Story) => (
+    <div style={{ width: '400px' }}>
+      <Story />
+    </div>
+  ),
+],
 };
 
 export const EditDisabled: Story = {
@@ -46,29 +67,36 @@ export const EditDisabled: Story = {
     variant: 'edit',
     disabled: true,
   },
-};
+  decorators: [
+    (Story) => (
+      <div style={{ width: '420px' }}>
+        <Story />
+      </div>
+    ),
+  ],
+}
 
 export const BothStates: Story = {
   render: () => (
-    <div style={{ 
-      display: 'flex', 
-      gap: '40px', 
-      alignItems: 'flex-start', 
-      flexWrap: 'wrap' 
+    <div style={{
+      display: 'flex',
+      gap: '40px',
+      alignItems: 'flex-start',
+      flexWrap: 'wrap'
       }}
     >
-      <div style={{ 
+      <div style={{
         display: 'flex',
         flexDirection: 'column',
         gap: '8px',
         width: '400px',
         }}
       >
-        <span style={{ 
+        <span style={{
           fontSize: '12px',
           color: '#69735D'
           }}>
-            Edit/Done</span>
+            Offer</span>
 
         <SkillDetailsButtons
           variant="offer"
@@ -76,9 +104,9 @@ export const BothStates: Story = {
         />
       </div>
 
-      <div style={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
         gap: '8px',
         width: '420px',
         }}
@@ -86,7 +114,7 @@ export const BothStates: Story = {
         <span style={{ fontSize: '12px', color: '#69735D' }}>
           Edit / Done
           </span>
-          
+
         <SkillDetailsButtons
           variant="edit"
           onEdit={() => alert('Редактировать')}

@@ -40,7 +40,7 @@ export const SkillDetailsButtons: React.FC<SkillDetailsButtonsProps> = ({
   }
 
   return (
-    <div className={clsx(styles.container, styles.containerEdit, className)}>
+    <div className={clsx(styles.container, className)}>
       <Button
         variant="secondary"
         size="md"
