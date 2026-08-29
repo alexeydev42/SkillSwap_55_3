@@ -16,11 +16,11 @@
   transform: translate(-50%, -50%);
   inline-size: 90%;
   max-inline-size: 556px;
+  padding: var(--space-20) var(--space-60);
   max-block-size: 90vh;
   background-color: var(--color-surface);
   font-size: var(--font-size-body);
   color: var(--color-text);
-  padding: var(--space-32);
   overflow-y: auto;
   border: none;
   border-radius: var(--radius-md);

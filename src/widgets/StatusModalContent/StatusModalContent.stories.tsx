@@ -13,7 +13,14 @@ const meta: Meta<typeof StatusModalContent> = {
   },
   decorators: [
     (Story) => (
-      <div style={{ width: '556px' }}>
+      <div
+        style={{
+          width: '556px',
+          padding: '20px 60px',
+          // выделил цветом фон для видимости
+          backgroundColor: '#fffff8',
+        }}
+      >
         <Story />
       </div>
     ),
@@ -26,9 +33,20 @@ type Story = StoryObj<typeof StatusModalContent>
 
 export const Success: Story = {
   args: {
-    icon: userCircleIcon,
+    src: userCircleIcon,
     title: 'Ваше предложение создано',
     text: 'Теперь вы можете предложить обмен',
     buttonText: 'Продолжить',
+    onButtonClick: () => {},
+  },
+}
+
+export const WithoutIcon: Story = {
+  args: {
+    src: 'wrongIcon.svg',
+    title: 'Ваше предложение создано',
+    text: 'Теперь вы можете предложить обмен',
+    buttonText: 'Продолжить',
+    onButtonClick: () => {},
   },
 }
