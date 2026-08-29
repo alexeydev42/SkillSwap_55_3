@@ -4,7 +4,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-block: var(--space-40);
 }
 
 .modal-content__icon-wrapper {
@@ -41,4 +40,9 @@
 .modal-content__button {
   margin-top: var(--space-32);
   inline-size: 100%;
+}
+
+.modal__sizes {
+  max-inline-size: 556px;
+  padding: 62px 60px;
 }

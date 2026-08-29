@@ -3,6 +3,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { StatusModalContent } from './StatusModalContent'
 
 import userCircleIcon from '@/shared/assets/icons/icon-user-circle.svg'
+import { Modal } from '@/shared/ui/Modal'
+import styles from './StatusModalContent.module.css'
 
 const meta: Meta<typeof StatusModalContent> = {
   title: 'Shared/StatusModalContent',
@@ -49,4 +51,15 @@ export const WithoutIcon: Story = {
     buttonText: 'Продолжить',
     onButtonClick: () => {},
   },
+}
+
+export const WithContent: Story = {
+  render: () => (
+    <Modal className={styles['modal__sizes']}>
+      <StatusModalContent src={''} title='Some Title'
+      text='Some text. Some text. Some text. '
+      buttonText='Button Text'
+      onButtonClick={() => {}} />
+    </Modal>
+  ),
 }

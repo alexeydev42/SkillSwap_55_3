@@ -15,8 +15,6 @@
   left: 50%;
   transform: translate(-50%, -50%);
   inline-size: 90%;
-  max-inline-size: 556px;
-  padding: var(--space-20) var(--space-60);
   max-block-size: 90vh;
   background-color: var(--color-surface);
   font-size: var(--font-size-body);
@@ -29,7 +27,6 @@
 }
 
 .default {
-  inline-size: 90%;
   max-inline-size: 556px;
-  padding: var(--space-20) var(--space-60);
+  padding: var(--space-32);
 }
