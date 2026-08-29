@@ -27,3 +27,9 @@
   box-shadow: 10px 10px 15px rgb(0 0 0 / 10%);
   z-index: 333;
 }
+
+.default {
+  inline-size: 90%;
+  max-inline-size: 556px;
+  padding: var(--space-20) var(--space-60);
+}
