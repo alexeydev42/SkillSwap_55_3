@@ -2,8 +2,18 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { SkillDetails } from './SkillDetails'
 
 const meta: Meta<typeof SkillDetails> = {
-  title: 'entities/Skill/SkillDetails',
+  title: 'Entities/Skill/SkillDetails',
   component: SkillDetails,
+  parameters: {
+    layout: 'centered',
+  },
+  decorators: [
+    (Story) => (
+      <div style={{ width: '420px' }}>
+        <Story />
+      </div>
+    ),
+  ],
   argTypes: {
     title: {
       control: 'text',
@@ -29,20 +39,10 @@ type Story = StoryObj<typeof SkillDetails>
 
 export const Default: Story = {
   args: {
-    title: 'React Development',
-    category: 'Frontend',
-    subcategory: 'JavaScript Frameworks',
+    title: 'Игра на барабанах',
+    category: 'Творчество и искусство',
+    subcategory: 'Музыка и звук',
     description:
-      'Разработка пользовательских интерфейсов с использованием React, включая работу с хуками, контекстом и оптимизацией производительности.',
-  },
-}
-
-export const WithLongDescription: Story = {
-  args: {
-    title: 'Machine Learning',
-    category: 'Data Science',
-    subcategory: 'Artificial Intelligence',
-    description:
-      'Проектирование, разработка и внедрение моделей машинного обучения в production-среду. Включает работу с Python, TensorFlow, PyTorch, оптимизацию моделей, создание пайплайнов обработки данных и мониторинг производительности моделей в реальном времени. Опыт работы с большими объемами данных и распределенными вычислениями.',
+      'Привет! Я играю на барабанах уже больше 10 лет — от репетиций в гараже до выступлений на сцене с живыми группами. Научу основам техники (и как не отбить себе пальцы), играть любимые ритмы и разбирать песни, импровизировать и звучать уверенно даже без паритуры',
   },
 }

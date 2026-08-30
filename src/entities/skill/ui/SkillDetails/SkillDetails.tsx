@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './SkillDetails.module.css'
 
-interface SkillDetailsProps {
+export interface SkillDetailsProps {
   title: string
   category: string
   subcategory: string
