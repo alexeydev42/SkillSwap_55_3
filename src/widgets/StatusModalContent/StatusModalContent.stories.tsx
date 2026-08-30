@@ -1,10 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
 import DoneIcon from '@/shared/assets/icons/icon-done.svg?react'
-import { Modal } from '@/shared/ui/Modal'
 
 import { StatusModalContent } from './StatusModalContent'
-import styles from './StatusModalContent.module.css'
 
 const meta: Meta<typeof StatusModalContent> = {
   title: 'Widgets/StatusModalContent',
@@ -34,18 +32,4 @@ export const Success: Story = {
     buttonText: 'Готово',
     onButtonClick: () => {},
   },
-}
-
-export const WithContent: Story = {
-  render: () => (
-    <Modal className={styles['modal__sizes']}>
-      <StatusModalContent
-        icon={<DoneIcon />}
-        title="Ваше предложение создано"
-        text="Теперь вы можете предложить обмен"
-        buttonText="Готово"
-        onButtonClick={() => {}}
-      />
-    </Modal>
-  ),
 }
