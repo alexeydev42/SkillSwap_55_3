@@ -15,15 +15,18 @@
   left: 50%;
   transform: translate(-50%, -50%);
   inline-size: 90%;
-  max-inline-size: 556px;
   max-block-size: 90vh;
   background-color: var(--color-surface);
   font-size: var(--font-size-body);
   color: var(--color-text);
-  padding: var(--space-32);
   overflow-y: auto;
   border: none;
   border-radius: var(--radius-md);
   box-shadow: 10px 10px 15px rgb(0 0 0 / 10%);
   z-index: 333;
+}
+
+.default {
+  max-inline-size: 556px;
+  padding: var(--space-32);
 }
