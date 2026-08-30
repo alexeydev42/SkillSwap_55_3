@@ -1,15 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
 
-import { DataPicker } from './DatePicker'
+import { DatePicker } from './DatePicker'
 
 const meta = {
   title: 'Shared/UI/DatePicker',
-  component: DataPicker,
+  component: DatePicker,
   parameters: {
     layout: 'padded',
   },
-} satisfies Meta<typeof DataPicker>
+} satisfies Meta<typeof DatePicker>
 
 export default meta
 
@@ -18,7 +18,7 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   args: {
     label: 'Дата рождения',
-    placeholder: 'ДД.ММ.ГГГГ',
+    placeholder: 'дд.мм.гггг',
   },
 }
 
@@ -30,12 +30,9 @@ export const WithValue: Story = {
 }
 
 export const Open: Story = {
-  parameters: {
-    layout:'padded',
-  },
   args: {
     label: 'Дата рождения',
-    selected: new Date(2026, 7, 24),
+    selected: new Date(2000, 3, 27),
     open: true,
   },
 }
@@ -67,9 +64,9 @@ export const Interactive: Story = {
     const [date, setDate] = useState<Date | null>(null)
 
     return (
-      <DataPicker
+      <DatePicker
         label="Дата рождения"
-        placeholder="ДД.ММ.ГГГГ"
+        placeholder="дд.мм.гггг"
         selected={date}
         onChange={setDate}
       />
