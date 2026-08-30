@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useState, type InputHTMLAttributes } from 'react'
+import { forwardRef, useEffect, useId, useRef, useState, type InputHTMLAttributes } from 'react'
 import DatePickerLibrary from 'react-datepicker'
 import { registerLocale } from 'react-datepicker'
 import { ru } from 'date-fns/locale'
@@ -13,14 +13,16 @@ import { IconButton } from '../IconButton/IconButton'
 
 import styles from './DatePicker.module.css'
 
+// Подключает русские названия месяцев и дней недели в react-datepicker.
 registerLocale('ru', ru)
 
-interface CustomInputProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'value'> {
+// Описывает props поля, которое react-datepicker использует вместо стандартного input.
+interface CustomInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'value'> {
   value?: string
   onClick?: () => void
 }
 
+// Отрисовывает поле даты и отдельную кнопку с иконкой календаря.
 const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
   ({ value, onClick, className, ...props }, ref) => (
     <div className={styles['input-wrapper']}>
@@ -28,6 +30,7 @@ const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
         {...props}
         ref={ref}
         value={value ?? ''}
+        onClick={onClick}
         className={clsx(styles.input, className)}
       />
 
@@ -43,6 +46,7 @@ const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
 
 CustomInput.displayName = 'CustomInput'
 
+// Описывает публичный API компонента DatePicker.
 export interface DatePickerProps {
   label?: string
   placeholder?: string
@@ -57,6 +61,7 @@ export interface DatePickerProps {
   open?: boolean
 }
 
+// Содержит названия месяцев для кастомного переключателя месяца.
 const MONTHS = [
   'Январь',
   'Февраль',
@@ -72,9 +77,23 @@ const MONTHS = [
   'Декабрь',
 ]
 
-export const DataPicker = ({
+// Сопоставляет полные названия дней недели с короткими обозначениями.
+const WEEKDAYS: Record<string, string> = {
+  понедельник: 'Пн',
+  вторник: 'Вт',
+  среда: 'Ср',
+  четверг: 'Чт',
+  пятница: 'Пт',
+  суббота: 'Сб',
+  воскресенье: 'Вс',
+}
+
+// Возвращает короткое русское обозначение дня недели.
+const formatWeekDay = (day: string) => WEEKDAYS[day.toLowerCase()] ?? day
+
+export const DatePicker = ({
   label,
-  placeholder = 'ДД.ММ.ГГГГ',
+  placeholder = 'дд.мм.гггг',
   selected = null,
   onChange,
   minDate,
@@ -85,24 +104,50 @@ export const DataPicker = ({
   className,
   open = false,
 }: DatePickerProps) => {
+  // Хранит выбранную, но ещё не подтверждённую дату и состояние календаря.
   const [draftDate, setDraftDate] = useState<Date | null>(selected)
   const [isOpen, setIsOpen] = useState(open)
 
+  // Управляет отображением выпадающих списков месяца и года.
   const [isMonthPickerOpen, setIsMonthPickerOpen] = useState(false)
   const [isYearPickerOpen, setIsYearPickerOpen] = useState(false)
 
+  // Связывает label с input и хранит ссылку на выбранный год.
+  const inputId = useId()
+  const selectedYearRef = useRef<HTMLButtonElement>(null)
+
+  // Формирует полный диапазон годов с учётом minDate и maxDate.
+  const currentYear = new Date().getFullYear()
+  const minYear = minDate?.getFullYear() ?? currentYear - 120
+  const maxYear = maxDate?.getFullYear() ?? currentYear
+  const years = Array.from({ length: maxYear - minYear + 1 }, (_, index) => minYear + index)
+
+  // Синхронизирует черновую дату с изменениями selected снаружи.
   useEffect(() => {
     setDraftDate(selected)
   }, [selected])
 
+  // Синхронизирует открытое состояние календаря с prop open.
   useEffect(() => {
     setIsOpen(open)
   }, [open])
 
+  // При открытии списка прокручивает его к выбранному году.
+  useEffect(() => {
+    if (isYearPickerOpen) {
+      selectedYearRef.current?.scrollIntoView({
+        block: 'center',
+        inline: 'nearest',
+      })
+    }
+  }, [isYearPickerOpen])
+
+  // Сохраняет выбранную в календаре дату как черновую.
   const handleChange = (date: Date | null) => {
     setDraftDate(date)
   }
 
+  // Отменяет изменения, возвращает исходную дату и закрывает календарь.
   const handleCancel = () => {
     setDraftDate(selected)
     setIsMonthPickerOpen(false)
@@ -110,6 +155,7 @@ export const DataPicker = ({
     setIsOpen(false)
   }
 
+  // Передаёт подтверждённую дату наружу и закрывает календарь.
   const handleConfirm = () => {
     onChange?.(draftDate)
     setIsMonthPickerOpen(false)
@@ -117,6 +163,7 @@ export const DataPicker = ({
     setIsOpen(false)
   }
 
+  // Закрывает только вспомогательные списки месяца и года.
   const closePickers = () => {
     setIsMonthPickerOpen(false)
     setIsYearPickerOpen(false)
@@ -124,7 +171,12 @@ export const DataPicker = ({
 
   return (
     <div className={clsx(styles['date-picker'], className)}>
-      {label && <label className={styles['input-label']}>{label}</label>}
+      {/* Подпись поля, связанная с input через общий id. */}
+      {label && (
+        <label htmlFor={inputId} className={styles['input-label']}>
+          {label}
+        </label>
+      )}
 
       <div
         className={clsx(
@@ -133,7 +185,9 @@ export const DataPicker = ({
           disabled && styles.disabled,
         )}
       >
+        {/* Основной календарь с кастомным полем, заголовком и footer. */}
         <DatePickerLibrary
+          id={inputId}
           selected={draftDate}
           onChange={handleChange}
           locale="ru"
@@ -151,6 +205,7 @@ export const DataPicker = ({
           popperPlacement="bottom-start"
           renderCustomHeader={({ date, changeMonth, changeYear }) => (
             <div className={styles.header}>
+              {/* Открывает список месяцев и показывает текущий месяц. */}
               <button
                 type="button"
                 className={styles['month-selector']}
@@ -164,6 +219,7 @@ export const DataPicker = ({
                 <ChevronDownIcon />
               </button>
 
+              {/* Открывает список годов и показывает текущий год. */}
               <button
                 type="button"
                 className={styles['year-selector']}
@@ -177,6 +233,7 @@ export const DataPicker = ({
                 <ChevronDownIcon />
               </button>
 
+              {/* Позволяет выбрать один из двенадцати месяцев. */}
               {isMonthPickerOpen && (
                 <div className={styles['month-dropdown']}>
                   {MONTHS.map((month, index) => {
@@ -186,10 +243,7 @@ export const DataPicker = ({
                       <button
                         key={month}
                         type="button"
-                        className={clsx(
-                          styles['dropdown-item'],
-                          isCurrentMonth && styles.selected,
-                        )}
+                        className={clsx(styles['dropdown-item'], isCurrentMonth && styles.selected)}
                         onClick={() => {
                           changeMonth(index)
                           closePickers()
@@ -202,20 +256,18 @@ export const DataPicker = ({
                 </div>
               )}
 
+              {/* Позволяет выбрать год из полного допустимого диапазона. */}
               {isYearPickerOpen && (
                 <div className={styles['year-dropdown']}>
-                  {Array.from({ length: 21 }, (_, index) => {
-                    const year = date.getFullYear() - 10 + index
+                  {years.map((year) => {
                     const isCurrentYear = year === date.getFullYear()
 
                     return (
                       <button
                         key={year}
+                        ref={isCurrentYear ? selectedYearRef : undefined}
                         type="button"
-                        className={clsx(
-                          styles['dropdown-item'],
-                          isCurrentYear && styles.selected,
-                        )}
+                        className={clsx(styles['dropdown-item'], isCurrentYear && styles.selected)}
                         onClick={() => {
                           changeYear(year)
                           closePickers()
@@ -229,21 +281,10 @@ export const DataPicker = ({
               )}
             </div>
           )}
-          formatWeekDay={(day) => {
-            const dayMap: Record<string, string> = {
-              понедельник: 'Пн',
-              вторник: 'Вт',
-              среда: 'Ср',
-              четверг: 'Чт',
-              пятница: 'Пт',
-              суббота: 'Сб',
-              воскресенье: 'Вс',
-            }
-
-            return dayMap[day.toLowerCase()] ?? day
-          }}
+          formatWeekDay={formatWeekDay}
           calendarStartDay={1}
         >
+          {/* Кнопки отмены и подтверждения выбранной даты. */}
           <div className={styles.footer}>
             <Button
               variant="secondary"
@@ -266,12 +307,11 @@ export const DataPicker = ({
         </DatePickerLibrary>
       </div>
 
+      {/* Показывает ошибку или вспомогательный текст под полем. */}
       {error ? (
         <span className={styles['error-text']}>{error}</span>
       ) : (
-        helperText && (
-          <span className={styles['helper-text']}>{helperText}</span>
-        )
+        helperText && <span className={styles['helper-text']}>{helperText}</span>
       )}
     </div>
   )

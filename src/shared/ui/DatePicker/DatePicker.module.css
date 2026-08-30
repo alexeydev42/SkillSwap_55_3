@@ -1,40 +1,42 @@
-/* =========================================================
-   Date Picker
-   ========================================================= */
-
+/* Component layout */
 .date-picker {
-  position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--space-8);
+  gap: var(--space-4);
   width: 100%;
 }
 
-/* =========================================================
-   Input
-   ========================================================= */
-
+/* Closed field */
 .input-label {
   color: var(--color-text);
+  font-family: var(--font-body);
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
+  letter-spacing: 0.32px;
 }
 
 .input-container {
   position: relative;
   width: 208px;
-  height: 48px;
+  height: var(--control-height);
+}
+
+.input-container :global(.react-datepicker-wrapper),
+.input-container :global(.react-datepicker__input-container) {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .input-wrapper {
   display: flex;
   align-items: center;
   width: 100%;
-  height: var(--control-height);
+  height: 100%;
   box-sizing: border-box;
   border: 1px solid var(--color-caption);
   border-radius: var(--radius-md);
-  background: var(--color-background);
+  background: var(--color-surface);
 }
 
 .input-wrapper:focus-within {
@@ -51,10 +53,11 @@
 }
 
 .input {
-  width: 100%;
+  min-width: 0;
   height: 100%;
+  flex: 1;
   box-sizing: border-box;
-  padding: 0 var(--space-20);
+  padding: 0 0 0 var(--space-20);
   border: 0;
   outline: none;
   background: transparent;
@@ -62,34 +65,36 @@
   font-family: var(--font-body);
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
+  letter-spacing: 0.32px;
   cursor: pointer;
 }
 
 .input::placeholder {
-  color: var(--color-caption) !important;
-  font-family: var(--font-body) !important;
-  font-size: var(--font-size-caption) !important;
+  color: var(--color-caption);
+  font-family: var(--font-body);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  letter-spacing: 0.32px;
 }
 
 .input:disabled {
+  color: var(--color-disabled-text);
   cursor: not-allowed;
 }
 
 .calendar-button {
-  width: 40px;
-  height: 40px;
-  margin-right: var(--space-8);
+  width: var(--space-40);
+  height: var(--space-40);
+  flex: 0 0 var(--space-40);
+  margin-right: var(--space-4);
   color: var(--color-text);
 }
 
 .calendar-button:hover:not(:disabled) {
-  color: var(--color-accent-hover);
+  color: var(--color-accent-pressed);
 }
 
-/* =========================================================
-   Popup
-   ========================================================= */
-
+/* Popup shell */
 .popper {
   z-index: 10;
 }
@@ -97,35 +102,9 @@
 .popper[data-placement^='bottom'] {
   margin-top: -6px !important;
   padding: 0 !important;
-
 }
 
-.calendar {
-  width: 280px;
-  box-sizing: border-box;
-  padding: 0;
-  border: 1px solid var(--color-caption);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
-  color: var(--color-text);
-  font-family: var(--font-body);
-  box-shadow: 0 8px 24px rgb(37 48 23 / 12%);
-  font-size: var(--font-size-caption);
-
-}
-
-/* =========================================================
-   React DatePicker Library
-   ========================================================= */
-
-/* ---------- Triangle ---------- */
-
-
-.popper :global(.react-datepicker__triangle) {
-  display: none !important;
-  border: 0 !important;
-}
-
+.popper :global(.react-datepicker__triangle),
 .popper :global(.react-datepicker__triangle::before),
 .popper :global(.react-datepicker__triangle::after) {
   display: none !important;
@@ -133,58 +112,48 @@
   border: 0 !important;
 }
 
-
-
-
-
-/* ---------- Header ---------- */
-
-.calendar :global(.react-datepicker__header) {
+.calendar {
+  width: 280px;
+  overflow: hidden;
+  box-sizing: border-box;
   padding: 0;
-  border: 0;
+  border: 1px solid var(--color-caption);
+  border-radius: var(--radius-md);
   background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--font-size-caption);
 }
-
-.calendar :global(.react-datepicker__header--custom) {
-  padding: 0;
-  border: 0;
-  background: var(--color-surface);
-}
-
-/* ---------- Navigation ---------- */
-
-.calendar :global(.react-datepicker__navigation) {
-  display: none;
-}
-
-/* ---------- Calendar Container ---------- */
 
 .calendar :global(.react-datepicker__month-container) {
   width: 100%;
   float: none;
   box-sizing: border-box;
-  padding: 16px 32px;
+  padding: var(--space-16) var(--space-32);
   background: var(--color-surface);
 }
 
+.calendar :global(.react-datepicker__header),
+.calendar :global(.react-datepicker__header--custom) {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.calendar :global(.react-datepicker__navigation),
 .calendar :global(.react-datepicker__aria-live) {
   display: none;
 }
 
-/* =========================================================
-   Custom Header
-   ========================================================= */
-
+/* Custom month and year header */
 .header {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 216px;
-  height: 40px;
-  box-sizing: border-box;
-  margin: 0 auto 16px;
-  gap: var(--space-24);
+  width: 100%;
+  height: var(--space-40);
+  margin: 0;
   background: transparent;
 }
 
@@ -193,53 +162,35 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-4);
-  height: 40px;
-  padding: 0;
+  gap: 0;
+  height: var(--space-40);
+  box-sizing: border-box;
+  padding: var(--space-8) var(--space-8) var(--space-8) var(--space-16);
   border: 0;
+  border-radius: 8px;
   background: transparent;
   color: var(--color-text);
   font-family: var(--font-body);
   font-size: var(--font-size-body);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-regular);
   line-height: var(--line-height-body);
+  letter-spacing: 0.32px;
   cursor: pointer;
 }
 
 .month-selector:hover,
 .year-selector:hover {
-  color: var(--color-accent-pressed);
+  background: var(--color-accent-hover);
 }
 
 .month-selector svg,
 .year-selector svg {
-  width: 16px;
-  height: 16px;
+  width: var(--space-16);
+  height: var(--space-16);
+  flex: 0 0 var(--space-16);
 }
 
-/* =========================================================
-   Month Navigation
-   ========================================================= */
-
-.month-navigation {
-  position: absolute;
-  top: 50%;
-  right: 0;
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  transform: translateY(-50%);
-}
-
-.navigation-button {
-  width: 24px;
-  height: 24px;
-}
-
-/* =========================================================
-   Month / Year Dropdown
-   ========================================================= */
-
+/* Month and year dropdown lists */
 .month-dropdown,
 .year-dropdown {
   position: absolute;
@@ -254,7 +205,6 @@
   border: 1px solid var(--color-caption);
   border-radius: var(--radius-md);
   background: var(--color-surface);
-  box-shadow: 0 8px 24px rgb(37 48 23 / 12%);
 }
 
 .month-dropdown {
@@ -270,9 +220,9 @@
 .dropdown-item {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
   width: 100%;
-  min-height: 36px;
+  min-height: var(--space-36);
+  box-sizing: border-box;
   padding: 0 var(--space-8);
   border: 0;
   border-radius: var(--radius-sm);
@@ -293,13 +243,10 @@
   background: var(--color-accent);
 }
 
-/* =========================================================
-   Weekdays
-   ========================================================= */
-
+/* Weekday row */
 .calendar :global(.react-datepicker__day-names) {
   display: grid;
-  grid-template-columns: repeat(7, 32px);
+  grid-template-columns: repeat(7, var(--space-32));
   width: 224px;
   margin: 0;
 }
@@ -308,41 +255,28 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: var(--space-32);
+  height: var(--space-32);
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
   color: var(--color-accent-pressed);
+  font-family: var(--font-body);
   font-size: var(--font-size-caption);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-regular);
   line-height: var(--line-height-caption);
+  letter-spacing: 0.24px;
 }
 
-.calendar :global(.react-datepicker__sr-only) {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-/* =========================================================
-   Days
-   ========================================================= */
-
+/* Date grid and day states */
 .calendar :global(.react-datepicker__month) {
   width: 100%;
-  margin: var(--space-8) 0 0;
+  margin: 0;
 }
 
 .calendar :global(.react-datepicker__week) {
   display: grid;
-  grid-template-columns: repeat(7, 32px);
+  grid-template-columns: repeat(7, var(--space-32));
   width: 224px;
 }
 
@@ -350,15 +284,18 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: var(--space-32);
+  height: var(--space-32);
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
   border-radius: 50%;
   color: var(--color-text);
+  font-family: var(--font-body);
   font-size: var(--font-size-caption);
-  line-height: var(--line-height-body);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-caption);
+  letter-spacing: 0.24px;
   cursor: pointer;
 }
 
@@ -382,12 +319,12 @@
   font-weight: var(--font-weight-medium);
 }
 
-.calendar :global(.react-datepicker__day--outside-month) {
+.calendar :global(.react-datepicker__day--outside-month),
+.calendar :global(.react-datepicker__day--disabled) {
   color: var(--color-disabled-text);
 }
 
 .calendar :global(.react-datepicker__day--disabled) {
-  color: var(--color-disabled-text);
   cursor: not-allowed;
 }
 
@@ -395,44 +332,55 @@
   background: transparent;
 }
 
-/* =========================================================
-   Footer
-   ========================================================= */
-
+/* Calendar footer */
 .calendar :global(.react-datepicker__children-container) {
   width: 100%;
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
 .footer {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   gap: var(--space-8);
   width: 100%;
-  margin: 0;
-  padding: var(--space-16);
   box-sizing: border-box;
+  margin: 0;
+  padding: 0 var(--space-16) var(--space-16);
 }
 
 .footer-button {
-  width: 100%;
-  min-width: 0;
+  width: auto;
 }
 
-/* =========================================================
-   Error / Helper
-   ========================================================= */
+/* Accessible text hidden visually by react-datepicker */
+.calendar :global(.react-datepicker__sr-only) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+/* Validation and helper messages */
+.error-text,
+.helper-text {
+  font-family: var(--font-body);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
+  letter-spacing: 0.24px;
+}
 
 .error-text {
   color: var(--color-error);
-  font-size: var(--font-size-caption);
-  line-height: var(--line-height-caption);
 }
 
 .helper-text {
   color: var(--color-text);
-  font-size: var(--font-size-caption);
-  line-height: var(--line-height-caption);
 }
