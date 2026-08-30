@@ -1,0 +1,25 @@
+.filter-category-group__sidebar {
+  inline-size: 100%;
+}
+
+.filter-category-group__header {
+  display: flex;
+  inline-size: 100%;
+}
+
+.filter-category-group__header-title {
+  inline-size: 100%;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.filter-category-group__subcategories-wrapper {
+  margin-top: var(--space-12);
+}
+
+.filter-category-group__subcategories-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
