@@ -6,9 +6,7 @@ export const Footer = () => {
     <footer className={styles.footer}>
       <div className={styles.container}>
         <div className={styles.top}>
-          <div className={styles.logo}>
-            <Logo />
-          </div>
+          <Logo />
           <nav className={styles.nav} aria-label="Навигация в подвале">
             <ul className={styles.menu}>
               <li>
@@ -39,9 +37,7 @@ export const Footer = () => {
           </nav>
         </div>
 
-        <div className={styles.bottom}>
-          <span>SkillSwap — 2026</span>
-        </div>
+        <div className={styles.bottom}>SkillSwap — 2026</div>
       </div>
     </footer>
   )

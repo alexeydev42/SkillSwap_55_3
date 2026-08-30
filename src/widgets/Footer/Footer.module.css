@@ -1,21 +1,26 @@
+.footer {
+  width: 100%;
+}
 
 .container {
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin-left: var(--space-36);
+  margin-right: var(--space-36);
 }
 
 .top {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  margin-top: var(--space-32);
 }
 
 .nav {
   display: grid;
-  grid-template-columns: repeat(3, auto);
+  grid-template-columns: repeat(3, 324px);
   gap: var(--space-24);
-  margin-top: 92px;
-  margin-bottom: 80px;
-  margin-right: 36px;
+  margin-top: var(--space-60);
   font-size: var(--font-size-body);
   font-family: var(--font-body);
   font-weight: var(--font-weight-regular);
@@ -25,11 +30,10 @@
 }
 
 .menu {
-  width: 324px;
-  height: 60px;
   display: flex;
   flex-direction: column;
   gap: var(--space-12);
+  list-style: none;
 }
 
 .menu a {
@@ -37,9 +41,8 @@
 }
 
 .bottom {
-  position: absolute;
-  bottom: 32px;
-  left: 36px;
+  margin-top:var(--space-48);
+  margin-bottom: var(--space-32);
   font-size: var(--font-size-caption);
   font-family: var(--font-body);
   font-weight: var(--font-weight-regular);
@@ -48,7 +51,3 @@
   color: var(--color-caption);
 }
 
-.logo {
-  margin-top: var(--space-32) ;
-  margin-left: var(--space-36);
-}
