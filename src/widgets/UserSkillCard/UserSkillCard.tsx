@@ -4,7 +4,7 @@ import { SkillTagsBlock } from '@/entities/skill/ui/SkillTagsBlock';
 import type { SkillTagVariant } from '@/shared/ui/SkillTag/SkillTag';
 import { UserInfo } from '@/entities/user/ui/UserInfo';
 
-interface UserSkillCardData {
+export interface UserSkillCardData {
   name: string
   city: string
   age: number
@@ -13,7 +13,7 @@ interface UserSkillCardData {
   learnTags: { label: string; variant: SkillTagVariant }[]
 }
 
-interface UserSkillCardProps {
+export interface UserSkillCardProps {
   user: UserSkillCardData
   onFavoriteClick: () => void
   onDetailsClick: () => void
