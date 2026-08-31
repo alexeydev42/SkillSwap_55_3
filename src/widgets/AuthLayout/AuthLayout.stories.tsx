@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { AuthLayout } from './AuthLayout'
 import { AuthInfoBlockProps } from '../AuthInfoBlock'
 import { RegistrationProgress } from '../RegistrationProgress'
