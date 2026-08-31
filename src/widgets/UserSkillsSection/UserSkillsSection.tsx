@@ -27,6 +27,7 @@ export const UserSkillsSection = ({title, items, showViewAll, onFavoriteClick, o
                     user={item}
                     onFavoriteClick={() => onFavoriteClick(item.id)}
                     onDetailsClick={() => onDetailsClick(item.id)}
+                    className={styles.card}
                     />
                 ))}
             </div>
