@@ -1,0 +1,1 @@
+export { AppliedFiltersBar } from './AppliedFiltersBar'
