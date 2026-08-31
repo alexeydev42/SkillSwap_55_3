@@ -87,7 +87,7 @@ export const Header: FC<HeaderProps> = (props) => {
         </div>
       </nav>
 
-      <SearchInput className={styles.search} noBorder />
+      <SearchInput className={styles.search} borderless />
 
       <div className={styles.right}>
         <IconButton

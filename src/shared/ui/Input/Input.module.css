@@ -63,10 +63,6 @@
   letter-spacing: 0.32px;
 }
 
-.input-wrapper.no-border {
-  border: none;
-}
-
 .input::placeholder {
   color: var(--color-caption);
 }
