@@ -11,6 +11,7 @@ type BaseInputProps = Omit<
   error?: string
   helperText?: string
   className?: string
+  noBorder?: boolean
 
   // Иконка слева от поля ввода.
   icon?: ReactNode
@@ -45,6 +46,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       error,
       helperText,
       className,
+      noBorder,
       disabled,
       icon,
       trailingIcon,
@@ -80,6 +82,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           className={clsx(
             styles['input-wrapper'],
             borderless && styles.borderless,
+            noBorder && styles['no-border'],
             error && styles.error,
             disabled && styles.disabled,
           )}

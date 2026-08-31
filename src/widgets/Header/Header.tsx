@@ -9,12 +9,7 @@ import MoonIcon from '../../shared/assets/icons/icon-moon.svg?react'
 import SunIcon from '../../shared/assets/icons/icon-sun.svg?react'
 import styles from './Header.module.css'
 
-export interface HeaderProps {
-  isAuthenticated: boolean
-  user?: {
-    userName: string
-    avatarSrc: string
-  }
+interface HeaderBaseProps {
   isDark?: boolean
   onToggleTheme?: () => void
   onNotificationsClick?: () => void
@@ -23,16 +18,33 @@ export interface HeaderProps {
   onRegister?: () => void
 }
 
-export const Header: FC<HeaderProps> = ({
-  isAuthenticated,
-  user,
-  isDark = false,
-  onToggleTheme,
-  onNotificationsClick,
-  onFavoritesClick,
-  onLogin,
-  onRegister,
-}) => {
+interface AuthenticatedHeaderProps extends HeaderBaseProps {
+  isAuthenticated: true
+  user: {
+    userName: string
+    avatarSrc: string
+  }
+}
+
+interface GuestHeaderProps extends HeaderBaseProps {
+  isAuthenticated: false
+  user?: never
+}
+
+export type HeaderProps = AuthenticatedHeaderProps | GuestHeaderProps
+
+export const Header: FC<HeaderProps> = (props) => {
+  const {
+    isAuthenticated,
+    user,
+    isDark = false,
+    onToggleTheme,
+    onNotificationsClick,
+    onFavoritesClick,
+    onLogin,
+    onRegister,
+  } = props
+
   const [isSkillsOpen, setIsSkillsOpen] = useState(false)
   const skillsRef = useRef<HTMLDivElement>(null)
 
@@ -75,9 +87,7 @@ export const Header: FC<HeaderProps> = ({
         </div>
       </nav>
 
-      <div className={styles.search}>
-        <SearchInput />
-      </div>
+      <SearchInput className={styles.search} noBorder />
 
       <div className={styles.right}>
         <IconButton
@@ -86,7 +96,7 @@ export const Header: FC<HeaderProps> = ({
           aria-label="Переключить тему"
         />
 
-        {isAuthenticated && user ? (
+        {isAuthenticated ? (
           <UserHeaderControls
             userName={user.userName}
             avatarSrc={user.avatarSrc}
