@@ -17,6 +17,7 @@ export interface UserSkillCardProps {
   user: UserSkillCardData
   onFavoriteClick: () => void
   onDetailsClick: () => void
+  className?: string
 }
 
 function getAgeLabel(age: number): string {
@@ -29,9 +30,9 @@ function getAgeLabel(age: number): string {
   return 'лет'
 }
 
-export const UserSkillCard = ({ user, onFavoriteClick, onDetailsClick }: UserSkillCardProps) => {
+export const UserSkillCard = ({ user, onFavoriteClick, onDetailsClick, className }: UserSkillCardProps) => {
   return (
-    <div className={styles['card']}>
+    <div className={`${styles['card']} ${className ?? styles.default}`}>
       <UserInfo
         avatar={user.avatarUrl ?? ''}
         name={user.name}
