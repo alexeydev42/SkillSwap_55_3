@@ -1,51 +1,15 @@
-import { UserSkillsSection } from './UserSkillsSection';
+import { UserSkillsSection } from './UserSkillsSection'
 
 export default {
   title: 'Widgets/UserSkillsSection',
   component: UserSkillsSection,
-};
+}
 
 export const Popular = {
   args: {
     title: 'Популярное',
     showViewAll: true,
     items: [
-      {
-        id: '1',
-        name: 'Иван',
-        city: 'Санкт-Петербург',
-        age: 34,
-        avatarUrl: 'https://randomuser.me/api/portraits/men/11.jpg',
-        canTeach: { label: 'Игра на барабанах', variant: 'more' },
-        learnTags: [
-          { label: 'Тайм менеджмент', variant: 'more' },
-          { label: 'Медитация', variant: 'health' },
-        ],
-      },
-      {
-        id: '2',
-        name: 'Анна',
-        city: 'Казань',
-        age: 26,
-        avatarUrl: 'https://randomuser.me/api/portraits/women/12.jpg',
-        canTeach: { label: 'Английский язык', variant: 'languages' },
-        learnTags: [
-          { label: 'Тайм менеджмент', variant: 'more' },
-          { label: 'Медитация', variant: 'health' },
-        ],
-      },
-      {
-        id: '3',
-        name: 'Максим',
-        city: 'Москва',
-        age: 23,
-        avatarUrl: 'https://randomuser.me/api/portraits/men/13.jpg',
-        canTeach: { label: 'Бизнес-план', variant: 'business' },
-        learnTags: [
-          { label: 'Тайм менеджмент', variant: 'more' },
-          { label: 'Медитация', variant: 'health' },
-        ],
-      },
       {
         id: '7',
         name: 'Ольга',
@@ -86,49 +50,13 @@ export const Popular = {
     onFavoriteClick: (id: string) => console.log('Избранное:', id),
     onDetailsClick: (id: string) => console.log('Подробнее:', id),
   },
-};
+}
 
 export const New = {
   args: {
     title: 'Новое',
     showViewAll: true,
     items: [
-      {
-        id: '4',
-        name: 'Илона',
-        city: 'Екатеринбург',
-        age: 33,
-        avatarUrl: 'https://randomuser.me/api/portraits/women/14.jpg',
-        canTeach: { label: 'Английский язык', variant: 'languages' },
-        learnTags: [
-          { label: 'Тайм менеджмент', variant: 'more' },
-          { label: 'Медитация', variant: 'health' },
-        ],
-      },
-      {
-        id: '5',
-        name: 'Михаил',
-        city: 'Новосибирск',
-        age: 29,
-        avatarUrl: 'https://randomuser.me/api/portraits/men/15.jpg',
-        canTeach: { label: 'Английский язык', variant: 'languages' },
-        learnTags: [
-          { label: 'Тайм менеджмент', variant: 'more' },
-          { label: 'Медитация', variant: 'health' },
-        ],
-      },
-      {
-        id: '6',
-        name: 'Мария',
-        city: 'Краснодар',
-        age: 21,
-        avatarUrl: 'https://randomuser.me/api/portraits/women/16.jpg',
-        canTeach: { label: 'Английский язык', variant: 'languages' },
-        learnTags: [
-          { label: 'Тайм менеджмент', variant: 'more' },
-          { label: 'Медитация', variant: 'health' },
-        ],
-      },
       {
         id: '10',
         name: 'Артём',
@@ -169,4 +97,50 @@ export const New = {
     onFavoriteClick: (id: string) => console.log('Избранное:', id),
     onDetailsClick: (id: string) => console.log('Подробнее:', id),
   },
-};
+}
+export const HiddenViewAllButton = {
+  args: {
+    title: 'Секция без кнопки',
+    showViewAll: false,
+    items: [
+      {
+        id: '1',
+        name: 'Иван',
+        city: 'Санкт-Петербург',
+        age: 34,
+        avatarUrl: 'https://randomuser.me/api/portraits/men/11.jpg',
+        canTeach: { label: 'Игра на барабанах', variant: 'more' },
+        learnTags: [
+          { label: 'Тайм менеджмент', variant: 'more' },
+          { label: 'Медитация', variant: 'health' },
+        ],
+      },
+      {
+        id: '2',
+        name: 'Анна',
+        city: 'Казань',
+        age: 26,
+        avatarUrl: 'https://randomuser.me/api/portraits/women/12.jpg',
+        canTeach: { label: 'Английский язык', variant: 'languages' },
+        learnTags: [
+          { label: 'Тайм менеджмент', variant: 'more' },
+          { label: 'Медитация', variant: 'health' },
+        ],
+      },
+      {
+        id: '3',
+        name: 'Максим',
+        city: 'Москва',
+        age: 23,
+        avatarUrl: 'https://randomuser.me/api/portraits/men/13.jpg',
+        canTeach: { label: 'Бизнес-план', variant: 'business' },
+        learnTags: [
+          { label: 'Тайм менеджмент', variant: 'more' },
+          { label: 'Медитация', variant: 'health' },
+        ],
+      },
+    ],
+    onFavoriteClick: (id: string) => console.log('Избранное:', id),
+    onDetailsClick: (id: string) => console.log('Подробнее:', id),
+  },
+}
