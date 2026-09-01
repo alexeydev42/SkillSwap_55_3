@@ -1,5 +1,5 @@
 .container {
-  width: 445px; 
+  width: 445px;
   box-sizing: border-box;
 }
 
@@ -67,12 +67,12 @@
   flex-shrink: 0;
   width: 35px;
   height: 35px;
-  color: var(--color-caption);
 }
 
 .iconWrapper svg {
   width: 100%;
   height: 100%;
+  color: var(--color-text);
 }
 
 .iconRead {
@@ -116,12 +116,10 @@
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-caption);
   letter-spacing: 0.02em;
-  color: var(--color-caption);
+  color: var(--color-text);
 }
 
 .buttonWrapper {
   display: flex;
   justify-content: flex-start;
 }
-
-
