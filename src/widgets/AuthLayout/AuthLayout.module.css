@@ -1,10 +1,16 @@
 .main {
   display: flex;
-  min-height: 100vh;
-  background-color: var(--color-background);
-  padding: 0 152px 170px;
   flex-direction: column;
-  width: 100%;
+  min-block-size: calc(100vh - 84px);
+  inline-size: 100%;
+  padding-inline: 152px;
+  background-color: var(--color-background);
+}
+
+.columns {
+  display: flex;
+  flex: 0 0 692px;
+  gap: var(--space-24);
 }
 
 .topContent {
@@ -14,14 +20,7 @@
   line-height: var(--line-height-h2);
   letter-spacing: -0.264px;
   text-align: center;
-  margin-bottom: 32px;
-}
-
-.columns {
-  display: flex;
-  flex: 1;
-  gap: var(--space-24);
-  background-color: var(--color-background);
+  margin-bottom: var(--space-32);
 }
 
 .column {
@@ -34,9 +33,9 @@
 }
 
 .rightColumn {
-  padding: 132px 60px;
+  padding: 132px var(--space-60);
 }
 
 .leftColumn {
-  padding: 40px 60px;
+  padding: var(--space-40) var(--space-60);
 }
