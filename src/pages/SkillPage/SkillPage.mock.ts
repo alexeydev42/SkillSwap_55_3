@@ -114,5 +114,101 @@ export const skillPageMock: SkillPageProps = {
       onFavoriteClick: () => {},
       onDetailsClick: () => {},
     },
+    {
+      user: {
+        name: 'Дмитрий Волков',
+        city: 'Новосибирск',
+        age: 34,
+        avatarUrl: null,
+        canTeach: {
+          label: 'Музыка',
+          variant: 'creative',
+        },
+        learnTags: [
+          {
+            label: 'Рисование',
+            variant: 'creative',
+          },
+          {
+            label: 'Фотография',
+            variant: 'creative',
+          },
+        ],
+      },
+      onFavoriteClick: () => {},
+      onDetailsClick: () => {},
+    },
+    {
+      user: {
+        name: 'Анна Морозова',
+        city: 'Таллин',
+        age: 26,
+        avatarUrl: null,
+        canTeach: {
+          label: 'Вокал',
+          variant: 'creative',
+        },
+        learnTags: [
+          {
+            label: 'Дизайн',
+            variant: 'creative',
+          },
+          {
+            label: 'Английский язык',
+            variant: 'languages',
+          },
+        ],
+      },
+      onFavoriteClick: () => {},
+      onDetailsClick: () => {},
+    },
+    {
+      user: {
+        name: 'Максим Орлов',
+        city: 'Таллин',
+        age: 32,
+        avatarUrl: null,
+        canTeach: {
+          label: 'Программирование',
+          variant: 'languages',
+        },
+        learnTags: [
+          {
+            label: 'Фотография',
+            variant: 'creative',
+          },
+          {
+            label: 'Музыка',
+            variant: 'creative',
+          },
+        ],
+      },
+      onFavoriteClick: () => {},
+      onDetailsClick: () => {},
+    },
+    {
+      user: {
+        name: 'София Белова',
+        city: 'Тарту',
+        age: 28,
+        avatarUrl: null,
+        canTeach: {
+          label: 'Иллюстрация',
+          variant: 'creative',
+        },
+        learnTags: [
+          {
+            label: 'Испанский язык',
+            variant: 'languages',
+          },
+          {
+            label: 'Английский язык',
+            variant: 'languages',
+          },
+        ],
+      },
+      onFavoriteClick: () => {},
+      onDetailsClick: () => {},
+    },
   ],
 }

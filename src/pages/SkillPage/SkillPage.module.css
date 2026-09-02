@@ -9,24 +9,24 @@
   flex-direction: column;
   gap: var(--space-60);
   margin: var(--space-32) var(--space-36) var(--space-60);
-
 }
 
 .content {
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: 324px minmax(0, 1fr);
   gap: var(--space-24);
 }
 
-.userProfileCard{
-  max-width: 324px;
+.userProfileCard {
+  min-width: 0;
 }
 
-.skill{
-display: flex;
+.skill {
+  display: flex;
+  min-width: 0;
   flex-direction: column;
   gap: var(--space-24);
-  padding:var(--space-32) var(--space-48) var(--space-40);
+  padding: var(--space-32) var(--space-48) var(--space-40);
   background-color: var(--color-surface);
 }
 
@@ -37,27 +37,27 @@ display: flex;
   padding-right: var(--space-8);
 }
 
-.skillInfo> :first-child{
-margin-bottom: var(--space-4);
+.skillInfo > :first-child {
+  margin-bottom: var(--space-4);
 }
 
 .skillGalleryBlock {
   display: flex;
-   flex-direction: row;
-   gap: var(--space-60);
-padding-left: var(--space-4);
-padding-right: var(--space-4);
+  flex-direction: row;
+  gap: var(--space-60);
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
 }
 
-.skillGalleryBlock>:first-child{
+.skillGalleryBlock > :first-child {
   padding-left: var(--space-8);
 }
 
-.skillActions{
+.skillActions {
   display: flex;
   justify-content: flex-end;
 }
 
-.footer{
+.footer {
   background-color: var(--color-surface);
 }
