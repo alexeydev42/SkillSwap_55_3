@@ -20,7 +20,7 @@ export interface SkillPageProps {
   similarOffers: UserSkillCardProps[]
 }
 
-export default function SkillPage({
+export function SkillPage({
   user,
   userDescription,
   skills,
@@ -43,6 +43,7 @@ export default function SkillPage({
           <div className={styles.userProfileCard}>
             <UserProfileCard user={user} description={userDescription} skills={skills} />
           </div>
+
           <div className={styles.skill}>
             <div className={styles.skillActions}>
               <SkillActions />
@@ -53,6 +54,7 @@ export default function SkillPage({
                 <SkillDetails {...skill} />
                 <SkillDetailsButtons variant="offer" />
               </div>
+
               <SkillGallery images={gallery} />
             </div>
           </div>
@@ -60,6 +62,7 @@ export default function SkillPage({
 
         <SimilarOffersSection items={similarOffers} />
       </main>
+
       <div className={styles.footer}>
         <Footer />
       </div>
