@@ -79,35 +79,3 @@ export interface Notification {
   requestId: string
   isRead: boolean
 }
-
-// ─── Legacy types ────────────────────────────────────────
-// Временно оставлены до LOGIC-00-B, чтобы существующие API- и auth-заготовки
-// продолжали компилироваться во время перехода на актуальную модель данных.
-
-export type SkillType = 'teach' | 'learn'
-
-export interface Skill {
-  id: string
-  title: string
-  description: string
-  type: SkillType
-  category: string
-  tags: string[]
-  imageUrl: string | null
-  authorId: string
-  createdAt: string
-}
-
-export type RequestStatus =
-  | 'pending'
-  | 'accepted'
-  | 'rejected'
-  | 'inProgress'
-  | 'done'
-
-export interface AuthUser {
-  id: string
-  name: string
-  email: string
-  token: string
-}
