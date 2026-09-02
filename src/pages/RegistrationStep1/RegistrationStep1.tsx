@@ -28,31 +28,51 @@ export const RegistrationStep1 = ({ emailValue, passwordValue, emailError, passw
         description: 'Присоединяйтесь к SkillSwap и обменивайтесь знаниями и навыками с другими людьми',
       }}
     >
-      <div className={styles.form}>
-        <Button variant="secondary" icon={<GoogleIcon />}>Продолжить с Google</Button>
-        <Button variant="secondary" icon={<AppleIcon />}>Продолжить с Apple</Button>
-        <span className={styles.divider}>или</span>
-        <Input
-          type='email'
-          label='Email'
-          placeholder='Введите email'
-          defaultValue={emailValue}
-          error={emailError}
-        />
-        <Input
-          type='password'
-          label='Пароль'
-          placeholder='Придумайте надёжный пароль'
-          defaultValue={passwordValue}
-          error={passwordError}
-          helperText={!passwordError ? 'Надёжный' : undefined}
-          showPasswordIcon={<EyeIcon />}
-          hidePasswordIcon={<EyeSlashIcon />}
-        />
-        <span className={styles.passwordHint}>Пароль должен содержать не менее 8 знаков</span>
-        <Button variant="primary">Далее</Button>
-      </div>
+      <form className={styles.form} onSubmit={(event) => event.preventDefault()}>
+        <div className={styles.formContent}>
+          <div className={styles.socialButtons}>
+            <Button variant="secondary" icon={<GoogleIcon />} className={styles.socialButton}>
+              Продолжить с Google
+            </Button>
+            <Button variant="secondary" icon={<AppleIcon />} className={styles.socialButton}>
+              Продолжить с Apple
+            </Button>
+          </div>
 
+          <div className={styles.divider}>
+            <span>или</span>
+          </div>
+
+          <div className={styles.inputs}>
+            <Input
+              type="email"
+              label="Email"
+              placeholder="Введите email"
+              defaultValue={emailValue}
+              error={emailError}
+            />
+
+            <div className={styles.passwordField}>
+              <Input
+                type="password"
+                label="Пароль"
+                placeholder="Придумайте надёжный пароль"
+                defaultValue={passwordValue}
+                error={passwordError}
+                helperText={passwordError ? undefined : 'Надёжный'}
+                helperTextTone="success"
+                showPasswordIcon={<EyeIcon />}
+                hidePasswordIcon={<EyeSlashIcon />}
+              />
+              <span className={styles.passwordHint}>Пароль должен содержать не менее 8 знаков</span>
+            </div>
+          </div>
+        </div>
+
+        <Button type="submit" variant="primary">
+          Далее
+        </Button>
+      </form>
     </AuthLayout>
   )
 }
