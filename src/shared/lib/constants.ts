@@ -21,7 +21,8 @@ export const SKILL_CATEGORIES = [
 ] as const
 
 export const LOCAL_STORAGE_KEYS = {
-  AUTH_USER: 'skillswap_auth_user',
+  AUTH_ACCOUNT: 'skillswap_auth_account',
+  AUTH_SESSION: 'skillswap_auth_session',
   FAVORITES: 'skillswap_favorites',
   REQUESTS: 'skillswap_requests',
   THEME: 'skillswap_theme',
