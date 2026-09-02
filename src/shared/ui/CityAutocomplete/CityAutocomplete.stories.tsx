@@ -15,16 +15,28 @@ export default meta
 type Story = StoryObj<typeof CityAutocomplete>
 
 export const Default: Story = {
+  render: (args) => {
+    const [value, setValue] = useState('')
+
+    return (
+      <div style={{ width: '436px' }}>
+        <CityAutocomplete
+          {...args}
+          value={value}
+          onChange={setValue}
+        />
+      </div>
+    )
+  },
   args: {
-    value: '',
     placeholder: 'Введите город',
   },
 }
 
-export const WithDropdown: Story = {
+export const WithSelectedCity: Story = {
   render: (args) => {
-    const [value, setValue] = useState('Са')
-    
+    const [value, setValue] = useState('Самара')
+
     return (
       <div style={{ width: '436px' }}>
         <CityAutocomplete
