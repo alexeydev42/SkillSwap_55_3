@@ -18,7 +18,7 @@ export const EmailError = {
 
 export const PasswordError = {
   args: {
-    passwordValue: 'слабыйпароль',
+    passwordValue: 'Слабый пароль',
     passwordError: 'Недостаточно надёжный пароль',
   },
 };
