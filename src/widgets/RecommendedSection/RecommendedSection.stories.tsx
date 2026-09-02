@@ -10,7 +10,7 @@ const items: UserSkillsSectionItem[] = [
     city: 'Кемерово',
     age: 30,
     avatarUrl: 'https://randomuser.me/api/portraits/women/23.jpg',
-    canTeach: { label: 'Игра на барабанах', variant: 'more' },
+    canTeach: { label: 'Игра на барабанах', variant: 'creative' },
     learnTags: [
       { label: 'Тайм менеджмент', variant: 'more' },
       { label: 'Медитация', variant: 'health' },
@@ -24,7 +24,7 @@ const items: UserSkillsSectionItem[] = [
     city: 'Владивосток',
     age: 25,
     avatarUrl: 'https://randomuser.me/api/portraits/women/24.jpg',
-    canTeach: { label: 'Игра на барабанах', variant: 'more' },
+    canTeach: { label: 'Игра на барабанах', variant: 'creative' },
     learnTags: [
       { label: 'Тайм менеджмент', variant: 'more' },
       { label: 'Медитация', variant: 'health' },
@@ -38,7 +38,7 @@ const items: UserSkillsSectionItem[] = [
     city: 'Сочи',
     age: 31,
     avatarUrl: 'https://randomuser.me/api/portraits/women/25.jpg',
-    canTeach: { label: 'Игра на барабанах', variant: 'more' },
+    canTeach: { label: 'Игра на барабанах', variant: 'creative' },
     learnTags: [
       { label: 'Тайм менеджмент', variant: 'more' },
       { label: 'Медитация', variant: 'health' },
@@ -52,7 +52,7 @@ const items: UserSkillsSectionItem[] = [
     city: 'Красноярск',
     age: 28,
     avatarUrl: 'https://randomuser.me/api/portraits/women/26.jpg',
-    canTeach: { label: 'Игра на барабанах', variant: 'more' },
+    canTeach: { label: 'Игра на барабанах', variant: 'creative' },
     learnTags: [
       { label: 'Тайм менеджмент', variant: 'more' },
       { label: 'Медитация', variant: 'health' },
@@ -66,7 +66,7 @@ const items: UserSkillsSectionItem[] = [
     city: 'Иркутск',
     age: 36,
     avatarUrl: 'https://randomuser.me/api/portraits/men/27.jpg',
-    canTeach: { label: 'Игра на барабанах', variant: 'more' },
+    canTeach: { label: 'Игра на барабанах', variant: 'creative' },
     learnTags: [
       { label: 'Тайм менеджмент', variant: 'more' },
       { label: 'Медитация', variant: 'health' },
@@ -80,7 +80,7 @@ const items: UserSkillsSectionItem[] = [
     city: 'Абакан',
     age: 24,
     avatarUrl: 'https://randomuser.me/api/portraits/women/28.jpg',
-    canTeach: { label: 'Игра на барабанах', variant: 'more' },
+    canTeach: { label: 'Игра на барабанах', variant: 'creative' },
     learnTags: [
       { label: 'Тайм менеджмент', variant: 'more' },
       { label: 'Медитация', variant: 'health' },
