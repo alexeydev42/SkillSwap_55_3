@@ -2,6 +2,8 @@ import { forwardRef, InputHTMLAttributes, ReactNode, useId, useState } from 'rea
 import styles from './Input.module.css'
 import clsx from 'clsx'
 
+type HelperTextTone = 'default' | 'success'
+
 type BaseInputProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
   'type' | 'className' | 'value' | 'defaultValue'
@@ -10,6 +12,7 @@ type BaseInputProps = Omit<
   type?: 'text' | 'email' | 'password'
   error?: string
   helperText?: string
+  helperTextTone?: HelperTextTone
   className?: string
 
   // Иконка слева от поля ввода.
@@ -44,6 +47,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       type = 'text',
       error,
       helperText,
+      helperTextTone,
       className,
       disabled,
       icon,
@@ -121,7 +125,16 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {error ? (
           <span className={styles['error-text']}>{error}</span>
         ) : (
-          helperText && <span className={styles['helper-text']}>{helperText}</span>
+          helperText && (
+            <span
+              className={clsx(
+                styles['helper-text'],
+                helperTextTone === 'success' && styles['helper-text-success'],
+              )}
+            >
+              {helperText}
+            </span>
+          )
         )}
       </div>
     )
