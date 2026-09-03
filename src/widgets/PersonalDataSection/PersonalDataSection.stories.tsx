@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { PersonalDataSection } from './PersonalDataSection';
 
-// Используем ту же картинку, что и в AvatarUpload.stories.tsx
+
 const SAMPLE_AVATAR = 'https://picsum.photos/id/64/400/400';
 
 const meta: Meta<typeof PersonalDataSection> = {
@@ -52,7 +52,7 @@ export const WithAvatar: Story = {
       gender: 'female',
       city: 'moscow',
       about: 'Люблю учиться новому, особенно если это можно делать за чаем и в пижаме. Всегда готова пообщаться и обменяться чем-то интересным!',
-      avatar: SAMPLE_AVATAR, // ← та же картинка, что и в AvatarUpload
+      avatar: SAMPLE_AVATAR, 
     },
   },
 };
