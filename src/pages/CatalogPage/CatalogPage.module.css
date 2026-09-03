@@ -38,6 +38,39 @@
   gap: var(--space-24);
 }
 
+.results {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--space-24);
+}
+
+.resultsToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-24);
+}
+
+.resultsTitle {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-h2);
+  color: var(--color-text);
+}
+
+.resultsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-24);
+}
+
+.resultsCard {
+  max-width: none;
+}
+
 .footer {
   background: var(--color-surface);
 }
