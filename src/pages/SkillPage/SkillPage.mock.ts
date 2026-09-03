@@ -1,13 +1,5 @@
 import type { SkillPageProps } from './SkillPage'
 
-import skillImage1 from '../../shared/assets/illustrations/illustration-error-404.svg'
-import skillImage2 from '../../shared/assets/illustrations/illustration-error-500.svg'
-import skillImage3 from '../../shared/assets/illustrations/illustration-light-bulb.svg'
-import skillImage4 from '../../shared/assets/illustrations/illustration-school-board.svg'
-import skillImage5 from '../../shared/assets/illustrations/illustration-user-info.svg'
-
-import avatar from '../../shared/assets/illustrations/illustration-school-board.svg'
-
 const colorPlaceholder = (hex: string) =>
   `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100%25' height='100%25' fill='%23${hex}'/%3E%3C/svg%3E`
 
@@ -61,7 +53,7 @@ skill: {
         name: 'Мария Петрова',
         city: 'Таллин',
         age: 31,
-        avatarUrl: colorPlaceholder('8fb99f'),
+        avatarUrl: null,
         canTeach: {
           label: 'Фотография',
           variant: 'creative',
