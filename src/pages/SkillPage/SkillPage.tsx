@@ -40,22 +40,25 @@ export function SkillPage({
 
       <main className={styles.main}>
         <div className={styles.content}>
-          <div className={styles.userProfileCard}>
+          <aside className={styles.userProfileCard}>
             <UserProfileCard user={user} description={userDescription} skills={skills} />
-          </div>
+          </aside>
 
           <div className={styles.skill}>
             <div className={styles.skillActions}>
               <SkillActions />
             </div>
 
-            <div className={styles.skillGalleryBlock}>
+            <div className={styles.skillContent}>
               <div className={styles.skillInfo}>
                 <SkillDetails {...skill} />
-                <SkillDetailsButtons variant="offer" />
+
+                <SkillDetailsButtons variant="offer" className={styles.offerButton} />
               </div>
 
-              <SkillGallery images={gallery} />
+              <div className={styles.skillGallery}>
+                <SkillGallery images={gallery} />
+              </div>
             </div>
           </div>
         </div>

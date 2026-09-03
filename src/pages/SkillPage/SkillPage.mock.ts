@@ -8,46 +8,52 @@ import skillImage5 from '../../shared/assets/illustrations/illustration-user-inf
 
 import avatar from '../../shared/assets/illustrations/illustration-school-board.svg'
 
+const colorPlaceholder = (hex: string) =>
+  `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100%25' height='100%25' fill='%23${hex}'/%3E%3C/svg%3E`
+
 export const skillPageMock: SkillPageProps = {
   user: {
-    avatar,
-    name: 'Геральд Ривский',
-    city: 'Вызима',
-    age: '35 лет',
+  avatar: colorPlaceholder('7c9cbf'),
+  name: 'Иван',
+  city: 'Санкт-Петербург',
+  age: '34 года',
+},
+
+userDescription:
+  'Привет! Люблю ритм, кофе по утрам и людей, которые не боятся пробовать новое',
+
+skills: {
+  canTeach: {
+    variant: 'creative',
+    label: 'Игра на барабанах',
   },
-
-  userDescription: 'Люблю делиться знаниями и находить людей для полезного обмена навыками.',
-
-  skills: {
-    canTeach: {
-      variant: 'languages',
-      label: 'Английский язык',
+  wantsToLearn: [
+    {
+      variant: 'education',
+      label: 'Тайм менеджмент',
     },
-    wantsToLearn: [
-      {
-        variant: 'creative',
-        label: 'Фотография',
-      },
-      {
-        variant: 'creative',
-        label: 'Дизайн',
-      },
-      {
-        variant: 'languages',
-        label: 'Испанский',
-      },
-    ],
-  },
+    {
+      variant: 'health',
+      label: 'Медитация',
+    },
+  ],
+},
 
-  skill: {
-    title: 'Разговорный английский',
-    category: 'Языки',
-    subcategory: 'Английский',
-    description:
-      'Помогу улучшить разговорный английский, разобраться с грамматикой и увереннее общаться в повседневных ситуациях.',
-  },
+skill: {
+  title: 'Игра на барабанах',
+  category: 'Творчество и искусство',
+  subcategory: 'Музыка и звук',
+  description:
+    'Привет! Я играю на барабанах уже больше 10 лет — от репетиций в гараже до выступлений на сцене с живыми группами. Научу основам техники (и как не отбить себе пальцы), играть любимые ритмы и разбирать песни, импровизировать и звучать уверенно даже без паритуры',
+},
 
-  gallery: [skillImage1, skillImage2, skillImage3, skillImage4, skillImage5],
+  gallery: [
+  colorPlaceholder('8fb99f'),
+  colorPlaceholder('c98b8b'),
+  colorPlaceholder('d6b26e'),
+  colorPlaceholder('9a8cbd'),
+  colorPlaceholder('6e7fa3'),
+],
 
   similarOffers: [
     {
@@ -55,7 +61,7 @@ export const skillPageMock: SkillPageProps = {
         name: 'Мария Петрова',
         city: 'Таллин',
         age: 31,
-        avatarUrl: null,
+        avatarUrl: colorPlaceholder('8fb99f'),
         canTeach: {
           label: 'Фотография',
           variant: 'creative',
@@ -75,7 +81,7 @@ export const skillPageMock: SkillPageProps = {
         name: 'Алексей Смирнов',
         city: 'Таллин',
         age: 27,
-        avatarUrl: null,
+        avatarUrl: colorPlaceholder('c98b8b'),
         canTeach: {
           label: 'Графический дизайн',
           variant: 'creative',
@@ -99,7 +105,7 @@ export const skillPageMock: SkillPageProps = {
         name: 'Елена Кузнецова',
         city: 'Таллин',
         age: 29,
-        avatarUrl: null,
+        avatarUrl: colorPlaceholder('d6b26e'),
         canTeach: {
           label: 'Испанский язык',
           variant: 'languages',
@@ -119,7 +125,7 @@ export const skillPageMock: SkillPageProps = {
         name: 'Дмитрий Волков',
         city: 'Новосибирск',
         age: 34,
-        avatarUrl: null,
+        avatarUrl: colorPlaceholder('9a8cbd'),
         canTeach: {
           label: 'Музыка',
           variant: 'creative',
