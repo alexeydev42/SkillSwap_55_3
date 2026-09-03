@@ -1,0 +1,43 @@
+.page {
+  width: 100%;
+  max-width: 1440px;
+  min-height: 100vh;
+  margin: 0 auto;
+}
+
+.main {
+  margin: var(--space-32) var(--space-36) var(--space-60);
+}
+
+.catalogGrid {
+  display: grid;
+  grid-template-columns: 284px minmax(0, 1fr);
+  gap: var(--space-24);
+  align-items: start;
+}
+
+.filtersCard {
+  padding: var(--space-24);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.filtersTitle {
+  margin: 0 0 var(--space-40);
+  font-family: var(--font-heading);
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-h2);
+  color: var(--color-text);
+}
+
+.sections {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--space-24);
+}
+
+.footer {
+  background: var(--color-surface);
+}
