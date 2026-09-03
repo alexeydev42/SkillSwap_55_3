@@ -1,18 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
 
-import { SKILL_CATEGORIES } from '../../lib/constants'
+import { SelectMultiCheckbox, type SelectMultiCheckboxOption } from './SelectMultiCheckbox'
 
-import {
-  SelectMultiCheckbox,
-  type SelectMultiCheckboxOption,
-} from './SelectMultiCheckbox'
-
-const options: SelectMultiCheckboxOption[] =
-  SKILL_CATEGORIES.map((category) => ({
-    value: category,
-    label: category,
-  }))
+const options: SelectMultiCheckboxOption[] = [
+  { value: 'business-career', label: 'Бизнес и карьера' },
+  { value: 'foreign-languages', label: 'Иностранные языки' },
+  { value: 'home-comfort', label: 'Дом и уют' },
+  { value: 'creativity-art', label: 'Творчество и искусство' },
+  { value: 'education-development', label: 'Образование и развитие' },
+  { value: 'health-lifestyle', label: 'Здоровье и лайфстайл' },
+]
 
 const meta = {
   title: 'Shared/UI/SelectMultiCheckbox',
@@ -35,17 +33,9 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   render: (args) => {
-    const [value, setValue] = useState<string[]>(
-      args.value ?? [],
-    )
+    const [value, setValue] = useState<string[]>(args.value ?? [])
 
-    return (
-      <SelectMultiCheckbox
-        {...args}
-        value={value}
-        onChange={setValue}
-      />
-    )
+    return <SelectMultiCheckbox {...args} value={value} onChange={setValue} />
   },
 }
 
@@ -54,39 +44,20 @@ export const WithLabel: Story = {
     label: 'Навыки',
   },
   render: (args) => {
-    const [value, setValue] = useState<string[]>(
-      args.value ?? [],
-    )
+    const [value, setValue] = useState<string[]>(args.value ?? [])
 
-    return (
-      <SelectMultiCheckbox
-        {...args}
-        value={value}
-        onChange={setValue}
-      />
-    )
+    return <SelectMultiCheckbox {...args} value={value} onChange={setValue} />
   },
 }
 
 export const WithSelectedValues: Story = {
   args: {
-    value: [
-      SKILL_CATEGORIES[0],
-      SKILL_CATEGORIES[1],
-    ],
+    value: ['business-career', 'foreign-languages'],
   },
   render: (args) => {
-    const [value, setValue] = useState<string[]>(
-      args.value ?? [],
-    )
+    const [value, setValue] = useState<string[]>(args.value ?? [])
 
-    return (
-      <SelectMultiCheckbox
-        {...args}
-        value={value}
-        onChange={setValue}
-      />
-    )
+    return <SelectMultiCheckbox {...args} value={value} onChange={setValue} />
   },
 }
 
