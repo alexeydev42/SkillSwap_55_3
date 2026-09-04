@@ -11,8 +11,16 @@ export default meta
 
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {
+export const Created: Story = {
   args: {
+    variant: 'created',
+    onDone: () => console.log('Готово'),
+  },
+}
+
+export const Proposed: Story = {
+  args: {
+    variant: 'proposed',
     onDone: () => console.log('Готово'),
   },
 }
