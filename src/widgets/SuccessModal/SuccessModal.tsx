@@ -23,7 +23,7 @@ const CONTENT: Record<SuccessModalVariant, { icon: ReactNode; title: string; tex
   proposed: {
     icon: <NotificationIcon />,
     title: 'Вы предложили обмен',
-    text: 'Ваше предложение отправлено. Ожидайте ответа от пользователя',
+    text: 'Теперь дождитесь подтверждения. Вам придёт уведомление',
   },
 }
 
