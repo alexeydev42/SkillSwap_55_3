@@ -12,6 +12,5 @@ export const Default = {
       { id: '2', label: 'Английский' },
     ],
     onRemove: (id: string) => console.log('Удалён фильтр:', id),
-    onReset: () => console.log('Все фильтры сброшены'),
   },
 };

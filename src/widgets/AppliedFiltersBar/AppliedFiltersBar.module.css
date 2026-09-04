@@ -1,27 +1,6 @@
 .filtersBar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-40);
-}
-
-.resetButton {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  font-style: normal;
-  font-weight: var(--font-weight-regular);
-  font-size: var(--font-size-body);
-  line-height: var(--line-height-body);
-  color: var(--color-accent-pressed);
-}
-
-.filters {
-  font-weight: var(--font-weight-medium);
-  font-size: var(--font-size-h2);
-  line-height: var(--line-height-h2);
-  color: var(--color-text);
+  gap: var(--space-8);
 }

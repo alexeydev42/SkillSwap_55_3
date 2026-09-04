@@ -3,37 +3,43 @@ import styles from './FilterCategoryGroup.module.css'
 import { Checkbox } from '@/shared/ui/Checkbox'
 import chevronDown from '../../shared/assets/icons/icon-chevron-down.svg'
 
-interface FilterCategoryGroupProps {
+export interface FilterCategoryGroupProps {
   category: string
   subcategories: string[]
+  checkedSubcategories: string[]
+  onChange: (subcategories: string[]) => void
 }
 
-export const FilterCategoryGroup = ({ category, subcategories }: FilterCategoryGroupProps) => {
+export const FilterCategoryGroup = ({
+  category,
+  subcategories,
+  checkedSubcategories,
+  onChange,
+}: FilterCategoryGroupProps) => {
   const [isOpen, setIsOpen] = useState(false)
 
-  // Храним состояние каждой подкатегории
-  const [checkedSubcategories, setCheckedSubcategories] = useState<Record<string, boolean>>({})
-
   // Вычисляем состояние родительского чекбокса
-  const checkedCount = Object.values(checkedSubcategories).filter(Boolean).length
+  const checkedCount = checkedSubcategories.length
   const isAllChecked = subcategories.length > 0 && checkedCount === subcategories.length
   const isIndeterminate = checkedCount > 0 && !isAllChecked
 
   // Клик по дочернему чекбоксу (e.target.checked - так как VERST-05 пробрасывает нативное событие)
   const handleSubcategoryChange = (subcategory: string, e: React.ChangeEvent<HTMLInputElement>) => {
-    setCheckedSubcategories((prev) => ({
-      ...prev,
-      [subcategory]: e.target.checked,
-    }))
+    if (e.target.checked) {
+      onChange([...checkedSubcategories, subcategory])
+    } else {
+      onChange(checkedSubcategories.filter((item) => item !== subcategory))
+    }
   }
 
   // Клик по родительскому чекбоксу (выделяет/снимает все разом)
   const handleParentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newStates: Record<string, boolean> = {}
-    subcategories.forEach((sub) => {
-      newStates[sub] = e.target.checked
-    })
-    setCheckedSubcategories(newStates)
+    if (e.target.checked) {
+      const allCategories = new Set([...checkedSubcategories, ...subcategories])
+      onChange(Array.from(allCategories))
+    } else {
+      onChange(checkedSubcategories.filter((item) => !subcategories.includes(item)))
+    }
   }
 
   return (
@@ -52,8 +58,7 @@ export const FilterCategoryGroup = ({ category, subcategories }: FilterCategoryG
               checked={isAllChecked}
               indeterminate={isIndeterminate}
               onChange={handleParentChange}
-            />
-          </div>
+            />          </div>
 
           <p className={styles['filter-category-group__header-text']}>{category}</p>
 
@@ -72,7 +77,7 @@ export const FilterCategoryGroup = ({ category, subcategories }: FilterCategoryG
               <Checkbox
                 key={subcategory}
                 label={subcategory}
-                checked={!!checkedSubcategories[subcategory]}
+                checked={checkedSubcategories.includes(subcategory)}
                 onChange={(e) => handleSubcategoryChange(subcategory, e)}
                 className={styles['filter-category-group__subcategories-item']}
               />
