@@ -86,9 +86,20 @@ export const CatalogPage = ({
       <main className={styles.main}>
         <div className={styles.catalogGrid}>
           <div className={styles.filtersCard}>
-            <h2 className={styles.filtersTitle}>
-              Фильтры{selectedFilters.length > 0 && ` (${selectedFilters.length})`}
-            </h2>
+            <div className={styles.filtersHeader}>
+              <h2 className={styles.filtersTitle}>
+                Фильтры{selectedFilters.length > 0 && ` (${selectedFilters.length})`}
+              </h2>
+              {selectedFilters.length > 0 && (
+                <button
+                  type="button"
+                  className={styles.resetButton}
+                  onClick={() => setSelectedFilters([])}
+                >
+                  Сбросить ×
+                </button>
+              )}
+            </div>
             <FiltersSidebar
               categories={categories}
               cities={cities}
@@ -98,19 +109,10 @@ export const CatalogPage = ({
           </div>
           {isFiltered ? (
             <div className={styles.results}>
-              <div className={styles.appliedFiltersWrapper}>
-                <AppliedFiltersBar
-                  filters={appliedFilters}
-                  onRemove={handleRemoveFilter}
-                />
-                <button
-                  type="button"
-                  className={styles.resetButton}
-                  onClick={() => setSelectedFilters([])}
-                >
-                  Сбросить ×
-                </button>
-              </div>
+              <AppliedFiltersBar
+                filters={appliedFilters}
+                onRemove={handleRemoveFilter}
+              />
               <div className={styles.resultsToolbar}>
                 <h2 className={styles.resultsTitle}>
                   Подходящие предложения: {filteredResults.length}

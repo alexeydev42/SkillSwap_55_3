@@ -62,21 +62,26 @@ export function FiltersSidebar({
 
   const handleOfferType = (label: string) => {
     setOfferType(label)
-    if (label !== 'Всё' && label !== 'Не имеет значения') {
-      onChange([...selectedFilters, label])
+    const withoutOfferType = selectedFilters.filter(
+      (item) => !OFFER_TYPES.includes(item) || item === OFFER_TYPES[0],
+    )
+    if (label !== OFFER_TYPES[0]) {
+      onChange([...withoutOfferType, label])
+    } else {
+      onChange(withoutOfferType)
     }
   }
 
   const handleGender = (label: string) => {
     setGender(label)
-    if (label !== 'Всё' && label !== 'Не имеет значения') {
-      onChange([...selectedFilters, label])
+    const withoutGender = selectedFilters.filter(
+      (item) => !GENDERS.includes(item) || item === GENDERS[0],
+    )
+    if (label !== GENDERS[0]) {
+      onChange([...withoutGender, label])
+    } else {
+      onChange(withoutGender)
     }
-  }
-
-  const handleCategoryGroupChange = (subcategories: string[]) => {
-    const otherFilters = selectedFilters.filter((item) => !subcategories.includes(item))
-    onChange([...otherFilters, ...subcategories])
   }
 
   return (
@@ -105,7 +110,12 @@ export function FiltersSidebar({
                 checkedSubcategories={subcategories.filter((sub) =>
                   selectedFilters.includes(sub),
                 )}
-                onChange={handleCategoryGroupChange}
+                onChange={(checked) => {
+                  const otherFilters = selectedFilters.filter(
+                    (item) => !subcategories.includes(item),
+                  )
+                  onChange([...otherFilters, ...checked])
+                }}
               />
             ) : (
               <Checkbox
