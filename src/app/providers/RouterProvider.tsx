@@ -25,6 +25,12 @@ const NotFoundPage = lazy(() =>
   })),
 )
 
+const ServerErrorPage = lazy(() =>
+  import('@/pages/ServerErrorPage').then((module) => ({
+    default: module.ServerErrorPage,
+  })),
+)
+
 export function AppRouter() {
   return (
     <BrowserRouter>
@@ -35,6 +41,10 @@ export function AppRouter() {
           <Route path={ROUTES.FAVORITES} element={<FavoritesPage />} />
           <Route path={ROUTES.LOGIN} element={<LoginPage />} />
           <Route path={ROUTES.REGISTER} element={<LoginPage />} />
+          <Route
+            path={ROUTES.SERVER_ERROR}
+            element={<ServerErrorPage user={skillPageMock.user} />}
+          />
 
           {/* Защищённые маршруты — добавь PrivateRoute обёртку */}
           <Route path={ROUTES.PROFILE} element={<ProfilePage />} />
