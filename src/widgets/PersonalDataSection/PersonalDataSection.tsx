@@ -40,7 +40,7 @@ const CITY_OPTIONS: SelectOption[] = [
 ];
 
 const defaultData: PersonalData = {
-  email: 'Maria@gmail.com',
+  email: 'Mariia@gmail.com',
   name: 'Мария',
   birthDate: new Date(1995, 9, 28),
   gender: 'female',
@@ -69,8 +69,7 @@ export const PersonalDataSection: React.FC<PersonalDataSectionProps> = ({
             label="Почта"
             type="email"
             value={data.email}
-            disabled
-            className={styles.input}
+            disabled={disabled}
           />
           <button
             type="button"
@@ -83,58 +82,45 @@ export const PersonalDataSection: React.FC<PersonalDataSectionProps> = ({
         </div>
 
         {/* Поле «Имя» */}
-        <div className={styles.field}>
           <Input
             label="Имя"
             value={data.name}
             disabled={disabled}
-            className={styles.input}
           />
-        </div>
 
         {/* Строка: Дата рождения + Пол */}
         <div className={styles.row}>
-          <div className={styles.field}>
             <DatePicker
               label="Дата рождения"
               selected={data.birthDate}
               onChange={() => {}}
               disabled={disabled}
             />
-          </div>
-          <div className={styles.field}>
-            <span className={styles.label}>Пол</span>
+
             <Select
+              label='Пол'
               options={GENDER_OPTIONS}
               value={data.gender}
               onChange={() => {}}
               disabled={disabled}
-              className={styles.selectOverride}
             />
-          </div>
         </div>
 
         {/* Поле «Город» */}
-        <div className={styles.field}>
-          <span className={styles.label}>Город</span>
           <Select
+            label='Город'
             options={CITY_OPTIONS}
             value={data.city}
             onChange={() => {}}
             disabled={disabled}
-            className={styles.selectOverride}
           />
-        </div>
 
         {/* Поле «О себе» */}
-        <div className={styles.field}>
           <Textarea
             label="О себе"
             value={data.about}
             disabled={disabled}
-            className={styles.textarea}
-          />
-        </div>
+          /> 
 
         {/* Кнопка «Сохранить» */}
         <Button

@@ -19,22 +19,14 @@ const meta: Meta<typeof PersonalDataSection> = {
           alignItems: 'center',
           minHeight: '100vh',
           background: 'var(--color-background)',
+          padding: '40px',
         }}
       >
-        <div
-          style={{
-            width: '1020px',
-            height: '752px',
-            background: 'var(--color-surface)',
-            boxSizing: 'border-box',
-          }}
-        >
-          <Story />
-        </div>
+        <Story />
       </div>
     ),
   ],
-};
+}
 
 export default meta;
 type Story = StoryObj<typeof PersonalDataSection>;
@@ -46,7 +38,7 @@ export const Default: Story = {
 export const WithAvatar: Story = {
   args: {
     data: {
-      email: 'Maria@gmail.com',
+      email: 'Mariia@gmail.com',
       name: 'Мария',
       birthDate: new Date(1995, 9, 28),
       gender: 'female',
@@ -61,7 +53,7 @@ export const Disabled: Story = {
   args: {
     disabled: true,
     data: {
-      email: 'Maria@gmail.com',
+      email: 'Mariia@gmail.com',
       name: 'Мария',
       birthDate: new Date(1995, 9, 28),
       gender: 'female',
