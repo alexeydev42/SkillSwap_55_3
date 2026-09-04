@@ -8,6 +8,7 @@ export interface UserSkillCardData {
   name: string
   city: string
   age: number
+  gender?: 'male' | 'female'
   avatarUrl: string | null
   canTeach: { label: string; variant: SkillTagVariant }
   learnTags: { label: string; variant: SkillTagVariant }[]

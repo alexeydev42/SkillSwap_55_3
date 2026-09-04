@@ -45,6 +45,32 @@
   gap: var(--space-24);
 }
 
+.appliedFiltersWrapper {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-16);
+}
+
+.resetButton {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  color: var(--color-accent-pressed);
+}
+
+.resetButton:hover {
+  opacity: 0.8;
+}
+
 .resultsToolbar {
   display: flex;
   align-items: center;

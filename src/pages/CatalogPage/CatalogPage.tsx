@@ -22,34 +22,37 @@ export interface CatalogPageProps {
   onDetailsClick: (id: string) => void
 }
 
-const OFFER_AND_GENDER_FILTERS = [
-  'Хочу научиться',
-  'Могу научить',
-  'Мужской',
-  'Женский',
-]
+const DATA_FILTERS = ['Хочу научиться', 'Могу научить', 'Мужской', 'Женский']
 
-/** Фильтрует карточки по навыку и городу. */
+/** Фильтрует карточки по навыку, городу и полу. */
 function filterCards(
   pool: UserSkillsSectionItem[],
   filters: string[],
 ): UserSkillsSectionItem[] {
-  const dataFilters = filters.filter(
-    (filter) => !OFFER_AND_GENDER_FILTERS.includes(filter),
-  )
-  if (dataFilters.length === 0) return pool
+  const hasMale = filters.includes('Мужской')
+  const hasFemale = filters.includes('Женский')
+  const hasGenderFilter = hasMale || hasFemale
 
-  return pool.filter((card) =>
-    dataFilters.some((filter) => {
-      const matchesSkill = card.canTeach.label.includes(filter)
-      const matchesCity = card.city === filter
-      return matchesSkill || matchesCity
-    }),
-  )
+  const dataFilters = filters.filter((f) => !DATA_FILTERS.includes(f))
+
+  return pool.filter((card) => {
+    const matchesData =
+      dataFilters.length === 0 ||
+      dataFilters.some(
+        (f) => card.canTeach.label.includes(f) || card.city === f,
+      )
+
+    const matchesGender =
+      !hasGenderFilter ||
+      (hasMale && card.gender === 'male') ||
+      (hasFemale && card.gender === 'female')
+
+    return matchesData && matchesGender
+  })
 }
 
 function buildAppliedFilters(labels: string[]): Filter[] {
-  return labels.map((label, index) => ({ id: `filter-${index}`, label }))
+  return labels.map((label) => ({ id: label, label }))
 }
 
 export const CatalogPage = ({
@@ -74,7 +77,7 @@ export const CatalogPage = ({
   )
 
   const handleRemoveFilter = (id: string) => {
-    setSelectedFilters((prev) => prev.filter((_, index) => `filter-${index}` !== id))
+    setSelectedFilters((prev) => prev.filter((label) => label !== id))
   }
 
   return (
@@ -83,7 +86,9 @@ export const CatalogPage = ({
       <main className={styles.main}>
         <div className={styles.catalogGrid}>
           <div className={styles.filtersCard}>
-            <h2 className={styles.filtersTitle}>Фильтры</h2>
+            <h2 className={styles.filtersTitle}>
+              Фильтры{selectedFilters.length > 0 && ` (${selectedFilters.length})`}
+            </h2>
             <FiltersSidebar
               categories={categories}
               cities={cities}
@@ -93,15 +98,24 @@ export const CatalogPage = ({
           </div>
           {isFiltered ? (
             <div className={styles.results}>
-              <AppliedFiltersBar
-                filters={appliedFilters}
-                onRemove={handleRemoveFilter}
-              />
+              <div className={styles.appliedFiltersWrapper}>
+                <AppliedFiltersBar
+                  filters={appliedFilters}
+                  onRemove={handleRemoveFilter}
+                />
+                <button
+                  type="button"
+                  className={styles.resetButton}
+                  onClick={() => setSelectedFilters([])}
+                >
+                  Сбросить ×
+                </button>
+              </div>
               <div className={styles.resultsToolbar}>
                 <h2 className={styles.resultsTitle}>
                   Подходящие предложения: {filteredResults.length}
                 </h2>
-                <SortButton />
+                <SortButton onChange={(value) => console.log('Сортировка:', value)} />
               </div>
               <div className={styles.resultsGrid}>
                 {filteredResults.map((item) => (
