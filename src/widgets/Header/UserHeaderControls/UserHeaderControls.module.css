@@ -12,6 +12,7 @@
 
 .icons {
   display: flex;
+  align-items: center;
   gap: var(--space-20);
 }
 
@@ -20,4 +21,10 @@
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
   color: var(--color-text);
+}
+
+/* Связывает положение меню с блоком имени и аватара. */
+.profileWrapper {
+  position: relative;
+  flex-shrink: 0;
 }
