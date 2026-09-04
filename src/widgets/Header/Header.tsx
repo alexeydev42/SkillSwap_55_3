@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, type FC, type MouseEventHandler } from 'react'
+import { useCallback, useState, useRef, useEffect, type FC, type MouseEventHandler } from 'react'
 import { Logo } from '@/shared/ui/Logo'
 import { SearchInput } from '@/shared/ui/SearchInput'
 import { UserHeaderControls } from './UserHeaderControls'
@@ -12,8 +12,10 @@ import styles from './Header.module.css'
 interface HeaderBaseProps {
   isDark?: boolean
   isProfileMenuOpen?: boolean
+  isAllSkillsMenuOpen?: boolean
   onToggleTheme?: () => void
   onProfileClick?: MouseEventHandler<HTMLButtonElement>
+  onAllSkillsMenuOpenChange?: (isOpen: boolean) => void
   onNotificationsClick?: () => void
   onFavoritesClick?: () => void
   onLogin?: () => void
@@ -41,26 +43,48 @@ export const Header: FC<HeaderProps> = (props) => {
     user,
     isDark = false,
     isProfileMenuOpen = false,
+    isAllSkillsMenuOpen,
     onToggleTheme,
     onProfileClick,
+    onAllSkillsMenuOpenChange,
     onNotificationsClick,
     onFavoritesClick,
     onLogin,
     onRegister,
   } = props
 
-  const [isSkillsOpen, setIsSkillsOpen] = useState(false)
+  // Хранит состояние меню, когда Header управляет им самостоятельно.
+  const [internalIsSkillsMenuOpen, setInternalIsSkillsMenuOpen] = useState(false)
   const skillsRef = useRef<HTMLDivElement>(null)
 
+  // Использует внешнее состояние страницы или внутреннее состояние Header.
+  const isSkillsMenuOpen = isAllSkillsMenuOpen ?? internalIsSkillsMenuOpen
+
+  // Обновляет состояние в родительском компоненте или непосредственно в Header.
+  const setIsSkillsMenuOpen = useCallback(
+    (isOpen: boolean) => {
+      if (isAllSkillsMenuOpen !== undefined) {
+        onAllSkillsMenuOpenChange?.(isOpen)
+        return
+      }
+
+      setInternalIsSkillsMenuOpen(isOpen)
+    },
+    [isAllSkillsMenuOpen, onAllSkillsMenuOpenChange],
+  )
+
+  // Закрывает меню при нажатии за пределами его области.
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (skillsRef.current && !skillsRef.current.contains(event.target as Node)) {
-        setIsSkillsOpen(false)
+        setIsSkillsMenuOpen(false)
       }
     }
+
     document.addEventListener('mousedown', handleClickOutside)
+
     return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
+  }, [setIsSkillsMenuOpen])
 
   return (
     <header className={styles.header}>
@@ -74,16 +98,16 @@ export const Header: FC<HeaderProps> = (props) => {
         <div className={styles.skillsWrapper} ref={skillsRef}>
           <button
             className={styles.navLink}
-            onClick={() => setIsSkillsOpen((prev) => !prev)}
+            onClick={() => setIsSkillsMenuOpen(!isSkillsMenuOpen)}
             type="button"
           >
             Все навыки
             <ChevronIcon
-              className={`${styles.chevron} ${isSkillsOpen ? styles.chevronOpen : ''}`}
+              className={`${styles.chevron} ${isSkillsMenuOpen ? styles.chevronOpen : ''}`}
             />
           </button>
 
-          {isSkillsOpen && (
+          {isSkillsMenuOpen && (
             <div className={styles.dropdownPanel}>
               <AllSkillsDropdown />
             </div>

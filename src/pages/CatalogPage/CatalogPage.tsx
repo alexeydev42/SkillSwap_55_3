@@ -12,7 +12,7 @@ import type { FiltersSidebarProps } from '@/widgets/FiltersSidebar'
 
 import styles from './CatalogPage.module.css'
 
-// --- Интерфейсы из feature-ветки (для меню профиля) ---
+// --- Интерфейсы (для меню профиля) ---
 export interface CatalogPageHeaderUser {
   userName: string
   avatarSrc: string
@@ -25,9 +25,10 @@ export interface CatalogPageProps {
   newItems: UserSkillsSectionItem[]
   recommendedItems: UserSkillsSectionItem[]
 
-  // Новые пропсы для профиля
+  // Пропсы для состояний Header
   headerUser?: CatalogPageHeaderUser
   isProfileMenuInitiallyOpen?: boolean
+  isAllSkillsMenuInitiallyOpen?: boolean
 
   onFavoriteClick: (id: string) => void
   onDetailsClick: (id: string) => void
@@ -69,16 +70,20 @@ export const CatalogPage = ({
   recommendedItems,
   headerUser,
   isProfileMenuInitiallyOpen = false,
+  isAllSkillsMenuInitiallyOpen = false,
   onFavoriteClick,
   onDetailsClick,
 }: CatalogPageProps) => {
-  // --- Состояние фильтров (из develop) ---
+  // --- Состояние фильтров ---
   const [selectedFilters, setSelectedFilters] = useState<string[]>([])
 
-  // --- Состояние меню профиля (из feature/verst-54...) ---
+  // --- Состояние меню профиля ---
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(isProfileMenuInitiallyOpen)
 
-  // --- Мемоизация фильтров (из develop) ---
+  // Хранит состояние меню «Все навыки» на странице каталога.
+  const [isAllSkillsMenuOpen, setIsAllSkillsMenuOpen] = useState(isAllSkillsMenuInitiallyOpen)
+
+  // --- Мемоизация фильтров ---
   const isFiltered = selectedFilters.length > 0
   const appliedFilters = useMemo(() => buildAppliedFilters(selectedFilters), [selectedFilters])
   const filteredResults = useMemo(
@@ -90,7 +95,7 @@ export const CatalogPage = ({
     setSelectedFilters((prev) => prev.filter((label) => label !== id))
   }
 
-  // --- Подготовка пропсов для Header (объединение логики) ---
+  // --- Подготовка пропсов для Header ---
   const headerProps: HeaderProps = headerUser
     ? {
         isAuthenticated: true,
@@ -107,7 +112,11 @@ export const CatalogPage = ({
   return (
     <div className={styles.page}>
       {/* Передаем подготовленные пропсы в Header */}
-      <Header {...headerProps} />
+      <Header
+        {...headerProps}
+        isAllSkillsMenuOpen={isAllSkillsMenuOpen}
+        onAllSkillsMenuOpenChange={setIsAllSkillsMenuOpen}
+      />
 
       <main className={styles.main}>
         <div className={styles.catalogGrid}>

@@ -107,18 +107,28 @@ const categories: Category[] = [
   },
 ]
 
+// Распределяет категории по двум колонкам в порядке макета.
+const categoryColumns = [
+  categories.filter((_, index) => index % 2 === 0),
+  categories.filter((_, index) => index % 2 !== 0),
+]
+
 export const AllSkillsDropdown = () => {
   return (
     <DropdownContainer className={styles.dropdown}>
       <div className={styles.grid}>
-        {categories.map((category) => (
-          <CategoryItem
-            key={category.title}
-            icon={category.icon}
-            title={category.title}
-            subcategories={category.subcategories}
-            variant={category.variant}
-          />
+        {categoryColumns.map((column, columnIndex) => (
+          <div className={styles.column} key={columnIndex}>
+            {column.map((category) => (
+              <CategoryItem
+                key={category.title}
+                icon={category.icon}
+                title={category.title}
+                subcategories={category.subcategories}
+                variant={category.variant}
+              />
+            ))}
+          </div>
         ))}
       </div>
     </DropdownContainer>

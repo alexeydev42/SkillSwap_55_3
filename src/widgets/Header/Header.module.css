@@ -30,10 +30,6 @@
   color: var(--color-accent-pressed);
 }
 
-.skillsWrapper {
-  position: relative;
-}
-
 .chevron {
   width: var(--icon-size);
   height: var(--icon-size);
@@ -45,9 +41,10 @@
 }
 
 .dropdownPanel {
+  /* Позиционирует меню относительно всей ширины Header. */
   position: absolute;
-  top: calc(100% + var(--space-8));
-  left: 0;
+  top: calc(100% - 10px);
+  left: var(--space-36);
   z-index: 200;
 }
 

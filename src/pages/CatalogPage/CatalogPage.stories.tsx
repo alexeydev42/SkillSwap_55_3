@@ -45,6 +45,16 @@ export const Default: Story = {
   args: catalogPageMock,
 }
 
+export const AllSkillsMenuOpen: Story = {
+  name: 'Открыто меню «Все навыки»',
+  args: {
+    ...catalogPageMock,
+
+    // Открывает меню при запуске истории.
+    isAllSkillsMenuInitiallyOpen: true,
+  },
+}
+
 export const ProfileMenuOpen: Story = {
   name: 'Открыто меню профиля',
   args: {
