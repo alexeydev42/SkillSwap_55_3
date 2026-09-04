@@ -22,6 +22,8 @@ export interface FilterCategoryData {
 export interface FiltersSidebarProps {
   categories: FilterCategoryData[]
   cities: string[]
+  selectedFilters: string[]
+  onChange: (filters: string[]) => void
   className?: string
 }
 
@@ -35,12 +37,52 @@ const GENDERS = ['Не имеет значения', 'Мужской', 'Женс
  * FilterCategoryGroup (категории с подкатегориями). Собственной вёрстки
  * для этих элементов нет — только контейнеры/заголовки секций.
  *
- * Радиогруппы сделаны управляемыми (useState + checked/onChange), а не
- * через defaultChecked — так исходное выделение всегда предсказуемо.
+ * Компонент управляемый: список выбранных фильтров (навыки + города)
+ * и колбек onChange прокидываются сверху. Радиогруппы (тип предложения, пол)
+ * хранят своё состояние внутри, но при изменении тоже добавляют выбранное
+ * значение в список фильтров через onChange.
  */
-export function FiltersSidebar({ categories, cities, className }: FiltersSidebarProps) {
+export function FiltersSidebar({
+  categories,
+  cities,
+  selectedFilters,
+  onChange,
+  className,
+}: FiltersSidebarProps) {
   const [offerType, setOfferType] = useState(OFFER_TYPES[1])
   const [gender, setGender] = useState(GENDERS[0])
+
+  const toggleFilter = (label: string, checked: boolean) => {
+    if (checked) {
+      onChange([...selectedFilters, label])
+    } else {
+      onChange(selectedFilters.filter((item) => item !== label))
+    }
+  }
+
+  const handleOfferType = (label: string) => {
+    setOfferType(label)
+    const withoutOfferType = selectedFilters.filter(
+      (item) => !OFFER_TYPES.includes(item) || item === OFFER_TYPES[0],
+    )
+    if (label !== OFFER_TYPES[0]) {
+      onChange([...withoutOfferType, label])
+    } else {
+      onChange(withoutOfferType)
+    }
+  }
+
+  const handleGender = (label: string) => {
+    setGender(label)
+    const withoutGender = selectedFilters.filter(
+      (item) => !GENDERS.includes(item) || item === GENDERS[0],
+    )
+    if (label !== GENDERS[0]) {
+      onChange([...withoutGender, label])
+    } else {
+      onChange(withoutGender)
+    }
+  }
 
   return (
     <aside className={clsx(styles.sidebar, className)}>
@@ -51,7 +93,7 @@ export function FiltersSidebar({ categories, cities, className }: FiltersSidebar
             name="offerType"
             label={label}
             checked={offerType === label}
-            onChange={() => setOfferType(label)}
+            onChange={() => handleOfferType(label)}
           />
         ))}
       </div>
@@ -61,9 +103,27 @@ export function FiltersSidebar({ categories, cities, className }: FiltersSidebar
         <div className={styles.categories}>
           {categories.map(({ category, subcategories }) =>
             subcategories && subcategories.length > 0 ? (
-              <FilterCategoryGroup key={category} category={category} subcategories={subcategories} />
+              <FilterCategoryGroup
+                key={category}
+                category={category}
+                subcategories={subcategories}
+                checkedSubcategories={subcategories.filter((sub) =>
+                  selectedFilters.includes(sub),
+                )}
+                onChange={(checked) => {
+                  const otherFilters = selectedFilters.filter(
+                    (item) => !subcategories.includes(item),
+                  )
+                  onChange([...otherFilters, ...checked])
+                }}
+              />
             ) : (
-              <Checkbox key={category} label={category} />
+              <Checkbox
+                key={category}
+                label={category}
+                checked={selectedFilters.includes(category)}
+                onChange={(e) => toggleFilter(category, e.target.checked)}
+              />
             ),
           )}
         </div>
@@ -82,7 +142,7 @@ export function FiltersSidebar({ categories, cities, className }: FiltersSidebar
               name="gender"
               label={label}
               checked={gender === label}
-              onChange={() => setGender(label)}
+              onChange={() => handleGender(label)}
             />
           ))}
         </div>
@@ -92,7 +152,12 @@ export function FiltersSidebar({ categories, cities, className }: FiltersSidebar
         <h3 className={styles.heading}>Город</h3>
         <div className={styles.group}>
           {cities.map((city) => (
-            <Checkbox key={city} label={city} />
+            <Checkbox
+              key={city}
+              label={city}
+              checked={selectedFilters.includes(city)}
+              onChange={(e) => toggleFilter(city, e.target.checked)}
+            />
           ))}
         </div>
         <button type="button" className={styles.showMore}>

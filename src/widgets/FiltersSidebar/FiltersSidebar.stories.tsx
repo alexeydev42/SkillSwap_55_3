@@ -47,5 +47,7 @@ export const Default: Story = {
       { category: 'Дом и уют' },
     ],
     cities: ['Москва', 'Санкт-Петербург', 'Новосибирск', 'Екатеринбург', 'Казань'],
+    selectedFilters: ['Москва'],
+    onChange: () => {},
   },
 }

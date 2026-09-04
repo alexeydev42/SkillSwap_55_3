@@ -20,6 +20,8 @@ const meta: Meta<typeof FilterCategoryGroup> = {
       'Арт-терапия',
       'Декор и DIY',
     ],
+    checkedSubcategories: [],
+    onChange: () => {},
   },
 }
 
