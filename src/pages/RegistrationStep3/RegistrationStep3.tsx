@@ -12,7 +12,6 @@ import SchoolBoardIllustration from '@/shared/assets/illustrations/illustration-
 import styles from './RegistrationStep3.module.css'
 
 const CATEGORIES = [
-  { value: '', label: 'Выберите категорию навыка' },
   { value: 'music', label: 'Музыка' },
   { value: 'languages', label: 'Языки' },
   { value: 'design', label: 'Дизайн' },
@@ -22,7 +21,6 @@ const CATEGORIES = [
 ]
 
 const SUBCATEGORIES = [
-  { value: '', label: 'Выберите подкатегорию навыка' },
   { value: 'guitar', label: 'Гитара' },
   { value: 'piano', label: 'Фортепиано' },
   { value: 'english', label: 'Английский' },
