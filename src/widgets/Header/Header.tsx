@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, type FC } from 'react'
+import { useState, useRef, useEffect, type FC, type MouseEventHandler } from 'react'
 import { Logo } from '@/shared/ui/Logo'
 import { SearchInput } from '@/shared/ui/SearchInput'
 import { UserHeaderControls } from './UserHeaderControls'
@@ -11,7 +11,9 @@ import styles from './Header.module.css'
 
 interface HeaderBaseProps {
   isDark?: boolean
+  isProfileMenuOpen?: boolean
   onToggleTheme?: () => void
+  onProfileClick?: MouseEventHandler<HTMLButtonElement>
   onNotificationsClick?: () => void
   onFavoritesClick?: () => void
   onLogin?: () => void
@@ -38,7 +40,9 @@ export const Header: FC<HeaderProps> = (props) => {
     isAuthenticated,
     user,
     isDark = false,
+    isProfileMenuOpen = false,
     onToggleTheme,
+    onProfileClick,
     onNotificationsClick,
     onFavoritesClick,
     onLogin,
@@ -100,6 +104,8 @@ export const Header: FC<HeaderProps> = (props) => {
           <UserHeaderControls
             userName={user.userName}
             avatarSrc={user.avatarSrc}
+            isProfileMenuOpen={isProfileMenuOpen}
+            onProfileClick={onProfileClick}
             onNotificationsClick={onNotificationsClick}
             onFavoritesClick={onFavoritesClick}
           />

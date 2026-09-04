@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-32);
-  padding: var(--space-12) var(--space-32);
+  padding: var(--space-36) var(--space-36) var(--space-20);
   background: var(--color-background);
   position: sticky;
   top: 0;
@@ -59,7 +59,7 @@
 .right {
   display: flex;
   align-items: center;
-  gap: var(--space-32);
+  gap: var(--space-20);
   margin-left: auto;
   flex-shrink: 0;
 }
