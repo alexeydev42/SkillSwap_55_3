@@ -19,7 +19,11 @@ const ProfilePage = lazy(() => import('@/pages/ProfilePage'))
 const FavoritesPage = lazy(() => import('@/pages/FavoritesPage'))
 const CreateSkillPage = lazy(() => import('@/pages/CreateSkillPage'))
 const LoginPage = lazy(() => import('@/pages/LoginPage'))
-const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
+const NotFoundPage = lazy(() =>
+  import('@/pages/NotFoundPage').then((module) => ({
+    default: module.NotFoundPage,
+  })),
+)
 
 export function AppRouter() {
   return (
