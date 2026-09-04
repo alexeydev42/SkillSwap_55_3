@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 
 import { Footer } from '@/widgets/Footer'
-import { Header } from '@/widgets/Header'
+import { Header, type HeaderProps } from '@/widgets/Header'
 import { FiltersSidebar } from '@/widgets/FiltersSidebar'
 import { RecommendedSection } from '@/widgets/RecommendedSection'
 import { UserSkillsSection, type UserSkillsSectionItem } from '@/widgets/UserSkillsSection'
@@ -12,12 +12,23 @@ import type { FiltersSidebarProps } from '@/widgets/FiltersSidebar'
 
 import styles from './CatalogPage.module.css'
 
+// --- Интерфейсы из feature-ветки (для меню профиля) ---
+export interface CatalogPageHeaderUser {
+  userName: string
+  avatarSrc: string
+}
+
 export interface CatalogPageProps {
   categories: FiltersSidebarProps['categories']
   cities: FiltersSidebarProps['cities']
   popularItems: UserSkillsSectionItem[]
   newItems: UserSkillsSectionItem[]
   recommendedItems: UserSkillsSectionItem[]
+
+  // Новые пропсы для профиля
+  headerUser?: CatalogPageHeaderUser
+  isProfileMenuInitiallyOpen?: boolean
+
   onFavoriteClick: (id: string) => void
   onDetailsClick: (id: string) => void
 }
@@ -25,10 +36,7 @@ export interface CatalogPageProps {
 const DATA_FILTERS = ['Хочу научиться', 'Могу научить', 'Мужской', 'Женский']
 
 /** Фильтрует карточки по навыку, городу и полу. */
-function filterCards(
-  pool: UserSkillsSectionItem[],
-  filters: string[],
-): UserSkillsSectionItem[] {
+function filterCards(pool: UserSkillsSectionItem[], filters: string[]): UserSkillsSectionItem[] {
   const hasMale = filters.includes('Мужской')
   const hasFemale = filters.includes('Женский')
   const hasGenderFilter = hasMale || hasFemale
@@ -38,9 +46,7 @@ function filterCards(
   return pool.filter((card) => {
     const matchesData =
       dataFilters.length === 0 ||
-      dataFilters.some(
-        (f) => card.canTeach.label.includes(f) || card.city === f,
-      )
+      dataFilters.some((f) => card.canTeach.label.includes(f) || card.city === f)
 
     const matchesGender =
       !hasGenderFilter ||
@@ -61,16 +67,20 @@ export const CatalogPage = ({
   popularItems,
   newItems,
   recommendedItems,
+  headerUser,
+  isProfileMenuInitiallyOpen = false,
   onFavoriteClick,
   onDetailsClick,
 }: CatalogPageProps) => {
+  // --- Состояние фильтров (из develop) ---
   const [selectedFilters, setSelectedFilters] = useState<string[]>([])
 
+  // --- Состояние меню профиля (из feature/verst-54...) ---
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(isProfileMenuInitiallyOpen)
+
+  // --- Мемоизация фильтров (из develop) ---
   const isFiltered = selectedFilters.length > 0
-  const appliedFilters = useMemo(
-    () => buildAppliedFilters(selectedFilters),
-    [selectedFilters],
-  )
+  const appliedFilters = useMemo(() => buildAppliedFilters(selectedFilters), [selectedFilters])
   const filteredResults = useMemo(
     () => filterCards(recommendedItems, selectedFilters),
     [recommendedItems, selectedFilters],
@@ -80,9 +90,25 @@ export const CatalogPage = ({
     setSelectedFilters((prev) => prev.filter((label) => label !== id))
   }
 
+  // --- Подготовка пропсов для Header (объединение логики) ---
+  const headerProps: HeaderProps = headerUser
+    ? {
+        isAuthenticated: true,
+        user: headerUser,
+        isProfileMenuOpen,
+        onProfileClick: () => {
+          setIsProfileMenuOpen((isOpen) => !isOpen)
+        },
+      }
+    : {
+        isAuthenticated: false,
+      }
+
   return (
     <div className={styles.page}>
-      <Header isAuthenticated={false} />
+      {/* Передаем подготовленные пропсы в Header */}
+      <Header {...headerProps} />
+
       <main className={styles.main}>
         <div className={styles.catalogGrid}>
           <div className={styles.filtersCard}>
@@ -107,12 +133,11 @@ export const CatalogPage = ({
               onChange={setSelectedFilters}
             />
           </div>
+
           {isFiltered ? (
+            // --- Режим результатов поиска (из develop) ---
             <div className={styles.results}>
-              <AppliedFiltersBar
-                filters={appliedFilters}
-                onRemove={handleRemoveFilter}
-              />
+              <AppliedFiltersBar filters={appliedFilters} onRemove={handleRemoveFilter} />
               <div className={styles.resultsToolbar}>
                 <h2 className={styles.resultsTitle}>
                   Подходящие предложения: {filteredResults.length}
@@ -132,6 +157,7 @@ export const CatalogPage = ({
               </div>
             </div>
           ) : (
+            // --- Режим секций по умолчанию ---
             <div className={styles.sections}>
               <UserSkillsSection
                 title="Популярное"
