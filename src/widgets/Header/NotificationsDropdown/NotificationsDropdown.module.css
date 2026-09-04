@@ -1,125 +1,136 @@
+/* Внешний контейнер и расстояние между секциями. */
 .container {
-  width: 445px;
-  box-sizing: border-box;
+  position: static;
+  z-index: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-40);
+  width: 556px;
+  box-shadow: none;
 }
 
+/* Секция с заголовком и списком уведомлений. */
 .section {
   display: flex;
   flex-direction: column;
+  gap: var(--space-32);
+  width: 100%;
 }
 
-.readSection {
-  margin-top: 27px;
-}
-
+/* Строка с названием секции и текстовой кнопкой. */
 .sectionHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
+  width: 100%;
 }
 
+/* Заголовок секции. */
 .sectionTitle {
-  margin: 0;
+  color: var(--color-text);
   font-family: var(--font-heading);
-  font-size: var(--font-size-h3);
+  font-size: var(--font-size-h2);
   font-weight: var(--font-weight-medium);
   line-height: var(--line-height-h2);
-  letter-spacing: -1.1%;
-  color: var(--color-text);
+  letter-spacing: -0.264px;
   white-space: nowrap;
 }
 
-.actionLink {
-  font-family: var(--font-body);
-  font-size: var(--font-size-caption);
-  font-weight: var(--font-weight-medium);
-  line-height: var(--line-height-caption);
-  letter-spacing: 0.02em;
+/* Кнопки «Прочитать все» и «Очистить». */
+.sectionAction {
   color: var(--color-accent-pressed);
-  cursor: default;
+  font-family: var(--font-body);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-body);
+  letter-spacing: 0.32px;
   white-space: nowrap;
 }
 
+/* Подчёркивание показывает интерактивное состояние кнопки. */
+.sectionAction:hover {
+  text-decoration: underline;
+}
+
+/* Список уведомлений внутри секции. */
 .list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 13px;
+  gap: var(--space-24);
+  width: 100%;
 }
 
+/* Одно уведомление и необязательная кнопка действия. */
 .item {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  align-items: flex-start;
+  gap: var(--space-16);
+  width: 100%;
 }
 
-.itemTop {
+/* Верхняя строка уведомления: сообщение и дата. */
+.itemContent {
   display: flex;
   align-items: flex-start;
-  gap: 5px;
-}
-
-.iconWrapper {
-  display: inline-flex;
-  flex-shrink: 0;
-  width: 35px;
-  height: 35px;
-}
-
-.iconWrapper svg {
+  gap: var(--space-20);
   width: 100%;
-  height: 100%;
-  color: var(--color-text);
 }
 
-.iconRead {
-  color: var(--color-disabled-text);
-}
-
-.textBlock {
+/* Группа иконки и текста уведомления. */
+.message {
+  display: flex;
   flex: 1;
+  align-items: flex-start;
+  gap: var(--space-8);
   min-width: 0;
 }
 
-.title {
-  margin: 0;
-  font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: var(--font-weight-regular);
-  line-height: var(--line-height-h4);
-  letter-spacing: 0.02em;
+/* Иконка уведомления. */
+.icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
   color: var(--color-text);
 }
 
-.date {
+/* Группа основного и вспомогательного текста. */
+.textBlock {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+/* Основной текст уведомления. */
+.title {
+  color: var(--color-text);
   font-family: var(--font-body);
-  font-size: 13px;
+  font-size: var(--font-size-body);
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-body);
-  letter-spacing: 0.02em;
-  color: var(--color-caption);
-  white-space: nowrap;
-  flex-shrink: 0;
+  letter-spacing: 0.32px;
 }
 
-.dateRead {
-  color: var(--color-disabled-text);
-}
-
-.subtitle {
-  margin: 0;
+/* Пояснение под основным текстом. */
+.description {
+  color: var(--color-text);
   font-family: var(--font-body);
-  font-size: 10px;
+  font-size: var(--font-size-caption);
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-caption);
-  letter-spacing: 0.02em;
-  color: var(--color-text);
+  letter-spacing: 0.24px;
 }
 
-.buttonWrapper {
-  display: flex;
-  justify-content: flex-start;
+/* Дата уведомления справа. */
+.date {
+  flex-shrink: 0;
+  color: var(--color-caption);
+  font-family: var(--font-body);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body);
+  letter-spacing: 0.32px;
+  white-space: nowrap;
 }
