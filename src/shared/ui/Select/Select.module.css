@@ -1,4 +1,7 @@
 .root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
   position: relative;
   width: 100%;
   color: var(--color-text);
@@ -6,8 +9,6 @@
 }
 
 .label {
-  display: block;
-  margin-bottom: var(--space-8);
   font-size: var(--font-size-body);
   font-weight: var(--font-weight-medium);
   line-height: var(--line-height-body);
