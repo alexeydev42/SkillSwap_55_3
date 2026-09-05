@@ -12,11 +12,13 @@ import type { FiltersSidebarProps } from '@/widgets/FiltersSidebar'
 
 import styles from './CatalogPage.module.css'
 
-// --- Интерфейсы (для меню профиля) ---
+// Данные авторизованного пользователя для Header.
 export interface CatalogPageHeaderUser {
   userName: string
   avatarSrc: string
 }
+
+type HeaderMenu = 'allSkills' | 'notifications' | 'profile'
 
 export interface CatalogPageProps {
   categories: FiltersSidebarProps['categories']
@@ -28,8 +30,8 @@ export interface CatalogPageProps {
   // Пропсы для состояний Header
   headerUser?: CatalogPageHeaderUser
   isProfileMenuInitiallyOpen?: boolean
+  isNotificationsMenuInitiallyOpen?: boolean
   isAllSkillsMenuInitiallyOpen?: boolean
-
   onFavoriteClick: (id: string) => void
   onDetailsClick: (id: string) => void
 }
@@ -62,6 +64,27 @@ function buildAppliedFilters(labels: string[]): Filter[] {
   return labels.map((label) => ({ id: label, label }))
 }
 
+// Определяет меню, открытое при первом отображении страницы.
+function getInitialHeaderMenu(
+  isProfileMenuOpen: boolean,
+  isNotificationsMenuOpen: boolean,
+  isAllSkillsMenuOpen: boolean,
+): HeaderMenu | null {
+  if (isNotificationsMenuOpen) {
+    return 'notifications'
+  }
+
+  if (isProfileMenuOpen) {
+    return 'profile'
+  }
+
+  if (isAllSkillsMenuOpen) {
+    return 'allSkills'
+  }
+
+  return null
+}
+
 export const CatalogPage = ({
   categories,
   cities,
@@ -70,6 +93,7 @@ export const CatalogPage = ({
   recommendedItems,
   headerUser,
   isProfileMenuInitiallyOpen = false,
+  isNotificationsMenuInitiallyOpen = false,
   isAllSkillsMenuInitiallyOpen = false,
   onFavoriteClick,
   onDetailsClick,
@@ -77,11 +101,14 @@ export const CatalogPage = ({
   // --- Состояние фильтров ---
   const [selectedFilters, setSelectedFilters] = useState<string[]>([])
 
-  // --- Состояние меню профиля ---
-  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(isProfileMenuInitiallyOpen)
-
-  // Хранит состояние меню «Все навыки» на странице каталога.
-  const [isAllSkillsMenuOpen, setIsAllSkillsMenuOpen] = useState(isAllSkillsMenuInitiallyOpen)
+  // Хранит единственное открытое меню Header.
+  const [openHeaderMenu, setOpenHeaderMenu] = useState<HeaderMenu | null>(() =>
+    getInitialHeaderMenu(
+      isProfileMenuInitiallyOpen,
+      isNotificationsMenuInitiallyOpen,
+      isAllSkillsMenuInitiallyOpen,
+    ),
+  )
 
   // --- Мемоизация фильтров ---
   const isFiltered = selectedFilters.length > 0
@@ -95,15 +122,33 @@ export const CatalogPage = ({
     setSelectedFilters((prev) => prev.filter((label) => label !== id))
   }
 
+  // Переключает выбранное меню и закрывает ранее открытое.
+  const toggleHeaderMenu = (menu: HeaderMenu) => {
+    setOpenHeaderMenu((currentMenu) => (currentMenu === menu ? null : menu))
+  }
+
+  // Закрывает только указанное меню, не затрагивая другое.
+  const setHeaderMenuOpen = (menu: HeaderMenu, isOpen: boolean) => {
+    setOpenHeaderMenu((currentMenu) => {
+      if (isOpen) {
+        return menu
+      }
+
+      return currentMenu === menu ? null : currentMenu
+    })
+  }
+
   // --- Подготовка пропсов для Header ---
   const headerProps: HeaderProps = headerUser
     ? {
         isAuthenticated: true,
         user: headerUser,
-        isProfileMenuOpen,
-        onProfileClick: () => {
-          setIsProfileMenuOpen((isOpen) => !isOpen)
-        },
+        isProfileMenuOpen: openHeaderMenu === 'profile',
+        isNotificationsMenuOpen: openHeaderMenu === 'notifications',
+        onProfileClick: () => toggleHeaderMenu('profile'),
+        onProfileMenuClose: () => setHeaderMenuOpen('profile', false),
+        onNotificationsClick: () => toggleHeaderMenu('notifications'),
+        onNotificationsMenuClose: () => setHeaderMenuOpen('notifications', false),
       }
     : {
         isAuthenticated: false,
@@ -114,8 +159,8 @@ export const CatalogPage = ({
       {/* Передаем подготовленные пропсы в Header */}
       <Header
         {...headerProps}
-        isAllSkillsMenuOpen={isAllSkillsMenuOpen}
-        onAllSkillsMenuOpenChange={setIsAllSkillsMenuOpen}
+        isAllSkillsMenuOpen={openHeaderMenu === 'allSkills'}
+        onAllSkillsMenuOpenChange={(isOpen) => setHeaderMenuOpen('allSkills', isOpen)}
       />
 
       <main className={styles.main}>

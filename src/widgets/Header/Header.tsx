@@ -12,11 +12,14 @@ import styles from './Header.module.css'
 interface HeaderBaseProps {
   isDark?: boolean
   isProfileMenuOpen?: boolean
+  isNotificationsMenuOpen?: boolean
   isAllSkillsMenuOpen?: boolean
   onToggleTheme?: () => void
   onProfileClick?: MouseEventHandler<HTMLButtonElement>
+  onProfileMenuClose?: () => void
   onAllSkillsMenuOpenChange?: (isOpen: boolean) => void
   onNotificationsClick?: () => void
+  onNotificationsMenuClose?: () => void
   onFavoritesClick?: () => void
   onLogin?: () => void
   onRegister?: () => void
@@ -43,11 +46,14 @@ export const Header: FC<HeaderProps> = (props) => {
     user,
     isDark = false,
     isProfileMenuOpen = false,
+    isNotificationsMenuOpen = false,
     isAllSkillsMenuOpen,
     onToggleTheme,
     onProfileClick,
+    onProfileMenuClose,
     onAllSkillsMenuOpenChange,
     onNotificationsClick,
+    onNotificationsMenuClose,
     onFavoritesClick,
     onLogin,
     onRegister,
@@ -129,8 +135,11 @@ export const Header: FC<HeaderProps> = (props) => {
             userName={user.userName}
             avatarSrc={user.avatarSrc}
             isProfileMenuOpen={isProfileMenuOpen}
+            isNotificationsMenuOpen={isNotificationsMenuOpen}
             onProfileClick={onProfileClick}
+            onProfileMenuClose={onProfileMenuClose}
             onNotificationsClick={onNotificationsClick}
+            onNotificationsMenuClose={onNotificationsMenuClose}
             onFavoritesClick={onFavoritesClick}
           />
         ) : (

@@ -55,6 +55,19 @@ export const AllSkillsMenuOpen: Story = {
   },
 }
 
+export const NotificationsMenuOpen: Story = {
+  name: 'Открыты уведомления',
+  args: {
+    ...catalogPageMock,
+
+    // Показывает Header авторизованного пользователя.
+    headerUser: mockHeaderUser,
+
+    // Открывает уведомления при запуске истории.
+    isNotificationsMenuInitiallyOpen: true,
+  },
+}
+
 export const ProfileMenuOpen: Story = {
   name: 'Открыто меню профиля',
   args: {
