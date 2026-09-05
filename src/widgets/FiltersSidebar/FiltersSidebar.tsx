@@ -49,7 +49,8 @@ export function FiltersSidebar({
   onChange,
   className,
 }: FiltersSidebarProps) {
-  const [offerType, setOfferType] = useState(OFFER_TYPES[1])
+  // По умолчанию показывает каталог без фильтра по типу предложения.
+  const [offerType, setOfferType] = useState(OFFER_TYPES[0])
   const [gender, setGender] = useState(GENDERS[0])
 
   const toggleFilter = (label: string, checked: boolean) => {
@@ -107,9 +108,7 @@ export function FiltersSidebar({
                 key={category}
                 category={category}
                 subcategories={subcategories}
-                checkedSubcategories={subcategories.filter((sub) =>
-                  selectedFilters.includes(sub),
-                )}
+                checkedSubcategories={subcategories.filter((sub) => selectedFilters.includes(sub))}
                 onChange={(checked) => {
                   const otherFilters = selectedFilters.filter(
                     (item) => !subcategories.includes(item),
