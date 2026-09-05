@@ -15,6 +15,9 @@ type BaseInputProps = Omit<
   helperTextTone?: HelperTextTone
   className?: string
 
+  // Дополнительный класс для внутренней обёртки поля ввода.
+  wrapperClassName?: string
+
   // Иконка слева от поля ввода.
   icon?: ReactNode
 
@@ -49,6 +52,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       helperText,
       helperTextTone,
       className,
+      wrapperClassName,
       disabled,
       icon,
       trailingIcon,
@@ -83,6 +87,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         <div
           className={clsx(
             styles['input-wrapper'],
+            wrapperClassName,
             borderless && styles.borderless,
             error && styles.error,
             disabled && styles.disabled,

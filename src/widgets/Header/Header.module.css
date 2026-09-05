@@ -53,6 +53,11 @@
   max-width: 100%;
 }
 
+.searchField {
+  border: none;
+  background-color: var(--color-surface);
+}
+
 .right {
   display: flex;
   align-items: center;
