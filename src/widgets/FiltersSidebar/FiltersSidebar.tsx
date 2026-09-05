@@ -1,131 +1,152 @@
 import { useState } from 'react'
 import clsx from 'clsx'
 
-import { RadioButton } from '@/shared/ui/RadioButton'
+import type { Category, City } from '@/shared/types'
 import { Checkbox } from '@/shared/ui/Checkbox'
-import { FilterCategoryGroup } from '@/widgets/FilterCategoryGroup'
+import { RadioButton } from '@/shared/ui/RadioButton'
 import ChevronDownIcon from '@/shared/assets/icons/icon-chevron-down.svg?react'
+import { FilterCategoryGroup } from '@/widgets/FilterCategoryGroup'
 
 import styles from './FiltersSidebar.module.css'
 
-export interface FilterCategoryData {
-  /** Название категории навыков. */
-  category: string
-  /**
-   * Подкатегории. Если список непустой — категория рендерится через
-   * FilterCategoryGroup (сворачиваемая группа с чекбоксами внутри).
-   * Если подкатегорий нет — категория рендерится как обычный Checkbox.
-   */
-  subcategories?: string[]
+export type CatalogOfferType = 'all' | 'learning' | 'teaching'
+export type CatalogGender = 'all' | 'male' | 'female'
+
+export interface CatalogFilters {
+  offerType: CatalogOfferType
+  gender: CatalogGender
+  subcategoryIds: string[]
+  cityIds: string[]
 }
 
 export interface FiltersSidebarProps {
-  categories: FilterCategoryData[]
-  cities: string[]
-  selectedFilters: string[]
-  onChange: (filters: string[]) => void
+  categories: Category[]
+  cities: City[]
+  filters: CatalogFilters
+  onChange: (filters: CatalogFilters) => void
   className?: string
 }
 
-const OFFER_TYPES = ['Всё', 'Хочу научиться', 'Могу научить']
-const GENDERS = ['Не имеет значения', 'Мужской', 'Женский']
+export const EMPTY_CATALOG_FILTERS: CatalogFilters = {
+  offerType: 'all',
+  gender: 'all',
+  subcategoryIds: [],
+  cityIds: [],
+}
 
-/**
- * FiltersSidebar (VERST-48) — левая панель фильтров каталога.
- * Все повторяющиеся элементы собраны из готовых компонентов:
- * RadioButton (тип предложения, пол), Checkbox (одиночные категории, город),
- * FilterCategoryGroup (категории с подкатегориями). Собственной вёрстки
- * для этих элементов нет — только контейнеры/заголовки секций.
- *
- * Компонент управляемый: список выбранных фильтров (навыки + города)
- * и колбек onChange прокидываются сверху. Радиогруппы (тип предложения, пол)
- * хранят своё состояние внутри, но при изменении тоже добавляют выбранное
- * значение в список фильтров через onChange.
- */
+const OFFER_TYPES: Array<{
+  value: CatalogOfferType
+  label: string
+}> = [
+  { value: 'all', label: 'Всё' },
+  { value: 'learning', label: 'Хочу научиться' },
+  { value: 'teaching', label: 'Могу научить' },
+]
+
+const GENDERS: Array<{
+  value: CatalogGender
+  label: string
+}> = [
+  { value: 'all', label: 'Не имеет значения' },
+  { value: 'male', label: 'Мужской' },
+  { value: 'female', label: 'Женский' },
+]
+
+const VISIBLE_CITIES_COUNT = 5
+
+// Добавляет или удаляет идентификатор из выбранного списка.
+function toggleId(ids: string[], id: string, checked: boolean): string[] {
+  if (checked) {
+    return ids.includes(id) ? ids : [...ids, id]
+  }
+
+  return ids.filter((currentId) => currentId !== id)
+}
+
 export function FiltersSidebar({
   categories,
   cities,
-  selectedFilters,
+  filters,
   onChange,
   className,
 }: FiltersSidebarProps) {
-  // По умолчанию показывает каталог без фильтра по типу предложения.
-  const [offerType, setOfferType] = useState(OFFER_TYPES[0])
-  const [gender, setGender] = useState(GENDERS[0])
+  // Управляет отображением полного списка городов.
+  const [showAllCities, setShowAllCities] = useState(false)
 
-  const toggleFilter = (label: string, checked: boolean) => {
-    if (checked) {
-      onChange([...selectedFilters, label])
-    } else {
-      onChange(selectedFilters.filter((item) => item !== label))
-    }
+  // Показывает первые пять городов или весь переданный список.
+  const visibleCities = showAllCities ? cities : cities.slice(0, VISIBLE_CITIES_COUNT)
+
+  // Обновляет выбранный тип предложения.
+  const handleOfferTypeChange = (offerType: CatalogOfferType) => {
+    onChange({
+      ...filters,
+      offerType,
+    })
   }
 
-  const handleOfferType = (label: string) => {
-    setOfferType(label)
-    const withoutOfferType = selectedFilters.filter(
-      (item) => !OFFER_TYPES.includes(item) || item === OFFER_TYPES[0],
-    )
-    if (label !== OFFER_TYPES[0]) {
-      onChange([...withoutOfferType, label])
-    } else {
-      onChange(withoutOfferType)
-    }
+  // Обновляет выбранный пол автора.
+  const handleGenderChange = (gender: CatalogGender) => {
+    onChange({
+      ...filters,
+      gender,
+    })
   }
 
-  const handleGender = (label: string) => {
-    setGender(label)
-    const withoutGender = selectedFilters.filter(
-      (item) => !GENDERS.includes(item) || item === GENDERS[0],
+  // Обновляет выбранные подкатегории одной категории.
+  const handleSubcategoriesChange = (category: Category, checkedSubcategoryIds: string[]) => {
+    const categorySubcategoryIds = category.subcategories.map(({ id }) => id)
+
+    const otherSubcategoryIds = filters.subcategoryIds.filter(
+      (id) => !categorySubcategoryIds.includes(id),
     )
-    if (label !== GENDERS[0]) {
-      onChange([...withoutGender, label])
-    } else {
-      onChange(withoutGender)
-    }
+
+    onChange({
+      ...filters,
+      subcategoryIds: [...otherSubcategoryIds, ...checkedSubcategoryIds],
+    })
+  }
+
+  // Добавляет или удаляет выбранный город.
+  const handleCityChange = (cityId: string, checked: boolean) => {
+    onChange({
+      ...filters,
+      cityIds: toggleId(filters.cityIds, cityId, checked),
+    })
   }
 
   return (
     <aside className={clsx(styles.sidebar, className)}>
       <div className={styles.group}>
-        {OFFER_TYPES.map((label) => (
+        {OFFER_TYPES.map(({ value, label }) => (
           <RadioButton
-            key={label}
+            key={value}
             name="offerType"
             label={label}
-            checked={offerType === label}
-            onChange={() => handleOfferType(label)}
+            checked={filters.offerType === value}
+            onChange={() => handleOfferTypeChange(value)}
           />
         ))}
       </div>
 
       <section className={styles.section}>
         <h3 className={styles.heading}>Навыки</h3>
+
         <div className={styles.categories}>
-          {categories.map(({ category, subcategories }) =>
-            subcategories && subcategories.length > 0 ? (
-              <FilterCategoryGroup
-                key={category}
-                category={category}
-                subcategories={subcategories}
-                checkedSubcategories={subcategories.filter((sub) => selectedFilters.includes(sub))}
-                onChange={(checked) => {
-                  const otherFilters = selectedFilters.filter(
-                    (item) => !subcategories.includes(item),
-                  )
-                  onChange([...otherFilters, ...checked])
-                }}
-              />
-            ) : (
-              <Checkbox
-                key={category}
-                label={category}
-                checked={selectedFilters.includes(category)}
-                onChange={(e) => toggleFilter(category, e.target.checked)}
-              />
-            ),
-          )}
+          {categories.map((category) => (
+            <FilterCategoryGroup
+              key={category.id}
+              category={category.name}
+              subcategories={category.subcategories}
+              checkedSubcategoryIds={category.subcategories
+                .map(({ id }) => id)
+                .filter((id) => filters.subcategoryIds.includes(id))}
+              onChange={(checkedSubcategoryIds) =>
+                handleSubcategoriesChange(category, checkedSubcategoryIds)
+              }
+            />
+          ))}
         </div>
+
         <button type="button" className={styles.showMore}>
           Все категории
           <ChevronDownIcon className={styles.showMoreIcon} aria-hidden="true" />
@@ -134,14 +155,15 @@ export function FiltersSidebar({
 
       <section className={styles.section}>
         <h3 className={styles.heading}>Пол автора</h3>
+
         <div className={styles.group}>
-          {GENDERS.map((label) => (
+          {GENDERS.map(({ value, label }) => (
             <RadioButton
-              key={label}
+              key={value}
               name="gender"
               label={label}
-              checked={gender === label}
-              onChange={() => handleGender(label)}
+              checked={filters.gender === value}
+              onChange={() => handleGenderChange(value)}
             />
           ))}
         </div>
@@ -149,20 +171,33 @@ export function FiltersSidebar({
 
       <section className={styles.section}>
         <h3 className={styles.heading}>Город</h3>
+
         <div className={styles.group}>
-          {cities.map((city) => (
+          {visibleCities.map(({ id, name }) => (
             <Checkbox
-              key={city}
-              label={city}
-              checked={selectedFilters.includes(city)}
-              onChange={(e) => toggleFilter(city, e.target.checked)}
+              key={id}
+              label={name}
+              checked={filters.cityIds.includes(id)}
+              onChange={(event) => handleCityChange(id, event.target.checked)}
             />
           ))}
         </div>
-        <button type="button" className={styles.showMore}>
-          Все города
-          <ChevronDownIcon className={styles.showMoreIcon} aria-hidden="true" />
-        </button>
+
+        {cities.length > VISIBLE_CITIES_COUNT && (
+          <button
+            type="button"
+            className={styles.showMore}
+            onClick={() => setShowAllCities((currentValue) => !currentValue)}
+            aria-expanded={showAllCities}
+          >
+            {showAllCities ? 'Скрыть' : 'Все города'}
+
+            <ChevronDownIcon
+              className={clsx(styles.showMoreIcon, showAllCities && styles.showMoreIconExpanded)}
+              aria-hidden="true"
+            />
+          </button>
+        )}
       </section>
     </aside>
   )

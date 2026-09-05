@@ -1,18 +1,32 @@
 import { useMemo, useState } from 'react'
 
+import type { Category, City, User } from '@/shared/types'
 import { Footer } from '@/widgets/Footer'
 import { Header, type HeaderProps } from '@/widgets/Header'
-import { FiltersSidebar } from '@/widgets/FiltersSidebar'
+import {
+  EMPTY_CATALOG_FILTERS,
+  FiltersSidebar,
+  type CatalogFilters,
+} from '@/widgets/FiltersSidebar'
 import { RecommendedSection } from '@/widgets/RecommendedSection'
-import { UserSkillsSection, type UserSkillsSectionItem } from '@/widgets/UserSkillsSection'
-import { AppliedFiltersBar, type Filter } from '@/widgets/AppliedFiltersBar'
+import { UserSkillsSection } from '@/widgets/UserSkillsSection'
+import { AppliedFiltersBar } from '@/widgets/AppliedFiltersBar'
 import { SortButton } from '@/widgets/SortButton'
 import { UserSkillCard } from '@/widgets/UserSkillCard'
-import type { FiltersSidebarProps } from '@/widgets/FiltersSidebar'
+
+import {
+  buildAppliedCatalogFilters,
+  filterCatalogUsers,
+  getActiveCatalogFiltersCount,
+  getNewCatalogUsers,
+  getPopularCatalogUsers,
+  hasActiveCatalogFilters,
+  mapUserToCatalogCard,
+  removeCatalogFilter,
+} from './CatalogPage.utils'
 
 import styles from './CatalogPage.module.css'
 
-// Данные авторизованного пользователя для Header.
 export interface CatalogPageHeaderUser {
   userName: string
   avatarSrc: string
@@ -21,13 +35,9 @@ export interface CatalogPageHeaderUser {
 type HeaderMenu = 'allSkills' | 'notifications' | 'profile'
 
 export interface CatalogPageProps {
-  categories: FiltersSidebarProps['categories']
-  cities: FiltersSidebarProps['cities']
-  popularItems: UserSkillsSectionItem[]
-  newItems: UserSkillsSectionItem[]
-  recommendedItems: UserSkillsSectionItem[]
-
-  // Пропсы для состояний Header
+  users: User[]
+  categories: Category[]
+  cities: City[]
   headerUser?: CatalogPageHeaderUser
   isProfileMenuInitiallyOpen?: boolean
   isNotificationsMenuInitiallyOpen?: boolean
@@ -36,35 +46,7 @@ export interface CatalogPageProps {
   onDetailsClick: (id: string) => void
 }
 
-const DATA_FILTERS = ['Хочу научиться', 'Могу научить', 'Мужской', 'Женский']
-
-/** Фильтрует карточки по навыку, городу и полу. */
-function filterCards(pool: UserSkillsSectionItem[], filters: string[]): UserSkillsSectionItem[] {
-  const hasMale = filters.includes('Мужской')
-  const hasFemale = filters.includes('Женский')
-  const hasGenderFilter = hasMale || hasFemale
-
-  const dataFilters = filters.filter((f) => !DATA_FILTERS.includes(f))
-
-  return pool.filter((card) => {
-    const matchesData =
-      dataFilters.length === 0 ||
-      dataFilters.some((f) => card.canTeach.label.includes(f) || card.city === f)
-
-    const matchesGender =
-      !hasGenderFilter ||
-      (hasMale && card.gender === 'male') ||
-      (hasFemale && card.gender === 'female')
-
-    return matchesData && matchesGender
-  })
-}
-
-function buildAppliedFilters(labels: string[]): Filter[] {
-  return labels.map((label) => ({ id: label, label }))
-}
-
-// Определяет меню, открытое при первом отображении страницы.
+// Определяет меню Header, которое должно быть открыто изначально.
 function getInitialHeaderMenu(
   isProfileMenuOpen: boolean,
   isNotificationsMenuOpen: boolean,
@@ -86,11 +68,9 @@ function getInitialHeaderMenu(
 }
 
 export const CatalogPage = ({
+  users,
   categories,
   cities,
-  popularItems,
-  newItems,
-  recommendedItems,
   headerUser,
   isProfileMenuInitiallyOpen = false,
   isNotificationsMenuInitiallyOpen = false,
@@ -98,8 +78,8 @@ export const CatalogPage = ({
   onFavoriteClick,
   onDetailsClick,
 }: CatalogPageProps) => {
-  // --- Состояние фильтров ---
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([])
+  // Хранит все выбранные фильтры каталога.
+  const [filters, setFilters] = useState<CatalogFilters>(EMPTY_CATALOG_FILTERS)
 
   // Хранит единственное открытое меню Header.
   const [openHeaderMenu, setOpenHeaderMenu] = useState<HeaderMenu | null>(() =>
@@ -110,16 +90,52 @@ export const CatalogPage = ({
     ),
   )
 
-  // --- Мемоизация фильтров ---
-  const isFiltered = selectedFilters.length > 0
-  const appliedFilters = useMemo(() => buildAppliedFilters(selectedFilters), [selectedFilters])
-  const filteredResults = useMemo(
-    () => filterCards(recommendedItems, selectedFilters),
-    [recommendedItems, selectedFilters],
+  // Подготавливает карточки для секции «Популярное».
+  const popularItems = useMemo(
+    () =>
+      getPopularCatalogUsers(users, 3).map((user) =>
+        mapUserToCatalogCard(user, categories, cities),
+      ),
+    [users, categories, cities],
   )
 
-  const handleRemoveFilter = (id: string) => {
-    setSelectedFilters((prev) => prev.filter((label) => label !== id))
+  // Подготавливает карточки для секции «Новое».
+  const newItems = useMemo(
+    () =>
+      getNewCatalogUsers(users, 3).map((user) => mapUserToCatalogCard(user, categories, cities)),
+    [users, categories, cities],
+  )
+
+  // Подготавливает карточки для секции «Рекомендуем».
+  const recommendedItems = useMemo(
+    () => users.map((user) => mapUserToCatalogCard(user, categories, cities)),
+    [users, categories, cities],
+  )
+
+  // Проверяет наличие выбранных фильтров.
+  const isFiltered = useMemo(() => hasActiveCatalogFilters(filters), [filters])
+
+  // Подготавливает чипы выбранных фильтров.
+  const appliedFilters = useMemo(
+    () => buildAppliedCatalogFilters(filters, categories, cities),
+    [filters, categories, cities],
+  )
+
+  // Фильтрует пользователей и преобразует результат в карточки.
+  const filteredResults = useMemo(
+    () =>
+      filterCatalogUsers(users, filters).map((user) =>
+        mapUserToCatalogCard(user, categories, cities),
+      ),
+    [users, filters, categories, cities],
+  )
+
+  // Подсчитывает количество выбранных фильтров.
+  const filtersCount = useMemo(() => getActiveCatalogFiltersCount(filters), [filters])
+
+  // Удаляет один фильтр через панель применённых фильтров.
+  const handleRemoveFilter = (filterId: string) => {
+    setFilters((currentFilters) => removeCatalogFilter(currentFilters, filterId))
   }
 
   // Переключает выбранное меню и закрывает ранее открытое.
@@ -127,7 +143,7 @@ export const CatalogPage = ({
     setOpenHeaderMenu((currentMenu) => (currentMenu === menu ? null : menu))
   }
 
-  // Закрывает только указанное меню, не затрагивая другое.
+  // Открывает или закрывает указанное меню Header.
   const setHeaderMenuOpen = (menu: HeaderMenu, isOpen: boolean) => {
     setOpenHeaderMenu((currentMenu) => {
       if (isOpen) {
@@ -138,7 +154,7 @@ export const CatalogPage = ({
     })
   }
 
-  // --- Подготовка пропсов для Header ---
+  // Подготавливает Header для гостя или авторизованного пользователя.
   const headerProps: HeaderProps = headerUser
     ? {
         isAuthenticated: true,
@@ -156,7 +172,6 @@ export const CatalogPage = ({
 
   return (
     <div className={styles.page}>
-      {/* Передаем подготовленные пропсы в Header */}
       <Header
         {...headerProps}
         isAllSkillsMenuOpen={openHeaderMenu === 'allSkills'}
@@ -168,36 +183,40 @@ export const CatalogPage = ({
           <div className={styles.filtersCard}>
             <div className={styles.filtersHeader}>
               <h2 className={styles.filtersTitle}>
-                Фильтры{selectedFilters.length > 0 && ` (${selectedFilters.length})`}
+                Фильтры{filtersCount > 0 && ` (${filtersCount})`}
               </h2>
-              {selectedFilters.length > 0 && (
+
+              {filtersCount > 0 && (
                 <button
                   type="button"
                   className={styles.resetButton}
-                  onClick={() => setSelectedFilters([])}
+                  onClick={() => setFilters(EMPTY_CATALOG_FILTERS)}
                 >
                   Сбросить ×
                 </button>
               )}
             </div>
+
             <FiltersSidebar
               categories={categories}
               cities={cities}
-              selectedFilters={selectedFilters}
-              onChange={setSelectedFilters}
+              filters={filters}
+              onChange={setFilters}
             />
           </div>
 
           {isFiltered ? (
-            // --- Режим результатов поиска (из develop) ---
             <div className={styles.results}>
               <AppliedFiltersBar filters={appliedFilters} onRemove={handleRemoveFilter} />
+
               <div className={styles.resultsToolbar}>
                 <h2 className={styles.resultsTitle}>
                   Подходящие предложения: {filteredResults.length}
                 </h2>
+
                 <SortButton onChange={(value) => console.log('Сортировка:', value)} />
               </div>
+
               <div className={styles.resultsGrid}>
                 {filteredResults.map((item) => (
                   <UserSkillCard
@@ -211,7 +230,6 @@ export const CatalogPage = ({
               </div>
             </div>
           ) : (
-            // --- Режим секций по умолчанию ---
             <div className={styles.sections}>
               <UserSkillsSection
                 title="Популярное"
@@ -220,6 +238,7 @@ export const CatalogPage = ({
                 onFavoriteClick={onFavoriteClick}
                 onDetailsClick={onDetailsClick}
               />
+
               <UserSkillsSection
                 title="Новое"
                 items={newItems}
@@ -227,11 +246,13 @@ export const CatalogPage = ({
                 onFavoriteClick={onFavoriteClick}
                 onDetailsClick={onDetailsClick}
               />
+
               <RecommendedSection items={recommendedItems} isLoading={false} />
             </div>
           )}
         </div>
       </main>
+
       <div className={styles.footer}>
         <Footer />
       </div>
