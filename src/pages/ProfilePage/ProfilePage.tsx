@@ -11,7 +11,17 @@ import { FavoritesSection } from '@/widgets/FavoritesSection'
 
 import styles from './ProfilePage.module.css'
 
-type ProfileTab = 'requests' | 'exchanges' | 'favorites' | 'skills' | 'personal'
+export type ProfileTab =
+  | 'requests'
+  | 'exchanges'
+  | 'favorites'
+  | 'skills'
+  | 'personal'
+
+export interface ProfilePageProps {
+  /** Начальная вкладка (для Storybook и входа на страницу). */
+  initialTab?: ProfileTab
+}
 
 const DEFAULT_TAB: ProfileTab = 'personal'
 
@@ -43,8 +53,8 @@ function PlaceholderBlock({ title }: { title: string }) {
   )
 }
 
-export default function ProfilePage() {
-  const [activeTab, setActiveTab] = useState<ProfileTab>(DEFAULT_TAB)
+export default function ProfilePage({ initialTab = DEFAULT_TAB }: ProfilePageProps) {
+  const [activeTab, setActiveTab] = useState<ProfileTab>(initialTab)
 
   const renderContent = () => {
     switch (activeTab) {

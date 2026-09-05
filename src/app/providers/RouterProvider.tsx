@@ -15,7 +15,11 @@ const SkillPage = lazy(() =>
     default: module.SkillPage,
   })),
 )
-const ProfilePage = lazy(() => import('@/pages/ProfilePage'))
+const ProfilePage = lazy(() =>
+  import('@/pages/ProfilePage').then((module) => ({
+    default: module.ProfilePage,
+  })),
+)
 const FavoritesPage = lazy(() => import('@/pages/FavoritesPage'))
 const CreateSkillPage = lazy(() => import('@/pages/CreateSkillPage'))
 const LoginPage = lazy(() => import('@/pages/LoginPage'))
