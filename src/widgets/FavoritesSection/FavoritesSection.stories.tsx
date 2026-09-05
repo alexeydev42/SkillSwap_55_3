@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { fn } from 'storybook/test'
-import { FavoritesSection, FavoriteUser } from './FavoritesSection'
+import { FavoritesSection, type FavoriteUser } from './FavoritesSection'
 
 const meta: Meta<typeof FavoritesSection> = {
   title: 'Widgets/FavoritesSection',
@@ -42,7 +42,7 @@ const users: FavoriteUser[] = [
     name: 'Анна',
     city: 'Москва',
     age: 29,
-    avatarUrl: '../../../public/images/users/user-001/avatar.webp',
+    avatarUrl: '/images/users/user-001/avatar.webp',
     canTeach: { label: 'Французский язык', variant: 'languages' },
     learnTags: [
       { label: 'Фотография', variant: 'creative' },
@@ -54,7 +54,7 @@ const users: FavoriteUser[] = [
     name: 'Дмитрий',
     city: 'Казань',
     age: 41,
-    avatarUrl: '../../../public/images/users/user-002/avatar.webp',
+    avatarUrl: '/images/users/user-001/avatar.webp',
     canTeach: { label: 'Программирование', variant: 'education' },
     learnTags: [
       { label: 'Испанский язык', variant: 'languages' },
@@ -66,7 +66,7 @@ const users: FavoriteUser[] = [
     name: 'Екатерина',
     city: 'Новосибирск',
     age: 26,
-    avatarUrl: '../../../public/images/users/user-009/avatar.webp',
+    avatarUrl: '/images/users/user-001/avatar.webp',
     canTeach: { label: 'Графический дизайн', variant: 'creative' },
     learnTags: [
       { label: 'Финансовая грамотность', variant: 'more' },
@@ -78,7 +78,7 @@ const users: FavoriteUser[] = [
     name: 'Сергей',
     city: 'Екатеринбург',
     age: 37,
-    avatarUrl: '../../../public/images/users/user-006/avatar.webp',
+    avatarUrl: '/images/users/user-001/avatar.webp',
     canTeach: { label: 'Шахматы', variant: 'more' },
     learnTags: [
       { label: 'Веб-разработка', variant: 'business' },
@@ -90,7 +90,7 @@ const users: FavoriteUser[] = [
     name: 'Мария',
     city: 'Нижний Новгород',
     age: 32,
-    avatarUrl: '../../../public/images/users/user-005/avatar.webp',
+    avatarUrl: '/images/users/user-001/avatar.webp',
     canTeach: { label: 'Маркетинг', variant: 'business' },
     learnTags: [
       { label: 'Медитация', variant: 'health' },

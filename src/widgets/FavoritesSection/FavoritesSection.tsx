@@ -1,7 +1,6 @@
-import { UserSkillCard } from '../UserSkillCard'
+import { UserSkillCard, type UserSkillCardData } from '@/widgets/UserSkillCard'
 import styles from './FavoritesSection.module.css'
 import illustrationUserInfo from '../../shared/assets/illustrations/illustration-user-info.svg'
-import { UserSkillCardData } from '../UserSkillCard/UserSkillCard'
 
 export interface FavoriteUser extends UserSkillCardData {
   id: string
