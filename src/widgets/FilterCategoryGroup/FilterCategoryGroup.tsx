@@ -1,45 +1,50 @@
-import { useState } from 'react'
-import styles from './FilterCategoryGroup.module.css'
+import { useState, type ChangeEvent } from 'react'
+import clsx from 'clsx'
+
+import type { Subcategory } from '@/shared/types'
 import { Checkbox } from '@/shared/ui/Checkbox'
-import chevronDown from '../../shared/assets/icons/icon-chevron-down.svg'
+import chevronDown from '@/shared/assets/icons/icon-chevron-down.svg'
+
+import styles from './FilterCategoryGroup.module.css'
 
 export interface FilterCategoryGroupProps {
   category: string
-  subcategories: string[]
-  checkedSubcategories: string[]
-  onChange: (subcategories: string[]) => void
+  subcategories: Subcategory[]
+  checkedSubcategoryIds: string[]
+  onChange: (subcategoryIds: string[]) => void
 }
 
 export const FilterCategoryGroup = ({
   category,
   subcategories,
-  checkedSubcategories,
+  checkedSubcategoryIds,
   onChange,
 }: FilterCategoryGroupProps) => {
   const [isOpen, setIsOpen] = useState(false)
 
-  // Вычисляем состояние родительского чекбокса
-  const checkedCount = checkedSubcategories.length
+  // Определяет состояние родительского чекбокса.
+  const checkedCount = checkedSubcategoryIds.length
   const isAllChecked = subcategories.length > 0 && checkedCount === subcategories.length
   const isIndeterminate = checkedCount > 0 && !isAllChecked
 
-  // Клик по дочернему чекбоксу (e.target.checked - так как VERST-05 пробрасывает нативное событие)
-  const handleSubcategoryChange = (subcategory: string, e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked) {
-      onChange([...checkedSubcategories, subcategory])
-    } else {
-      onChange(checkedSubcategories.filter((item) => item !== subcategory))
+  // Добавляет или удаляет идентификатор выбранной подкатегории.
+  const handleSubcategoryChange = (subcategoryId: string, event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      onChange([...checkedSubcategoryIds, subcategoryId])
+      return
     }
+
+    onChange(checkedSubcategoryIds.filter((id) => id !== subcategoryId))
   }
 
-  // Клик по родительскому чекбоксу (выделяет/снимает все разом)
-  const handleParentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked) {
-      const allCategories = new Set([...checkedSubcategories, ...subcategories])
-      onChange(Array.from(allCategories))
-    } else {
-      onChange(checkedSubcategories.filter((item) => !subcategories.includes(item)))
+  // Выбирает или сбрасывает все подкатегории текущей категории.
+  const handleParentChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      onChange(subcategories.map(({ id }) => id))
+      return
     }
+
+    onChange([])
   }
 
   return (
@@ -47,25 +52,29 @@ export const FilterCategoryGroup = ({
       <header className={styles['filter-category-group__header']}>
         <div
           className={styles['filter-category-group__header-title']}
-          onClick={() => setIsOpen((prev) => !prev)}
+          onClick={() => setIsOpen((previousValue) => !previousValue)}
         >
           <div
             className={styles['filter-category-group__header-checkbox']}
-            onClick={(e) => e.stopPropagation()}
+            onClick={(event) => event.stopPropagation()}
           >
             <Checkbox
               label=""
               checked={isAllChecked}
               indeterminate={isIndeterminate}
               onChange={handleParentChange}
-            />          </div>
+            />
+          </div>
 
           <p className={styles['filter-category-group__header-text']}>{category}</p>
 
           <span
-            className={`${styles['filter-category-group__header-icon']} ${isOpen ? styles['is-open'] : ''}`}
+            className={clsx(
+              styles['filter-category-group__header-icon'],
+              isOpen && styles['is-open'],
+            )}
           >
-            <img src={chevronDown} alt="Открыть/Закрыть" />
+            <img src={chevronDown} alt="" aria-hidden="true" />
           </span>
         </div>
       </header>
@@ -73,12 +82,12 @@ export const FilterCategoryGroup = ({
       {isOpen && (
         <div className={styles['filter-category-group__subcategories-wrapper']}>
           <section className={styles['filter-category-group__subcategories-list']}>
-            {subcategories.map((subcategory) => (
+            {subcategories.map(({ id, name }) => (
               <Checkbox
-                key={subcategory}
-                label={subcategory}
-                checked={checkedSubcategories.includes(subcategory)}
-                onChange={(e) => handleSubcategoryChange(subcategory, e)}
+                key={id}
+                label={name}
+                checked={checkedSubcategoryIds.includes(id)}
+                onChange={(event) => handleSubcategoryChange(id, event)}
                 className={styles['filter-category-group__subcategories-item']}
               />
             ))}

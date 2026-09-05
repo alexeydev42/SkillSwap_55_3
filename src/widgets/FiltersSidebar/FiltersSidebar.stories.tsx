@@ -1,19 +1,61 @@
+import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
-import { FiltersSidebar } from './FiltersSidebar'
+import {
+  EMPTY_CATALOG_FILTERS,
+  FiltersSidebar,
+  type CatalogFilters,
+  type FiltersSidebarProps,
+} from './FiltersSidebar'
+
+const categories: FiltersSidebarProps['categories'] = [
+  {
+    id: 'business-career',
+    name: 'Бизнес и карьера',
+    subcategories: [
+      { id: 'team-management', name: 'Управление командой' },
+      { id: 'marketing-advertising', name: 'Маркетинг и реклама' },
+      { id: 'sales-negotiations', name: 'Продажи и переговоры' },
+      { id: 'personal-brand', name: 'Личный бренд' },
+    ],
+  },
+  {
+    id: 'creativity-art',
+    name: 'Творчество и искусство',
+    subcategories: [
+      { id: 'drawing-illustration', name: 'Рисование и иллюстрация' },
+      { id: 'photography', name: 'Фотография' },
+      { id: 'video-editing', name: 'Видеомонтаж' },
+      { id: 'music-sound', name: 'Музыка и звук' },
+    ],
+  },
+]
+
+const cities: FiltersSidebarProps['cities'] = [
+  { id: 'moscow', name: 'Москва' },
+  { id: 'saint-petersburg', name: 'Санкт-Петербург' },
+  { id: 'novosibirsk', name: 'Новосибирск' },
+  { id: 'yekaterinburg', name: 'Екатеринбург' },
+  { id: 'kazan', name: 'Казань' },
+]
+
+// Хранит выбранные фильтры внутри демонстрационной истории.
+function FiltersSidebarPreview(args: FiltersSidebarProps) {
+  const [filters, setFilters] = useState<CatalogFilters>(args.filters)
+
+  return <FiltersSidebar {...args} filters={filters} onChange={setFilters} />
+}
 
 const meta = {
   title: 'Widgets/FiltersSidebar',
   component: FiltersSidebar,
   tags: ['autodocs'],
-  // FiltersSidebar сам по себе не задаёт ширину — на странице он всегда
-  // стоит в узкой колонке. В Storybook без обёртки он растягивается на
-  // весь канвас, и внутренний justify-content: space-between в
-  // FilterCategoryGroup (VERST-25) визуально "разъезжается". Ограничиваем
-  // превью шириной колонки, как в макете, самого компонента не трогая.
+  parameters: {
+    layout: 'centered',
+  },
   decorators: [
     (Story) => (
-      <div style={{ maxWidth: 284 }}>
+      <div style={{ width: 284 }}>
         <Story />
       </div>
     ),
@@ -26,28 +68,10 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
-    categories: [
-      { category: 'Бизнес и карьера' },
-      {
-        category: 'Творчество и искусство',
-        subcategories: [
-          'Рисование и иллюстрация',
-          'Фотография',
-          'Видеомонтаж',
-          'Музыка и звук',
-          'Актёрское мастерство',
-          'Креативное письмо',
-          'Арт-терапия',
-          'Декор и DIY',
-        ],
-      },
-      { category: 'Иностранные языки' },
-      { category: 'Образование и развитие' },
-      { category: 'Здоровье и лайфстайл' },
-      { category: 'Дом и уют' },
-    ],
-    cities: ['Москва', 'Санкт-Петербург', 'Новосибирск', 'Екатеринбург', 'Казань'],
-    selectedFilters: ['Москва'],
+    categories,
+    cities,
+    filters: EMPTY_CATALOG_FILTERS,
     onChange: () => {},
   },
+  render: (args) => <FiltersSidebarPreview {...args} />,
 }

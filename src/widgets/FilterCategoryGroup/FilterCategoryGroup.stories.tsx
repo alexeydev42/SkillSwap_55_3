@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 
 import { FilterCategoryGroup } from './FilterCategoryGroup'
 
-const meta: Meta<typeof FilterCategoryGroup> = {
+const meta = {
   title: 'Components/FilterCategoryGroup',
   component: FilterCategoryGroup,
   parameters: {
@@ -11,37 +11,22 @@ const meta: Meta<typeof FilterCategoryGroup> = {
   args: {
     category: 'Творчество и искусство',
     subcategories: [
-      'Рисование и иллюстрация',
-      'Фотография',
-      'Видеомонтаж',
-      'Музыка и звук',
-      'Актёрское мастерство',
-      'Креативное письмо',
-      'Арт-терапия',
-      'Декор и DIY',
+      { id: 'drawing-illustration', name: 'Рисование и иллюстрация' },
+      { id: 'photography', name: 'Фотография' },
+      { id: 'video-editing', name: 'Видеомонтаж' },
+      { id: 'music-sound', name: 'Музыка и звук' },
+      { id: 'acting', name: 'Актёрское мастерство' },
+      { id: 'creative-writing', name: 'Креативное письмо' },
+      { id: 'art-therapy', name: 'Арт-терапия' },
+      { id: 'decor-diy', name: 'Декор и DIY' },
     ],
-    checkedSubcategories: [],
+    checkedSubcategoryIds: [],
     onChange: () => {},
   },
-}
+} satisfies Meta<typeof FilterCategoryGroup>
 
 export default meta
 
-type Story = StoryObj<typeof FilterCategoryGroup>
+type Story = StoryObj<typeof meta>
 
-export const Skills: Story = {}
-
-export const Cities: Story = {
-  args: {
-    category: 'Города',
-    subcategories: [
-      'Москва',
-      'Санкт-Петербург',
-      'Казань',
-      'Уфа',
-      'Воронеж',
-      'Вологда',
-      'Петропавловск-Камчатский',
-    ],
-  },
-}
+export const Default: Story = {}
