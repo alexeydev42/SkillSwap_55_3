@@ -1,4 +1,5 @@
 .controls {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--space-24);
@@ -14,6 +15,20 @@
   display: flex;
   align-items: center;
   gap: var(--space-20);
+}
+
+/* Объединяет кнопку колокольчика и её дропдаун для обработки клика снаружи. */
+.notificationsWrapper {
+  display: flex;
+  align-items: center;
+}
+
+/* Размещает уведомления под Header с выравниванием по правому краю. */
+.notificationsDropdown {
+  position: absolute;
+  top: calc(100% + var(--space-20));
+  right: 0;
+  z-index: 1000;
 }
 
 .userName {
