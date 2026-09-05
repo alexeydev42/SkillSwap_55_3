@@ -42,6 +42,21 @@ export interface City {
   name: string
 }
 
+// ─── Catalog filters ─────────────────────────────────────
+
+export type CatalogOfferType = 'all' | 'learning' | 'teaching'
+
+export type CatalogGender = 'all' | 'male' | 'female'
+
+export type CatalogSort = 'default' | 'newest'
+
+export interface CatalogFilters {
+  offerType: CatalogOfferType
+  gender: CatalogGender
+  subcategoryIds: string[]
+  cityIds: string[]
+}
+
 // ─── Registration / Auth ─────────────────────────────────
 
 export interface RegistrationDraft {

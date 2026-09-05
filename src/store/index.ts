@@ -1,12 +1,22 @@
 import { configureStore } from '@reduxjs/toolkit'
-// Импортируй свои slice'ы здесь по мере их создания:
-// import skillsReducer from '@/entities/skill/model/skillsSlice'
-// import authReducer from '@/features/auth/model/authSlice'
+
+import authReducer from './slices/authSlice'
+import catalogFiltersReducer from './slices/catalogFiltersSlice'
+import favoritesReducer from './slices/favoritesSlice'
+import notificationsReducer from './slices/notificationsSlice'
+import registrationReducer from './slices/registrationSlice'
+import requestsReducer from './slices/requestsSlice'
+import usersReducer from './slices/usersSlice'
 
 export const store = configureStore({
   reducer: {
-    // skills: skillsReducer,
-    // auth: authReducer,
+    users: usersReducer,
+    auth: authReducer,
+    registration: registrationReducer,
+    favorites: favoritesReducer,
+    requests: requestsReducer,
+    notifications: notificationsReducer,
+    catalogFilters: catalogFiltersReducer,
   },
 })
 
