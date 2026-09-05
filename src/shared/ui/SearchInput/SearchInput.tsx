@@ -10,7 +10,7 @@ import styles from './SearchInput.module.css'
 
 export interface SearchInputProps extends Pick<
   InputProps,
-  'disabled' | 'className' | 'error' | 'helperText' | 'borderless'
+  'disabled' | 'className' | 'wrapperClassName' | 'error' | 'helperText' | 'borderless'
 > {
   /** По умолчанию — текст плейсхолдера из макета, переопределяется редко. */
   placeholder?: string
