@@ -1,5 +1,7 @@
-import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import { fetchUsers as fetchUsersApi } from '@/api/users'
+import { STORAGE_KEYS } from '@/shared/lib/constants'
+import { storageService } from '@/shared/lib/storageService'
 import type { User } from '@/shared/types'
 import type { RootState } from '@/store'
 
@@ -12,20 +14,14 @@ export interface UsersState {
 // Задаёт начальное состояние пользователей.
 const initialState: UsersState = {
   mockUsers: [],
-  localUser: null,
+  // Восстанавливает локального пользователя при создании store.
+  localUser: storageService.get<User>(STORAGE_KEYS.LOCAL_USER),
   status: 'idle',
   error: null,
 }
 
-/**
- * LOGIC-05 — асинхронная загрузка моковых пользователей из public/db/users.json.
- * Разовый запрос (без фонового refresh-механизма) — обычно вызывается один
- * раз при старте приложения/каталога.
- */
-export const fetchUsers = createAsyncThunk<User[]>(
-  'users/fetchUsers',
-  async () => fetchUsersApi(),
-)
+//Разовый запрос (без фонового refresh-механизма) — обычно вызывается один раз при старте приложения/каталога.
+export const fetchUsers = createAsyncThunk<User[]>('users/fetchUsers', async () => fetchUsersApi())
 
 const usersSlice = createSlice({
   name: 'users',
@@ -87,6 +83,11 @@ export const {
 // Селекторы — доступ к пользователям и статусу загрузки из компонентов.
 export const selectMockUsers = (state: RootState) => state.users.mockUsers
 export const selectLocalUser = (state: RootState) => state.users.localUser
+// Объединяет моковых пользователей и локального пользователя для каталога.
+export const selectAllUsers = createSelector(
+  [selectMockUsers, selectLocalUser],
+  (mockUsers, localUser) => (localUser ? [...mockUsers, localUser] : mockUsers),
+)
 export const selectUsersStatus = (state: RootState) => state.users.status
 export const selectUsersError = (state: RootState) => state.users.error
 
