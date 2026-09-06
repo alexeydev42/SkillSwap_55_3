@@ -4,6 +4,7 @@ import { STORAGE_KEYS } from '@/shared/lib/constants'
 import { storageService } from '@/shared/lib/storageService'
 import type { User } from '@/shared/types'
 import type { RootState } from '@/store'
+import { selectFavoriteUserIds } from '@/store/slices/favoritesSlice'
 
 export interface UsersState {
   mockUsers: User[]
@@ -135,3 +136,25 @@ export const selectUsersStatus = (state: RootState) => state.users.status
 export const selectUsersError = (state: RootState) => state.users.error
 
 export default usersSlice.reducer
+/**
+ * Вычисляет полный список подкатегорий «Хочу научиться» для пользователя.
+ * Для локального пользователя — базовая регистрационная подкатегория плюс
+ * offeredSkill.subcategoryId всех пользователей из Favorites (без дублей).
+ * Для остальных (моковых) пользователей возвращает их исходный
+ * learningSubcategoryIds без вычислений — мутировать объект User не нужно.
+ */
+export const selectEffectiveLearningSubcategoryIds = createSelector(
+  [selectUserById, selectLocalUser, selectFavoriteUserIds, selectAllUsers],
+  (user, localUser, favoriteUserIds, allUsers) => {
+    if (!user) {
+      return []
+    }
+    if (!localUser || user.id !== localUser.id) {
+      return user.learningSubcategoryIds
+    }
+    const favoriteSubcategoryIds = allUsers
+      .filter((favoriteUser) => favoriteUserIds.includes(favoriteUser.id))
+      .map((favoriteUser) => favoriteUser.offeredSkill.subcategoryId)
+    return Array.from(new Set([...user.learningSubcategoryIds, ...favoriteSubcategoryIds]))
+  },
+)
