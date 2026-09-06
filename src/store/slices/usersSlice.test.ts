@@ -106,4 +106,21 @@ describe('usersSlice — localUser', () => {
 
     expect(selectAllUsers(state)).toEqual([mockUser])
   })
+
+  it('не дублирует локального пользователя при совпадении id', () => {
+    const duplicateLocalUser: User = {
+      ...mockUser,
+      name: 'Локальный пользователь',
+    }
+
+    const state = createRootState({
+      ...initialState,
+      mockUsers: [mockUser],
+      localUser: duplicateLocalUser,
+    })
+
+    expect(selectAllUsers(state)).toEqual([duplicateLocalUser])
+    expect(state.users.mockUsers).toEqual([mockUser])
+    expect(state.users.localUser).toEqual(duplicateLocalUser)
+  })
 })

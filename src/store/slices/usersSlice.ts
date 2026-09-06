@@ -86,7 +86,16 @@ export const selectLocalUser = (state: RootState) => state.users.localUser
 // Объединяет моковых пользователей и локального пользователя для каталога.
 export const selectAllUsers = createSelector(
   [selectMockUsers, selectLocalUser],
-  (mockUsers, localUser) => (localUser ? [...mockUsers, localUser] : mockUsers),
+  (mockUsers, localUser) => {
+    if (!localUser) {
+      return mockUsers
+    }
+
+    // Исключает возможный дубль локального пользователя из общего каталога.
+    const usersWithoutDuplicate = mockUsers.filter((user) => user.id !== localUser.id)
+
+    return [...usersWithoutDuplicate, localUser]
+  },
 )
 export const selectUsersStatus = (state: RootState) => state.users.status
 export const selectUsersError = (state: RootState) => state.users.error
