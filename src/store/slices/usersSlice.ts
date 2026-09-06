@@ -83,6 +83,10 @@ export const {
 // Селекторы — доступ к пользователям и статусу загрузки из компонентов.
 export const selectMockUsers = (state: RootState) => state.users.mockUsers
 export const selectLocalUser = (state: RootState) => state.users.localUser
+
+// Получает id авторизованного пользователя из текущей сессии.
+const selectAuthUserId = (state: RootState) => state.auth.session?.userId ?? null
+
 // Объединяет моковых пользователей и локального пользователя для каталога.
 export const selectAllUsers = createSelector(
   [selectMockUsers, selectLocalUser],
@@ -96,6 +100,36 @@ export const selectAllUsers = createSelector(
 
     return [...usersWithoutDuplicate, localUser]
   },
+)
+
+// Возвращает локального пользователя, если его id совпадает с текущей сессией.
+export const selectCurrentUser = createSelector(
+  [selectLocalUser, selectAuthUserId],
+  (localUser, authUserId) => {
+    if (!localUser || localUser.id !== authUserId) {
+      return null
+    }
+
+    return localUser
+  },
+)
+
+// Находит пользователя по id в общем каталоге.
+export const selectUserById = createSelector(
+  [selectAllUsers, (_state: RootState, userId: string) => userId],
+  (users, userId) => users.find((user) => user.id === userId) ?? null,
+)
+
+// Сортирует пользователей по количеству лайков от большего к меньшему.
+export const selectPopularUsers = createSelector([selectAllUsers], (users) =>
+  [...users].sort((firstUser, secondUser) => secondUser.likesCount - firstUser.likesCount),
+)
+
+// Сортирует пользователей по дате создания от новых к старым.
+export const selectNewUsers = createSelector([selectAllUsers], (users) =>
+  [...users].sort(
+    (firstUser, secondUser) => Date.parse(secondUser.createdAt) - Date.parse(firstUser.createdAt),
+  ),
 )
 export const selectUsersStatus = (state: RootState) => state.users.status
 export const selectUsersError = (state: RootState) => state.users.error
