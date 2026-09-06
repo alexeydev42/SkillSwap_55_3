@@ -1,5 +1,3 @@
-import { calculateAge } from './helpers'
-
 /** Результат проверки одного поля: ключ поля и текст ошибки, либо null, если поле валидно. */
 export interface FieldError {
   field: string
@@ -11,6 +9,12 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const MIN_PASSWORD_LENGTH = 8
 const MAX_PASSWORD_LENGTH = 64
 const MAX_AGE = 120
+const DATE_REGEX = /^(\d{4})-(\d{2})-(\d{2})$/
+
+const LOWERCASE_REGEX = /\p{Ll}/u
+const UPPERCASE_REGEX = /\p{Lu}/u
+const DIGIT_REGEX = /\p{Nd}/u
+const SPECIAL_CHARACTER_REGEX = /[\p{P}\p{S}]/u
 
 /** Проверяет email: обязателен, базовый формат по regex. */
 export function validateEmail(value: string): FieldError | null {
@@ -31,16 +35,16 @@ export function validatePassword(value: string): FieldError | null {
       message: `Пароль должен содержать от ${MIN_PASSWORD_LENGTH} до ${MAX_PASSWORD_LENGTH} символов`,
     }
   }
-  if (!/[a-z]/.test(value)) {
+  if (!LOWERCASE_REGEX.test(value)) {
     return { field: 'password', message: 'Пароль должен содержать строчную букву' }
   }
-  if (!/[A-Z]/.test(value)) {
+  if (!UPPERCASE_REGEX.test(value)) {
     return { field: 'password', message: 'Пароль должен содержать заглавную букву' }
   }
-  if (!/\d/.test(value)) {
+  if (!DIGIT_REGEX.test(value)) {
     return { field: 'password', message: 'Пароль должен содержать цифру' }
   }
-  if (!/[^A-Za-z0-9]/.test(value)) {
+  if (!SPECIAL_CHARACTER_REGEX.test(value)) {
     return { field: 'password', message: 'Пароль должен содержать специальный символ' }
   }
   return null
@@ -93,20 +97,50 @@ export function validateUserDescription(value: string): FieldError | null {
   return validateTrimmedLength(value, 'description', 0, 160, 'Описание профиля')
 }
 
-/** Проверяет дату рождения: не в будущем, не старше 120 лет. Минимальный возраст не ограничен. */
+/**
+ * Проверяет дату рождения: строгий формат YYYY-MM-DD (без автокоррекции
+ * несуществующих календарных дат вроде 31 февраля), не в будущем, не старше
+ * 120 лет (сравнение по точной дате, а не только по количеству полных лет).
+ * Минимальный возраст не ограничен.
+ */
 export function validateBirthDate(value: string): FieldError | null {
   if (value.length === 0) {
     return { field: 'birthDate', message: 'Дата рождения обязательна для заполнения' }
   }
-  const birthDate = new Date(`${value}T00:00:00`)
-  if (Number.isNaN(birthDate.getTime())) {
+
+  const match = DATE_REGEX.exec(value)
+  if (!match) {
     return { field: 'birthDate', message: 'Некорректная дата рождения' }
   }
-  if (birthDate.getTime() > Date.now()) {
+
+  const year = Number(match[1])
+  const month = Number(match[2])
+  const day = Number(match[3])
+  const birthDate = new Date(`${value}T00:00:00`)
+
+  const isInvalidDate =
+    Number.isNaN(birthDate.getTime()) ||
+    birthDate.getFullYear() !== year ||
+    birthDate.getMonth() !== month - 1 ||
+    birthDate.getDate() !== day
+
+  if (isInvalidDate) {
+    return { field: 'birthDate', message: 'Некорректная дата рождения' }
+  }
+
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  if (birthDate > today) {
     return { field: 'birthDate', message: 'Дата рождения не может быть в будущем' }
   }
-  if (calculateAge(value) > MAX_AGE) {
+
+  const oldestAllowedDate = new Date(today)
+  oldestAllowedDate.setFullYear(today.getFullYear() - MAX_AGE)
+
+  if (birthDate < oldestAllowedDate) {
     return { field: 'birthDate', message: `Возраст не может превышать ${MAX_AGE} лет` }
   }
+
   return null
 }

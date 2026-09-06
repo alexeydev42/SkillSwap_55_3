@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   validateBirthDate,
   validateEmail,
@@ -82,6 +82,24 @@ describe('validatePassword', () => {
 
   it('возвращает null для валидного пароля', () => {
     expect(validatePassword('Str0ng!Pass')).toBeNull()
+  })
+
+  it('не считает пробел специальным символом', () => {
+    expect(validatePassword('Abcdef1 ')).toEqual({
+      field: 'password',
+      message: 'Пароль должен содержать специальный символ',
+    })
+  })
+
+  it('не считает кириллическую букву специальным символом', () => {
+    expect(validatePassword('Abcdef1я')).toEqual({
+      field: 'password',
+      message: 'Пароль должен содержать специальный символ',
+    })
+  })
+
+  it('поддерживает строчные и заглавные буквы кириллицы', () => {
+    expect(validatePassword('Пароль1!')).toBeNull()
   })
 })
 
@@ -170,7 +188,16 @@ describe('validateUserDescription', () => {
 })
 
 describe('validateBirthDate', () => {
-  const toISODate = (date: Date) => date.toISOString().slice(0, 10)
+  // Дату теста фиксируем через vi.setSystemTime(), чтобы результат не зависел
+  // от дня и времени фактического запуска тестов.
+  beforeEach(() => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-09-06T12:00:00'))
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
 
   it('возвращает ошибку для пустой строки', () => {
     expect(validateBirthDate('')).toEqual({
@@ -179,43 +206,43 @@ describe('validateBirthDate', () => {
     })
   })
 
-  it('возвращает ошибку для некорректной даты', () => {
+  it('возвращает ошибку для некорректного формата', () => {
     expect(validateBirthDate('not-a-date')).toEqual({
       field: 'birthDate',
       message: 'Некорректная дата рождения',
     })
   })
 
+  it('отклоняет несуществующую календарную дату', () => {
+    expect(validateBirthDate('2026-02-31')).toEqual({
+      field: 'birthDate',
+      message: 'Некорректная дата рождения',
+    })
+  })
+
   it('принимает сегодняшнюю дату', () => {
-    expect(validateBirthDate(toISODate(new Date()))).toBeNull()
+    expect(validateBirthDate('2026-09-06')).toBeNull()
   })
 
   it('отклоняет дату в будущем', () => {
-    const tomorrow = new Date()
-    tomorrow.setDate(tomorrow.getDate() + 1)
-    expect(validateBirthDate(toISODate(tomorrow))).toEqual({
+    expect(validateBirthDate('2026-09-07')).toEqual({
       field: 'birthDate',
       message: 'Дата рождения не может быть в будущем',
     })
   })
 
   it('принимает дату ровно 120 лет назад', () => {
-    const exactly120 = new Date()
-    exactly120.setFullYear(exactly120.getFullYear() - 120)
-    expect(validateBirthDate(toISODate(exactly120))).toBeNull()
+    expect(validateBirthDate('1906-09-06')).toBeNull()
   })
 
-  it('отклоняет дату старше 120 лет', () => {
-    const olderThan120 = new Date()
-    olderThan120.setFullYear(olderThan120.getFullYear() - 121)
-    expect(validateBirthDate(toISODate(olderThan120))).toEqual({
+  it('отклоняет дату старше 120 лет на один день', () => {
+    expect(validateBirthDate('1906-09-05')).toEqual({
       field: 'birthDate',
       message: 'Возраст не может превышать 120 лет',
     })
   })
 
   it('не ограничивает минимальный возраст', () => {
-    const newborn = new Date()
-    expect(validateBirthDate(toISODate(newborn))).toBeNull()
+    expect(validateBirthDate('2026-09-06')).toBeNull()
   })
 })
