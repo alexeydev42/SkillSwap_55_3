@@ -1,23 +1,19 @@
 import { useState } from 'react'
 import clsx from 'clsx'
 
-import type { Category, City } from '@/shared/types'
+import type {
+  CatalogFilters,
+  CatalogGender,
+  CatalogOfferType,
+  Category,
+  City,
+} from '@/shared/types'
 import { Checkbox } from '@/shared/ui/Checkbox'
 import { RadioButton } from '@/shared/ui/RadioButton'
 import ChevronDownIcon from '@/shared/assets/icons/icon-chevron-down.svg?react'
 import { FilterCategoryGroup } from '@/widgets/FilterCategoryGroup'
 
 import styles from './FiltersSidebar.module.css'
-
-export type CatalogOfferType = 'all' | 'learning' | 'teaching'
-export type CatalogGender = 'all' | 'male' | 'female'
-
-export interface CatalogFilters {
-  offerType: CatalogOfferType
-  gender: CatalogGender
-  subcategoryIds: string[]
-  cityIds: string[]
-}
 
 export interface FiltersSidebarProps {
   categories: Category[]

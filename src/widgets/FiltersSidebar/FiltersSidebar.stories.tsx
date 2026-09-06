@@ -6,7 +6,7 @@ import {
   FiltersSidebar,
   type CatalogFilters,
   type FiltersSidebarProps,
-} from './FiltersSidebar'
+} from '.'
 
 const categories: FiltersSidebarProps['categories'] = [
   {
