@@ -1,5 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import usersReducer, { fetchUsers, selectAllUsers, type UsersState } from './usersSlice'
+import usersReducer, {
+  fetchUsers,
+  selectAllUsers,
+  selectCurrentUser,
+  selectNewUsers,
+  selectPopularUsers,
+  selectUserById,
+  type UsersState,
+} from './usersSlice'
 import { STORAGE_KEYS } from '@/shared/lib/constants'
 import { storageService } from '@/shared/lib/storageService'
 import type { User } from '@/shared/types'
@@ -41,6 +49,19 @@ const initialState: UsersState = {
 // Создаёт состояние Redux для проверки селекторов usersSlice.
 function createRootState(users: UsersState): RootState {
   return { users } as RootState
+}
+
+// Создаёт состояние Redux с авторизованным пользователем.
+function createAuthenticatedRootState(users: UsersState, userId: string): RootState {
+  return {
+    ...createRootState(users),
+    auth: {
+      account: null,
+      session: { userId },
+      status: 'idle',
+      error: null,
+    },
+  } as RootState
 }
 
 beforeEach(() => {
@@ -122,5 +143,104 @@ describe('usersSlice — localUser', () => {
     expect(selectAllUsers(state)).toEqual([duplicateLocalUser])
     expect(state.users.mockUsers).toEqual([mockUser])
     expect(state.users.localUser).toEqual(duplicateLocalUser)
+  })
+})
+
+describe('usersSlice — базовые селекторы', () => {
+  it('возвращает текущего локального пользователя по id активной сессии', () => {
+    const state = createAuthenticatedRootState(
+      {
+        ...initialState,
+        localUser,
+      },
+      localUser.id,
+    )
+
+    expect(selectCurrentUser(state)).toEqual(localUser)
+  })
+
+  it('не возвращает локального пользователя при несовпадении id сессии', () => {
+    const state = createAuthenticatedRootState(
+      {
+        ...initialState,
+        localUser,
+      },
+      'another-user',
+    )
+
+    expect(selectCurrentUser(state)).toBeNull()
+  })
+
+  it('находит мокового и локального пользователя по id', () => {
+    const state = createRootState({
+      ...initialState,
+      mockUsers: [mockUser],
+      localUser,
+    })
+
+    expect(selectUserById(state, mockUser.id)).toEqual(mockUser)
+    expect(selectUserById(state, localUser.id)).toEqual(localUser)
+    expect(selectUserById(state, 'unknown-user')).toBeNull()
+  })
+
+  it('сортирует пользователей по количеству лайков', () => {
+    const lessPopularUser: User = {
+      ...mockUser,
+      id: 'less-popular-user',
+      likesCount: 5,
+    }
+
+    const morePopularUser: User = {
+      ...mockUser,
+      id: 'more-popular-user',
+      likesCount: 20,
+    }
+
+    const state = createRootState({
+      ...initialState,
+      mockUsers: [lessPopularUser, morePopularUser],
+    })
+
+    expect(selectPopularUsers(state)).toEqual([morePopularUser, lessPopularUser])
+    expect(state.users.mockUsers).toEqual([lessPopularUser, morePopularUser])
+  })
+
+  it('сортирует пользователей по дате создания от новых к старым', () => {
+    const olderUser: User = {
+      ...mockUser,
+      id: 'older-user',
+      createdAt: '2024-01-01T00:00:00.000Z',
+    }
+
+    const newerUser: User = {
+      ...mockUser,
+      id: 'newer-user',
+      createdAt: '2025-01-01T00:00:00.000Z',
+    }
+
+    const state = createRootState({
+      ...initialState,
+      mockUsers: [olderUser, newerUser],
+    })
+
+    expect(selectNewUsers(state)).toEqual([newerUser, olderUser])
+    expect(state.users.mockUsers).toEqual([olderUser, newerUser])
+  })
+
+  it('не возвращает пользователя при отсутствии активной сессии', () => {
+    const state = {
+      ...createRootState({
+        ...initialState,
+        localUser,
+      }),
+      auth: {
+        account: null,
+        session: null,
+        status: 'idle',
+        error: null,
+      },
+    } as RootState
+
+    expect(selectCurrentUser(state)).toBeNull()
   })
 })
