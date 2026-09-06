@@ -1,5 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-
+import { STORAGE_KEYS } from '@/shared/lib/constants'
+import { storageService } from '@/shared/lib/storageService'
 import type { CatalogFilters, CatalogSort } from '@/shared/types'
 
 export interface CatalogFiltersState {
@@ -7,39 +8,40 @@ export interface CatalogFiltersState {
   sort: CatalogSort
 }
 
-// Задаёт начальные фильтры и сортировку каталога.
+// Значения фильтров и сортировки каталога по умолчанию.
+export const defaultFilters: CatalogFilters = {
+  offerType: 'all',
+  gender: 'all',
+  subcategoryIds: [],
+  cityIds: [],
+}
+export const defaultSort: CatalogSort = 'default'
+
+// Восстанавливает начальные фильтры и сортировку каталога из sessionStorage,
+// чтобы они сохранялись при обновлении страницы и сбрасывались при закрытии вкладки.
 const initialState: CatalogFiltersState = {
-  filters: {
-    offerType: 'all',
-    gender: 'all',
-    subcategoryIds: [],
-    cityIds: [],
-  },
-  sort: 'default',
+  filters:
+    storageService.get<CatalogFilters>(STORAGE_KEYS.CATALOG_FILTERS, 'session') ?? defaultFilters,
+  sort: storageService.get<CatalogSort>(STORAGE_KEYS.CATALOG_SORT, 'session') ?? defaultSort,
 }
 
 const catalogFiltersSlice = createSlice({
   name: 'catalogFilters',
   initialState,
   reducers: {
-    // Сохраняет выбранные фильтры каталога.
     setCatalogFilters(state, action: PayloadAction<CatalogFilters>) {
       state.filters = action.payload
     },
-
-    // Сохраняет выбранную сортировку каталога.
     setCatalogSort(state, action: PayloadAction<CatalogSort>) {
       state.sort = action.payload
     },
-
-    // Возвращает фильтры к начальным значениям.
     resetCatalogFilters(state) {
-      state.filters = initialState.filters
+      state.filters = defaultFilters
+      state.sort = defaultSort
     },
   },
 })
 
 export const { setCatalogFilters, setCatalogSort, resetCatalogFilters } =
   catalogFiltersSlice.actions
-
 export default catalogFiltersSlice.reducer
