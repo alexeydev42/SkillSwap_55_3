@@ -3,6 +3,7 @@ import usersReducer, {
   fetchUsers,
   selectAllUsers,
   selectCurrentUser,
+  selectEffectiveLikesCount,
   selectNewUsers,
   selectPopularUsers,
   selectUserById,
@@ -242,5 +243,61 @@ describe('usersSlice — базовые селекторы', () => {
     } as RootState
 
     expect(selectCurrentUser(state)).toBeNull()
+  })
+})
+describe('usersSlice — selectEffectiveLikesCount', () => {
+  // Добавляет к состоянию из createRootState срез favorites — нужен для
+  // проверки вычисляемого likesCount, который зависит от users + favorites.
+  function createRootStateWithFavorites(
+    users: UsersState,
+    favoriteUserIds: string[],
+  ): RootState {
+    return {
+      ...createRootState(users),
+      favorites: { favoriteUserIds },
+    } as RootState
+  }
+
+  it('возвращает базовый likesCount, если пользователь не в Favorites', () => {
+    const state = createRootStateWithFavorites(
+      { ...initialState, mockUsers: [{ ...mockUser, likesCount: 10 }] },
+      [],
+    )
+    expect(selectEffectiveLikesCount(state, mockUser.id)).toBe(10)
+  })
+
+  it('прибавляет 1 к likesCount, если пользователь в Favorites', () => {
+    const state = createRootStateWithFavorites(
+      { ...initialState, mockUsers: [{ ...mockUser, likesCount: 10 }] },
+      [mockUser.id],
+    )
+    expect(selectEffectiveLikesCount(state, mockUser.id)).toBe(11)
+  })
+
+  it('возвращает базовый likesCount после удаления пользователя из Favorites', () => {
+    const stateWithFavorite = createRootStateWithFavorites(
+      { ...initialState, mockUsers: [{ ...mockUser, likesCount: 10 }] },
+      [mockUser.id],
+    )
+    expect(selectEffectiveLikesCount(stateWithFavorite, mockUser.id)).toBe(11)
+
+    const stateWithoutFavorite = createRootStateWithFavorites(
+      { ...initialState, mockUsers: [{ ...mockUser, likesCount: 10 }] },
+      [],
+    )
+    expect(selectEffectiveLikesCount(stateWithoutFavorite, mockUser.id)).toBe(10)
+  })
+
+  it('возвращает 0, если пользователь не найден', () => {
+    const state = createRootStateWithFavorites(initialState, [])
+    expect(selectEffectiveLikesCount(state, 'unknown-user')).toBe(0)
+  })
+
+  it('у локального пользователя базовый likesCount 0 (сам себя в Favorites не добавить)', () => {
+    const state = createRootStateWithFavorites(
+      { ...initialState, localUser: { ...localUser, likesCount: 0 } },
+      [],
+    )
+    expect(selectEffectiveLikesCount(state, localUser.id)).toBe(0)
   })
 })
