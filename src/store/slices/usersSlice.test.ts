@@ -39,17 +39,17 @@ describe('usersSlice — fetchUsers', () => {
     expect(nextState.mockUsers).toEqual([mockUser])
   })
 
-  it('сохраняет пользователей в mockUsers и ставит status "succeeded" при fulfilled', () => {
+  it('сохраняет пользователей в mockUsers и ставит status "success" при fulfilled', () => {
     const nextState = usersReducer(
       initialState,
       fetchUsers.fulfilled([mockUser], '', undefined),
     )
 
-    expect(nextState.status).toBe('succeeded')
+    expect(nextState.status).toBe('success')
     expect(nextState.mockUsers).toEqual([mockUser])
   })
 
-  it('при rejected сохраняет ошибку, ставит status "failed" и не затирает mockUsers', () => {
+  it('при rejected сохраняет ошибку, ставит status "error" и не затирает mockUsers', () => {
     const stateWithUsers: UsersState = { ...initialState, mockUsers: [mockUser] }
     const error = new Error('Network Error')
     const nextState = usersReducer(
@@ -57,7 +57,7 @@ describe('usersSlice — fetchUsers', () => {
       fetchUsers.rejected(error, '', undefined),
     )
 
-    expect(nextState.status).toBe('failed')
+    expect(nextState.status).toBe('error')
     expect(nextState.error).toBe('Network Error')
     expect(nextState.mockUsers).toEqual([mockUser])
   })

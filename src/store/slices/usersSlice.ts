@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import axios from 'axios'
+import { fetchUsers as fetchUsersApi } from '@/api/users'
 import type { User } from '@/shared/types'
 import type { RootState } from '@/store'
 
 export interface UsersState {
   mockUsers: User[]
   localUser: User | null
-  status: 'idle' | 'loading' | 'succeeded' | 'failed'
+  status: 'idle' | 'loading' | 'success' | 'error'
   error: string | null
 }
 // Задаёт начальное состояние пользователей.
@@ -22,10 +22,10 @@ const initialState: UsersState = {
  * Разовый запрос (без фонового refresh-механизма) — обычно вызывается один
  * раз при старте приложения/каталога.
  */
-export const fetchUsers = createAsyncThunk<User[]>('users/fetchUsers', async () => {
-  const { data } = await axios.get<User[]>('/db/users.json')
-  return data
-})
+export const fetchUsers = createAsyncThunk<User[]>(
+  'users/fetchUsers',
+  async () => fetchUsersApi(),
+)
 
 const usersSlice = createSlice({
   name: 'users',
@@ -64,11 +64,11 @@ const usersSlice = createSlice({
         // Уже загруженных пользователей не очищаем — только статус/ошибку.
       })
       .addCase(fetchUsers.fulfilled, (state, action: PayloadAction<User[]>) => {
-        state.status = 'succeeded'
+        state.status = 'success'
         state.mockUsers = action.payload
       })
       .addCase(fetchUsers.rejected, (state, action) => {
-        state.status = 'failed'
+        state.status = 'error'
         state.error = action.error.message ?? 'Не удалось загрузить пользователей'
         // mockUsers намеренно не трогаем — при ошибке уже загруженные данные остаются.
       })
