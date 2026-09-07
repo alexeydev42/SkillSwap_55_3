@@ -4,6 +4,7 @@ import usersReducer, {
   selectAllUsers,
   selectCurrentUser,
   selectEffectiveLearningSubcategoryIds,
+  selectEffectiveLikesCount,
   selectNewUsers,
   selectPopularUsers,
   selectUserById,
@@ -245,10 +246,65 @@ describe('usersSlice — базовые селекторы', () => {
     expect(selectCurrentUser(state)).toBeNull()
   })
 })
-describe('usersSlice — selectEffectiveLearningSubcategoryIds', () => {
+describe('usersSlice — selectEffectiveLikesCount', () => {
   // Добавляет к состоянию из createRootState срез favorites — нужен для
-  // проверки вычисляемого списка «Хочу научиться», который зависит от
-  // users + favorites.
+  // проверки вычисляемого likesCount, который зависит от users + favorites.
+  function createRootStateWithFavorites(
+    users: UsersState,
+    favoriteUserIds: string[],
+  ): RootState {
+    return {
+      ...createRootState(users),
+      favorites: { favoriteUserIds },
+    } as RootState
+  }
+
+  it('возвращает базовый likesCount, если пользователь не в Favorites', () => {
+    const state = createRootStateWithFavorites(
+      { ...initialState, mockUsers: [{ ...mockUser, likesCount: 10 }] },
+      [],
+    )
+    expect(selectEffectiveLikesCount(state, mockUser.id)).toBe(10)
+  })
+
+  it('прибавляет 1 к likesCount, если пользователь в Favorites', () => {
+    const state = createRootStateWithFavorites(
+      { ...initialState, mockUsers: [{ ...mockUser, likesCount: 10 }] },
+      [mockUser.id],
+    )
+    expect(selectEffectiveLikesCount(state, mockUser.id)).toBe(11)
+  })
+
+  it('возвращает базовый likesCount после удаления пользователя из Favorites', () => {
+    const stateWithFavorite = createRootStateWithFavorites(
+      { ...initialState, mockUsers: [{ ...mockUser, likesCount: 10 }] },
+      [mockUser.id],
+    )
+    expect(selectEffectiveLikesCount(stateWithFavorite, mockUser.id)).toBe(11)
+
+    const stateWithoutFavorite = createRootStateWithFavorites(
+      { ...initialState, mockUsers: [{ ...mockUser, likesCount: 10 }] },
+      [],
+    )
+    expect(selectEffectiveLikesCount(stateWithoutFavorite, mockUser.id)).toBe(10)
+  })
+
+  it('возвращает 0, если пользователь не найден', () => {
+    const state = createRootStateWithFavorites(initialState, [])
+    expect(selectEffectiveLikesCount(state, 'unknown-user')).toBe(0)
+  })
+
+  it('у локального пользователя базовый likesCount 0 (сам себя в Favorites не добавить)', () => {
+    const state = createRootStateWithFavorites(
+      { ...initialState, localUser: { ...localUser, likesCount: 0 } },
+      [],
+    )
+    expect(selectEffectiveLikesCount(state, localUser.id)).toBe(0)
+  })
+})
+
+describe('usersSlice — selectEffectiveLearningSubcategoryIds', () => {
+  // Создаёт состояние Redux со срезом Favorites.
   function createRootStateWithFavorites(
     users: UsersState,
     favoriteUserIds: string[],
@@ -262,12 +318,19 @@ describe('usersSlice — selectEffectiveLearningSubcategoryIds', () => {
   const firstFavoriteUser: User = {
     ...mockUser,
     id: 'favorite-user-1',
-    offeredSkill: { ...mockUser.offeredSkill, subcategoryId: 'public-speaking' },
+    offeredSkill: {
+      ...mockUser.offeredSkill,
+      subcategoryId: 'public-speaking',
+    },
   }
+
   const secondFavoriteUser: User = {
     ...mockUser,
     id: 'favorite-user-2',
-    offeredSkill: { ...mockUser.offeredSkill, subcategoryId: 'time-management' },
+    offeredSkill: {
+      ...mockUser.offeredSkill,
+      subcategoryId: 'time-management',
+    },
   }
 
   it('для мокового пользователя возвращает исходный learningSubcategoryIds без изменений', () => {
@@ -275,21 +338,38 @@ describe('usersSlice — selectEffectiveLearningSubcategoryIds', () => {
       ...mockUser,
       learningSubcategoryIds: ['guitar'],
     }
+
     const state = createRootStateWithFavorites(
-      { ...initialState, mockUsers: [mockUserWithLearningIds, firstFavoriteUser] },
+      {
+        ...initialState,
+        mockUsers: [mockUserWithLearningIds, firstFavoriteUser],
+      },
       [firstFavoriteUser.id],
     )
-    expect(selectEffectiveLearningSubcategoryIds(state, mockUserWithLearningIds.id)).toEqual([
-      'guitar',
-    ])
+
+    expect(
+      selectEffectiveLearningSubcategoryIds(
+        state,
+        mockUserWithLearningIds.id,
+      ),
+    ).toEqual(['guitar'])
   })
 
   it('у локального пользователя без Favorites возвращает только базовый список', () => {
     const state = createRootStateWithFavorites(
-      { ...initialState, localUser: { ...localUser, learningSubcategoryIds: ['guitar'] } },
+      {
+        ...initialState,
+        localUser: {
+          ...localUser,
+          learningSubcategoryIds: ['guitar'],
+        },
+      },
       [],
     )
-    expect(selectEffectiveLearningSubcategoryIds(state, localUser.id)).toEqual(['guitar'])
+
+    expect(
+      selectEffectiveLearningSubcategoryIds(state, localUser.id),
+    ).toEqual(['guitar'])
   })
 
   it('добавляет subcategoryId избранного пользователя к базовому списку', () => {
@@ -297,56 +377,91 @@ describe('usersSlice — selectEffectiveLearningSubcategoryIds', () => {
       {
         ...initialState,
         mockUsers: [firstFavoriteUser],
-        localUser: { ...localUser, learningSubcategoryIds: ['guitar'] },
+        localUser: {
+          ...localUser,
+          learningSubcategoryIds: ['guitar'],
+        },
       },
       [firstFavoriteUser.id],
     )
-    expect(selectEffectiveLearningSubcategoryIds(state, localUser.id)).toEqual([
-      'guitar',
-      'public-speaking',
-    ])
+
+    expect(
+      selectEffectiveLearningSubcategoryIds(state, localUser.id),
+    ).toEqual(['guitar', 'public-speaking'])
   })
 
   it('после удаления пользователя из Favorites список возвращается к базовому', () => {
     const usersState: UsersState = {
       ...initialState,
       mockUsers: [firstFavoriteUser],
-      localUser: { ...localUser, learningSubcategoryIds: ['guitar'] },
+      localUser: {
+        ...localUser,
+        learningSubcategoryIds: ['guitar'],
+      },
     }
-    const stateWithFavorite = createRootStateWithFavorites(usersState, [firstFavoriteUser.id])
-    expect(selectEffectiveLearningSubcategoryIds(stateWithFavorite, localUser.id)).toEqual([
-      'guitar',
-      'public-speaking',
-    ])
+
+    const stateWithFavorite = createRootStateWithFavorites(
+      usersState,
+      [firstFavoriteUser.id],
+    )
+
+    expect(
+      selectEffectiveLearningSubcategoryIds(
+        stateWithFavorite,
+        localUser.id,
+      ),
+    ).toEqual(['guitar', 'public-speaking'])
 
     const stateWithoutFavorite = createRootStateWithFavorites(usersState, [])
-    expect(selectEffectiveLearningSubcategoryIds(stateWithoutFavorite, localUser.id)).toEqual([
-      'guitar',
-    ])
+
+    expect(
+      selectEffectiveLearningSubcategoryIds(
+        stateWithoutFavorite,
+        localUser.id,
+      ),
+    ).toEqual(['guitar'])
   })
 
-  it('убирает дубликаты, если несколько избранных делятся одной subcategoryId или она совпадает с базовой', () => {
+  it('убирает дубликаты подкатегорий', () => {
     const duplicateFavoriteUser: User = {
       ...mockUser,
       id: 'favorite-user-3',
-      offeredSkill: { ...mockUser.offeredSkill, subcategoryId: 'public-speaking' },
+      offeredSkill: {
+        ...mockUser.offeredSkill,
+        subcategoryId: 'public-speaking',
+      },
     }
+
     const state = createRootStateWithFavorites(
       {
         ...initialState,
-        mockUsers: [firstFavoriteUser, secondFavoriteUser, duplicateFavoriteUser],
-        localUser: { ...localUser, learningSubcategoryIds: ['time-management'] },
+        mockUsers: [
+          firstFavoriteUser,
+          secondFavoriteUser,
+          duplicateFavoriteUser,
+        ],
+        localUser: {
+          ...localUser,
+          learningSubcategoryIds: ['time-management'],
+        },
       },
-      [firstFavoriteUser.id, secondFavoriteUser.id, duplicateFavoriteUser.id],
+      [
+        firstFavoriteUser.id,
+        secondFavoriteUser.id,
+        duplicateFavoriteUser.id,
+      ],
     )
-    expect(selectEffectiveLearningSubcategoryIds(state, localUser.id)).toEqual([
-      'time-management',
-      'public-speaking',
-    ])
+
+    expect(
+      selectEffectiveLearningSubcategoryIds(state, localUser.id),
+    ).toEqual(['time-management', 'public-speaking'])
   })
 
   it('возвращает пустой массив, если пользователь не найден', () => {
     const state = createRootStateWithFavorites(initialState, [])
-    expect(selectEffectiveLearningSubcategoryIds(state, 'unknown-user')).toEqual([])
+
+    expect(
+      selectEffectiveLearningSubcategoryIds(state, 'unknown-user'),
+    ).toEqual([])
   })
 })

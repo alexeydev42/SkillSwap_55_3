@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
-
+import { listenerMiddleware } from './listenerMiddleware'
 import authReducer from './slices/authSlice'
 import catalogFiltersReducer from './slices/catalogFiltersSlice'
 import favoritesReducer from './slices/favoritesSlice'
@@ -18,6 +18,7 @@ export const store = configureStore({
     notifications: notificationsReducer,
     catalogFilters: catalogFiltersReducer,
   },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().prepend(listenerMiddleware.middleware),
 })
 
 export type RootState = ReturnType<typeof store.getState>
