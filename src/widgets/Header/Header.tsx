@@ -1,4 +1,6 @@
 import { useCallback, useState, useRef, useEffect, type FC, type MouseEventHandler } from 'react'
+import { Link } from 'react-router-dom'
+import { ROUTES } from '@/shared/lib/constants'
 import { Logo } from '@/shared/ui/Logo'
 import { SearchInput } from '@/shared/ui/SearchInput'
 import { UserHeaderControls } from './UserHeaderControls'
@@ -97,9 +99,9 @@ export const Header: FC<HeaderProps> = (props) => {
       <Logo />
 
       <nav className={styles.nav}>
-        <a href="#" className={styles.navLink}>
+        <Link to={ROUTES.ABOUT} className={styles.navLink}>
           О проекте
-        </a>
+        </Link>
 
         <div className={styles.skillsWrapper} ref={skillsRef}>
           <button

@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import usersReducer, {
   fetchUsers,
   selectAllUsers,
+  selectCatalogUsers,
   selectCurrentUser,
   selectEffectiveLearningSubcategoryIds,
   selectEffectiveLikesCount,
@@ -12,7 +13,7 @@ import usersReducer, {
 } from './usersSlice'
 import { STORAGE_KEYS } from '@/shared/lib/constants'
 import { storageService } from '@/shared/lib/storageService'
-import type { User } from '@/shared/types'
+import type { User, CatalogFilters, CatalogSort } from '@/shared/types'
 import type { RootState } from '@/store'
 
 const mockUser: User = {
@@ -463,5 +464,281 @@ describe('usersSlice — selectEffectiveLearningSubcategoryIds', () => {
     expect(
       selectEffectiveLearningSubcategoryIds(state, 'unknown-user'),
     ).toEqual([])
+  })
+})
+
+describe('usersSlice — selectCatalogUsers', () => {
+  const defaultCatalogFilters: CatalogFilters = {
+    offerType: 'all',
+    gender: 'all',
+    subcategoryIds: [],
+    cityIds: [],
+  }
+
+  // Создаёт пользователя каталога на основе общего mockUser.
+  function createCatalogUser(id: string, overrides: Partial<User> = {}): User {
+    return {
+      ...mockUser,
+      ...overrides,
+      id,
+      offeredSkill: {
+        ...mockUser.offeredSkill,
+        ...overrides.offeredSkill,
+      },
+    }
+  }
+
+  // Создаёт минимальное состояние Redux для проверки итогового селектора каталога.
+  function createCatalogRootState({
+    mockUsers,
+    localUser = null,
+    favoriteUserIds = [],
+    filters = defaultCatalogFilters,
+    sort = 'default',
+  }: {
+    mockUsers: User[]
+    localUser?: User | null
+    favoriteUserIds?: string[]
+    filters?: CatalogFilters
+    sort?: CatalogSort
+  }): RootState {
+    return {
+      users: {
+        mockUsers,
+        localUser,
+        status: 'success',
+        error: null,
+      },
+      favorites: { favoriteUserIds },
+      catalogFilters: { filters, sort },
+    } as RootState
+  }
+
+  it('в режиме all ищет выбранные подкатегории и в offeredSkill, и в «Хочу научиться»', () => {
+    const teachingMatch = createCatalogUser('teaching-match', {
+      offeredSkill: {
+        ...mockUser.offeredSkill,
+        subcategoryId: 'guitar',
+      },
+      learningSubcategoryIds: [],
+    })
+    const learningMatch = createCatalogUser('learning-match', {
+      offeredSkill: {
+        ...mockUser.offeredSkill,
+        subcategoryId: 'drawing',
+      },
+      learningSubcategoryIds: ['english'],
+    })
+    const noMatch = createCatalogUser('no-match', {
+      offeredSkill: {
+        ...mockUser.offeredSkill,
+        subcategoryId: 'cooking',
+      },
+      learningSubcategoryIds: ['public-speaking'],
+    })
+    const state = createCatalogRootState({
+      mockUsers: [teachingMatch, learningMatch, noMatch],
+      filters: {
+        offerType: 'all',
+        gender: 'all',
+        subcategoryIds: ['guitar', 'english'],
+        cityIds: [],
+      },
+    })
+
+    expect(selectCatalogUsers(state)).toEqual([teachingMatch, learningMatch])
+  })
+
+  it('в режиме teaching проверяет подкатегорию только в offeredSkill', () => {
+    const teachesGuitar = createCatalogUser('teaches-guitar', {
+      offeredSkill: {
+        ...mockUser.offeredSkill,
+        subcategoryId: 'guitar',
+      },
+      learningSubcategoryIds: [],
+    })
+    const learnsGuitar = createCatalogUser('learns-guitar', {
+      learningSubcategoryIds: ['guitar'],
+    })
+    const state = createCatalogRootState({
+      mockUsers: [teachesGuitar, learnsGuitar],
+      filters: {
+        offerType: 'teaching',
+        gender: 'all',
+        subcategoryIds: ['guitar'],
+        cityIds: [],
+      },
+    })
+
+    expect(selectCatalogUsers(state)).toEqual([teachesGuitar])
+  })
+
+  it('в режиме learning проверяет подкатегорию только в «Хочу научиться»', () => {
+    const teachesGuitar = createCatalogUser('teaches-guitar', {
+      offeredSkill: {
+        ...mockUser.offeredSkill,
+        subcategoryId: 'guitar',
+      },
+      learningSubcategoryIds: [],
+    })
+    const learnsGuitar = createCatalogUser('learns-guitar', {
+      learningSubcategoryIds: ['guitar'],
+    })
+    const state = createCatalogRootState({
+      mockUsers: [teachesGuitar, learnsGuitar],
+      filters: {
+        offerType: 'learning',
+        gender: 'all',
+        subcategoryIds: ['guitar'],
+        cityIds: [],
+      },
+    })
+
+    expect(selectCatalogUsers(state)).toEqual([learnsGuitar])
+  })
+
+  it('объединяет несколько выбранных городов по правилу OR', () => {
+    const moscowUser = createCatalogUser('moscow-user', {
+      cityId: 'moscow',
+    })
+    const kazanUser = createCatalogUser('kazan-user', {
+      cityId: 'kazan',
+    })
+    const petersburgUser = createCatalogUser('petersburg-user', {
+      cityId: 'saint-petersburg',
+    })
+    const state = createCatalogRootState({
+      mockUsers: [moscowUser, kazanUser, petersburgUser],
+      filters: {
+        ...defaultCatalogFilters,
+        cityIds: ['moscow', 'kazan'],
+      },
+    })
+
+    expect(selectCatalogUsers(state)).toEqual([moscowUser, kazanUser])
+  })
+
+  it('объединяет подкатегорию, город и пол по правилу AND', () => {
+    const fullMatch = createCatalogUser('full-match', {
+      gender: 'female',
+      cityId: 'moscow',
+      offeredSkill: {
+        ...mockUser.offeredSkill,
+        subcategoryId: 'guitar',
+      },
+    })
+    const wrongCity = createCatalogUser('wrong-city', {
+      gender: 'female',
+      cityId: 'kazan',
+      offeredSkill: {
+        ...mockUser.offeredSkill,
+        subcategoryId: 'guitar',
+      },
+    })
+    const wrongGender = createCatalogUser('wrong-gender', {
+      gender: 'male',
+      cityId: 'moscow',
+      offeredSkill: {
+        ...mockUser.offeredSkill,
+        subcategoryId: 'guitar',
+      },
+    })
+    const wrongSubcategory = createCatalogUser('wrong-subcategory', {
+      gender: 'female',
+      cityId: 'moscow',
+      offeredSkill: {
+        ...mockUser.offeredSkill,
+        subcategoryId: 'drawing',
+      },
+    })
+    const state = createCatalogRootState({
+      mockUsers: [fullMatch, wrongCity, wrongGender, wrongSubcategory],
+      filters: {
+        offerType: 'teaching',
+        gender: 'female',
+        subcategoryIds: ['guitar'],
+        cityIds: ['moscow'],
+      },
+    })
+
+    expect(selectCatalogUsers(state)).toEqual([fullMatch])
+  })
+
+  it('учитывает вычисляемую подкатегорию локального пользователя из Favorites', () => {
+    const favoriteUser = createCatalogUser('favorite-user', {
+      offeredSkill: {
+        ...mockUser.offeredSkill,
+        subcategoryId: 'guitar',
+      },
+      learningSubcategoryIds: [],
+    })
+    const currentLocalUser = createCatalogUser('local-user', {
+      name: 'Локальный пользователь',
+      learningSubcategoryIds: [],
+    })
+    const state = createCatalogRootState({
+      mockUsers: [favoriteUser],
+      localUser: currentLocalUser,
+      favoriteUserIds: [favoriteUser.id],
+      filters: {
+        offerType: 'learning',
+        gender: 'all',
+        subcategoryIds: ['guitar'],
+        cityIds: [],
+      },
+    })
+
+    expect(selectCatalogUsers(state)).toEqual([currentLocalUser])
+  })
+
+  it('сначала фильтрует пользователей, затем сортирует совпавших от новых к старым', () => {
+    const olderMatch = createCatalogUser('older-match', {
+      gender: 'female',
+      createdAt: '2024-01-01T00:00:00.000Z',
+    })
+    const excludedNewestUser = createCatalogUser('excluded-newest-user', {
+      gender: 'male',
+      createdAt: '2026-01-01T00:00:00.000Z',
+    })
+    const newerMatch = createCatalogUser('newer-match', {
+      gender: 'female',
+      createdAt: '2025-01-01T00:00:00.000Z',
+    })
+    const originalUsers = [olderMatch, excludedNewestUser, newerMatch]
+    const state = createCatalogRootState({
+      mockUsers: originalUsers,
+      filters: {
+        ...defaultCatalogFilters,
+        gender: 'female',
+      },
+      sort: 'newest',
+    })
+
+    expect(selectCatalogUsers(state)).toEqual([newerMatch, olderMatch])
+    expect(state.users.mockUsers).toEqual(originalUsers)
+  })
+
+  it('при сортировке default сохраняет исходный порядок пользователей', () => {
+    const firstUser = createCatalogUser('first-user', {
+      createdAt: '2024-01-01T00:00:00.000Z',
+    })
+    const secondUser = createCatalogUser('second-user', {
+      createdAt: '2026-01-01T00:00:00.000Z',
+    })
+    const state = createCatalogRootState({
+      mockUsers: [firstUser, secondUser],
+    })
+
+    expect(selectCatalogUsers(state)).toEqual([firstUser, secondUser])
+  })
+
+  it('возвращает тот же результат при неизменившихся входных данных', () => {
+    const state = createCatalogRootState({
+      mockUsers: [createCatalogUser('first-user')],
+    })
+    const firstResult = selectCatalogUsers(state)
+    const secondResult = selectCatalogUsers(state)
+
+    expect(secondResult).toBe(firstResult)
   })
 })
