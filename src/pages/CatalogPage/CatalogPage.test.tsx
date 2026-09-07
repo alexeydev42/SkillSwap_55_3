@@ -9,6 +9,7 @@ import catalogFiltersReducer, {
   defaultSort,
 } from '@/store/slices/catalogFiltersSlice'
 import usersReducer from '@/store/slices/usersSlice'
+import favoritesReducer from '@/store/slices/favoritesSlice'
 import type { Category, City, User } from '@/shared/types'
 import type { UserSkillsSectionProps } from '@/widgets/UserSkillsSection'
 
@@ -98,6 +99,7 @@ function renderCatalogPage(mockUsers: User[], localUser: User | null = null) {
     reducer: {
       users: usersReducer,
       catalogFilters: catalogFiltersReducer,
+      favorites: favoritesReducer,
     },
     preloadedState: {
       users: {
@@ -109,6 +111,9 @@ function renderCatalogPage(mockUsers: User[], localUser: User | null = null) {
       catalogFilters: {
         filters: defaultFilters,
         sort: defaultSort,
+      },
+      favorites: {
+        favoriteUserIds: [],
       },
     },
   })
