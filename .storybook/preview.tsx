@@ -1,4 +1,5 @@
 import type { Preview } from '@storybook/react-vite'
+import { MemoryRouter } from 'react-router-dom'
 
 import { StoreProvider } from '../src/app/providers/StoreProvider'
 import '../src/app/styles/global.css'
@@ -6,9 +7,11 @@ import '../src/app/styles/global.css'
 const preview: Preview = {
   decorators: [
     (Story) => (
-      <StoreProvider>
-        <Story />
-      </StoreProvider>
+      <MemoryRouter>
+        <StoreProvider>
+          <Story />
+        </StoreProvider>
+      </MemoryRouter>
     ),
   ],
   parameters: {
