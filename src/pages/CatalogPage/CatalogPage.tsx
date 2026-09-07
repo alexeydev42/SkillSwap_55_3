@@ -12,7 +12,6 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { resetCatalogFilters, setCatalogFilters, setCatalogSort } from '@/store/slices/catalogFiltersSlice'
 import {
   buildAppliedCatalogFilters,
-  filterCatalogUsers,
   getActiveCatalogFiltersCount,
   getNewCatalogUsers,
   getPopularCatalogUsers,
@@ -21,6 +20,8 @@ import {
   removeCatalogFilter,
 } from './CatalogPage.utils'
 import styles from './CatalogPage.module.css'
+
+import { selectCatalogUsers } from '@/store/slices/usersSlice'
 
 export interface CatalogPageHeaderUser {
   userName: string
@@ -73,6 +74,7 @@ export const CatalogPage = ({
   const dispatch = useAppDispatch()
   // Хранит все выбранные фильтры каталога.
   const filters = useAppSelector((state) => state.catalogFilters.filters)
+  const catalogUsers =useAppSelector(selectCatalogUsers)
   // Хранит единственное открытое меню Header.
   const [openHeaderMenu, setOpenHeaderMenu] = useState<HeaderMenu | null>(() =>
     getInitialHeaderMenu(
@@ -110,10 +112,10 @@ export const CatalogPage = ({
   // Фильтрует пользователей и преобразует результат в карточки.
   const filteredResults = useMemo(
     () =>
-      filterCatalogUsers(users, filters).map((user) =>
-        mapUserToCatalogCard(user, categories, cities),
-      ),
-    [users, filters, categories, cities],
+      catalogUsers.map((user)=>
+      mapUserToCatalogCard(user, categories, cities),
+  ),
+  [catalogUsers, categories, cities],
   )
   // Подсчитывает количество выбранных фильтров.
   const filtersCount = useMemo(() => getActiveCatalogFiltersCount(filters), [filters])

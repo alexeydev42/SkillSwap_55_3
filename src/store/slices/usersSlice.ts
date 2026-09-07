@@ -3,8 +3,9 @@ import { fetchUsers as fetchUsersApi } from '@/api/users'
 import { STORAGE_KEYS } from '@/shared/lib/constants'
 import { storageService } from '@/shared/lib/storageService'
 import { selectFavoriteUserIds } from '@/store/slices/favoritesSlice'
-import type { User } from '@/shared/types'
+import type { CatalogFilters, User } from '@/shared/types'
 import type { RootState } from '@/store'
+
 export interface UsersState {
   mockUsers: User[]
   localUser: User | null
@@ -21,6 +22,7 @@ const initialState: UsersState = {
 }
 //Разовый запрос (без фонового refresh-механизма) — обычно вызывается один раз при старте приложения/каталога.
 export const fetchUsers = createAsyncThunk<User[]>('users/fetchUsers', async () => fetchUsersApi())
+
 const usersSlice = createSlice({
   name: 'users',
   initialState,
@@ -143,6 +145,23 @@ export const selectEffectiveLikesCount = createSelector(
  * навыков всех пользователей, находящихся в избранном.
  * Для мокового пользователя возвращает исходный список без вычислений.
  */
+
+const getEffectiveLearningSubcategoryIds = (
+  user: User,
+  localUser: User | null,
+  favoriteUserIds: string[],
+  allUsers: User[],
+): string[] => {
+  if (!localUser || user.id !== localUser.id) {
+    return user.learningSubcategoryIds
+  }
+
+  const favoriteSubcategoryIds = allUsers
+    .filter((favoriteUser) => favoriteUserIds.includes(favoriteUser.id))
+    .map((favoriteUser) => favoriteUser.offeredSkill.subcategoryId)
+
+  return Array.from(new Set([...user.learningSubcategoryIds, ...favoriteSubcategoryIds]))
+}
 export const selectEffectiveLearningSubcategoryIds = createSelector(
   [selectUserById, selectLocalUser, selectFavoriteUserIds, selectAllUsers],
   (user, localUser, favoriteUserIds, allUsers) => {
@@ -158,10 +177,93 @@ export const selectEffectiveLearningSubcategoryIds = createSelector(
       .filter((favoriteUser) => favoriteUserIds.includes(favoriteUser.id))
       .map((favoriteUser) => favoriteUser.offeredSkill.subcategoryId)
 
-    return Array.from(
-      new Set([...user.learningSubcategoryIds, ...favoriteSubcategoryIds]),
-    )
+    return Array.from(new Set([...user.learningSubcategoryIds, ...favoriteSubcategoryIds]))
   },
+)
+
+/* Возвращает итоговую выдачу каталога:
+* фильтрация + сортировка.
+*
+* OR внутри одной группы:
+* - подкатегории;
+* - города.
+*
+* AND между группами:
+* - режим;
+* - подкатегории;
+* - пол;
+* - город.
+*
+* Сортировка выполняется только после фильтрации.
+*/
+export const selectCatalogUsers = createSelector(
+ [
+ selectAllUsers,
+ (state: RootState) => state.catalogFilters.filters,
+ (state: RootState) => state.catalogFilters.sort,
+ selectLocalUser,
+ selectFavoriteUserIds,
+ ],
+ (users, filters: CatalogFilters, sort, localUser, favoriteUserIds) => {
+ const filteredUsers = users.filter((user) => {
+ const effectiveLearningSubcategoryIds =
+ getEffectiveLearningSubcategoryIds(
+ user,
+localUser,
+ favoriteUserIds,
+ users,
+)
+
+// OR внутри группы подкатегорий.
+ const matchesSubcategory =
+ filters.subcategoryIds.length === 0 ||
+ filters.subcategoryIds.some((subcategoryId) => {
+ const matchesTeaching =
+ user.offeredSkill.subcategoryId === subcategoryId
+
+const matchesLearning =
+effectiveLearningSubcategoryIds.includes(subcategoryId)
+
+if (filters.offerType === 'teaching') {
+ return matchesTeaching
+ }
+
+ if (filters.offerType === 'learning') {
+return matchesLearning
+}
+
+// Режим «Все»:
+ // подкатегория должна находиться либо в offeredSkill,
+// либо в вычисляемом «Хочу научиться».
+ return matchesTeaching || matchesLearning
+ })
+
+ // OR внутри группы городов.
+ const matchesCity =
+ filters.cityIds.length === 0 ||
+ filters.cityIds.includes(user.cityId)
+
+ // Фильтр пола.
+ const matchesGender =
+ filters.gender === 'all' ||
+user.gender === filters.gender
+
+// AND между группами фильтров.
+ return matchesSubcategory && matchesCity && matchesGender
+ })
+
+// Сортировка выполняется строго ПОСЛЕ фильтрации.
+if (sort === 'newest') {
+ return [...filteredUsers].sort(
+(firstUser, secondUser) =>
+ Date.parse(secondUser.createdAt) -
+ Date.parse(firstUser.createdAt),
+ )
+ }
+
+// default — исходный порядок после фильтрации.
+return filteredUsers
+},
 )
 
 export default usersSlice.reducer
