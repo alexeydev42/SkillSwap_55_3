@@ -55,40 +55,6 @@ function getCategoryVariant(categoryId: string): SkillTagVariant {
   return CATEGORY_VARIANTS[categoryId] ?? 'more'
 }
 
-// Проверяет совпадение пользователя с выбранными навыками.
-function matchesSkills(user: User, filters: CatalogFilters): boolean {
-  if (filters.subcategoryIds.length === 0) {
-    return true
-  }
-
-  const matchesTeaching = filters.subcategoryIds.includes(user.offeredSkill.subcategoryId)
-
-  const matchesLearning = user.learningSubcategoryIds.some((subcategoryId) =>
-    filters.subcategoryIds.includes(subcategoryId),
-  )
-
-  if (filters.offerType === 'teaching') {
-    return matchesTeaching
-  }
-
-  if (filters.offerType === 'learning') {
-    return matchesLearning
-  }
-
-  return matchesTeaching || matchesLearning
-}
-
-// Фильтрует пользователей по навыкам, городам и полу.
-export function filterCatalogUsers(users: User[], filters: CatalogFilters): User[] {
-  return users.filter((user) => {
-    const matchesCity = filters.cityIds.length === 0 || filters.cityIds.includes(user.cityId)
-
-    const matchesGender = filters.gender === 'all' || user.gender === filters.gender
-
-    return matchesSkills(user, filters) && matchesCity && matchesGender
-  })
-}
-
 // Преобразует данные пользователя в props карточки каталога.
 export function mapUserToCatalogCard(
   user: User,
