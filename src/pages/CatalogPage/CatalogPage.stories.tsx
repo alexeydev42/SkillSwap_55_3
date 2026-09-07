@@ -1,5 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
+import { store } from '@/store'
+import { setMockUsers } from '@/store/slices/usersSlice'
+
 import { CatalogPage } from './CatalogPage'
 import { catalogPageMock } from './CatalogPage.mock'
 
@@ -22,6 +25,12 @@ const mockHeaderUser = {
 const meta = {
   title: 'Pages/CatalogPage',
   component: CatalogPage,
+  loaders: [
+    () => {
+      store.dispatch(setMockUsers(catalogPageMock.users))
+      return {}
+    },
+  ],
   parameters: {
     layout: 'fullscreen',
     viewport: {

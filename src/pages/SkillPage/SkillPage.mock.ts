@@ -54,6 +54,7 @@ skill: {
         city: 'Таллин',
         age: 31,
         avatarUrl: null,
+        likesCount: 24,
         canTeach: {
           label: 'Фотография',
           variant: 'creative',
@@ -74,6 +75,7 @@ skill: {
         city: 'Таллин',
         age: 27,
         avatarUrl: colorPlaceholder('c98b8b'),
+        likesCount: 33,
         canTeach: {
           label: 'Графический дизайн',
           variant: 'creative',
@@ -98,6 +100,7 @@ skill: {
         city: 'Таллин',
         age: 29,
         avatarUrl: colorPlaceholder('d6b26e'),
+        likesCount: 19,
         canTeach: {
           label: 'Испанский язык',
           variant: 'languages',
@@ -118,6 +121,7 @@ skill: {
         city: 'Новосибирск',
         age: 34,
         avatarUrl: colorPlaceholder('9a8cbd'),
+        likesCount: 41,
         canTeach: {
           label: 'Музыка',
           variant: 'creative',

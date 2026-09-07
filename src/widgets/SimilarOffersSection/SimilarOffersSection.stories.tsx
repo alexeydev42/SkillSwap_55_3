@@ -23,6 +23,7 @@ export const Default: Story = {
           city: 'Москва',
           age: 25,
           avatarUrl: null,
+          likesCount: 22,
           canTeach: {
             label: 'Английский язык',
             variant: 'languages',
@@ -47,6 +48,7 @@ export const Default: Story = {
           city: 'Санкт-Петербург',
           age: 31,
           avatarUrl: null,
+          likesCount: 35,
           canTeach: {
             label: 'Фотография',
             variant: 'creative',
@@ -71,6 +73,7 @@ export const Default: Story = {
           city: 'Казань',
           age: 28,
           avatarUrl: null,
+          likesCount: 18,
           canTeach: {
             label: 'Рисование',
             variant: 'creative',
@@ -95,6 +98,7 @@ export const Default: Story = {
           city: 'Новосибирск',
           age: 34,
           avatarUrl: null,
+          likesCount: 47,
           canTeach: {
             label: 'Музыка',
             variant: 'creative',
