@@ -8,19 +8,20 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-12);
+
 }
 
 .section {
   display: flex;
   flex-direction: column;
-  gap: var(--space-20);
+  gap: var(--space-16);
 }
 
 .heading {
   margin: 0;
   color: var(--color-text);
   font-family: var(--font-heading);
-  font-size: var(--font-size-h4);
+  font-size: var(--font-size-h3);
   font-weight: var(--font-weight-medium);
   line-height: var(--line-height-h4);
 }
@@ -29,6 +30,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-12);
+  margin-top: var(--space-2);
 }
 
 .showMore {
@@ -68,4 +70,9 @@
 
 .showMoreIconExpanded {
   transform: rotate(180deg);
+}
+
+.cityCheckbox{
+  gap: var(--space-8);
+  padding-top: 6px;
 }

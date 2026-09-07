@@ -32,13 +32,17 @@
 
 .textarea {
   width: 100%;
-  padding: var(--space-12) var(--space-20);
+  padding: var(--space-4)  var(--space-20)  var(--space-60);
   border: 0;
   outline: none;
   background: var(--color-background);
   resize: none;
-  min-height: 96px;
-  font-family: inherit;
+  max-height: 96px;
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: var(--font-size-h4);
+  line-height: var(--line-height-h4);
+  letter-spacing: var(--letter-spacing-caption);
 }
 
 .textarea::placeholder {

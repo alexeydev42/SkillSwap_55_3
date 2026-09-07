@@ -8,7 +8,7 @@
   color: var(--color-text);
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
-  letter-spacing: 0.32px;
+  letter-spacing: var(--letter-spacing-caption);
 }
 
 .input-wrapper {

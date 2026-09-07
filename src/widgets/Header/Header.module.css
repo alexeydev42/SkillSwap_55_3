@@ -1,7 +1,7 @@
 .header {
   display: flex;
   align-items: center;
-  gap: var(--space-32);
+  gap: var(--space-40);
   padding: var(--space-36) var(--space-36) var(--space-20);
   background: var(--color-background);
   position: sticky;
@@ -19,11 +19,12 @@
   display: flex;
   align-items: center;
   gap: var(--space-8);
-  font-family: var(--font-heading);
+  font-family: var(--font-body);
   font-size: var(--font-size-body);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-regular);
   color: var(--color-text);
   transition: color 0.2s;
+  line-height: var(--line-height-body);
 }
 
 .navLink:hover {
@@ -61,7 +62,7 @@
 .right {
   display: flex;
   align-items: center;
-  gap: var(--space-20);
+  gap:var(--space-20);
   margin-left: auto;
   flex-shrink: 0;
 }
@@ -74,14 +75,16 @@
 
 .loginBtn {
   height: var(--control-height);
-  padding: 0 var(--space-16);
+  padding: 0 var(--space-20);
   border: 1px solid var(--color-accent);
   border-radius: var(--radius-md);
   background: transparent;
   color: var(--color-text);
-  font-family: var(--font-heading);
+  font-family: var(--font-body);
   font-size: var(--font-size-body);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-h4);
+  letter-spacing: var(--letter-spacing-caption);
   transition: border-color 0.2s;
 }
 
@@ -91,14 +94,16 @@
 
 .registerBtn {
   height: var(--control-height);
-  padding: 0 var(--space-16);
+  padding: 0 var(--space-24);
   border-radius: var(--radius-md);
   background: var(--color-accent);
   color: var(--color-text);
-  font-family: var(--font-heading);
+  font-family: var(--font-body);
   font-size: var(--font-size-body);
-  font-weight: var(--font-weight-medium);
+  font-weight: var( --font-weight-regular);
   transition: background 0.2s;
+  line-height: var(--line-height-h3);
+  letter-spacing: var(--letter-spacing-caption);
 }
 
 .registerBtn:hover {

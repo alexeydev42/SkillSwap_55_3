@@ -1,7 +1,6 @@
 .label {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-8);
   cursor: pointer;
 }
 
@@ -80,4 +79,5 @@
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-body);
   color: var(--color-text);
+  padding: var(--space-4) 0 0;
 }

@@ -41,7 +41,7 @@
 }
 
 .bottom {
-  margin-top:var(--space-48);
+  margin-top:var(--space-32);
   margin-bottom: var(--space-32);
   font-size: var(--font-size-caption);
   font-family: var(--font-body);

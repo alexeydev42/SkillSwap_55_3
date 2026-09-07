@@ -24,10 +24,10 @@ export default function LoginPage({ hasError = false }: LoginPageProps) {
     >
       <div className={styles.formSection}>
         <div className={styles.socialButtons}>
-          <Button icon={<GoogleIcon />} className={styles.socialButton}>
+          <Button variant="secondary" icon={<GoogleIcon />} className={styles.socialButton}>
             Продолжить с Google
           </Button>
-          <Button icon={<AppleIcon />} className={styles.socialButton}>
+          <Button variant="secondary" icon={<AppleIcon />} className={styles.socialButton}>
             Продолжить с Apple
           </Button>
         </div>
