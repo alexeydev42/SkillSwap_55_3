@@ -175,6 +175,7 @@ export function FiltersSidebar({
               label={name}
               checked={filters.cityIds.includes(id)}
               onChange={(event) => handleCityChange(id, event.target.checked)}
+              className={styles.cityCheckbox}
             />
           ))}
         </div>

@@ -21,8 +21,7 @@
 }
 
 .error404image {
-  width: 460px;
-  height: 304px;
+ padding: 0 var(--space-4) var(--space-20);
 }
 
 .buttons {
@@ -46,7 +45,6 @@
 }
 
 .description {
-  margin-top: var(--space-4);
   font-size: var(--font-size-h4);
   font-family: var(--font-body);
   line-height: var(--line-height-h4);

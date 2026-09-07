@@ -64,6 +64,7 @@
   display: block;
   object-fit: cover;
   border-radius: 50%;
+  margin-left: var(--space-12);
 }
 
 .editActionLarge {
