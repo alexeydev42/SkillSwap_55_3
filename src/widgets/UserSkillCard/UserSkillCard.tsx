@@ -10,6 +10,7 @@ export interface UserSkillCardData {
   age: number
   gender?: 'male' | 'female'
   avatarUrl: string | null
+  isFavorite?: boolean
   canTeach: { label: string; variant: SkillTagVariant }
   learnTags: { label: string; variant: SkillTagVariant }[]
 }
@@ -40,6 +41,7 @@ export const UserSkillCard = ({ user, onFavoriteClick, onDetailsClick, className
         city={user.city}
         age={`${user.age} ${getAgeLabel(user.age)}`}
         withFavoriteButton
+        isFavorite={user.isFavorite}
         onFavoriteClick={onFavoriteClick}
       />
 

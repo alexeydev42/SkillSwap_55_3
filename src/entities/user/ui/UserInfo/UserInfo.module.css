@@ -42,3 +42,7 @@
   top: 0;
   right: 0;
 }
+
+.favoriteButtonActive {
+  color: var(--color-accent);
+}

@@ -1,4 +1,5 @@
 import LikeIcon from '../../../../shared/assets/icons/icon-like.svg?react'
+import LikeFilledIcon from '../../../../shared/assets/icons/icon-like-filled.svg?react';
 import { Avatar } from '../../../../shared/ui/Avatar'
 import { IconButton } from '../../../../shared/ui/IconButton'
 import styles from './UserInfo.module.css'
@@ -9,6 +10,7 @@ export interface UserInfoProps {
   city: string
   age: string
   withFavoriteButton?: boolean
+  isFavorite?: boolean
   onFavoriteClick?: () => void
 }
 
@@ -18,6 +20,7 @@ export function UserInfo({
   city,
   age,
   withFavoriteButton = false,
+  isFavorite = false,
   onFavoriteClick,
 }: UserInfoProps) {
   return (
@@ -33,9 +36,9 @@ export function UserInfo({
 
       {withFavoriteButton && (
         <IconButton
-          icon={<LikeIcon />}
-          className={styles.favoriteButton}
-          aria-label="Добавить в избранное"
+          icon={isFavorite ? <LikeFilledIcon /> : <LikeIcon />}
+          className={isFavorite ? `${styles.favoriteButton} ${styles.favoriteButtonActive}` : styles.favoriteButton}
+          aria-label={isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'}
           onClick={onFavoriteClick}
         />
       )}

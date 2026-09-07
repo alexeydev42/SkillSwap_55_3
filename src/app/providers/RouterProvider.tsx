@@ -2,12 +2,11 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { lazy, Suspense } from 'react'
 import { ROUTES } from '@/shared/lib/constants'
 import { skillPageMock } from '@/pages/SkillPage/SkillPage.mock'
-import { catalogPageMock } from '@/pages/CatalogPage/CatalogPage.mock'
 
 // Lazy-загрузка страниц — каждая страница грузится только при переходе на неё
-const CatalogPage = lazy(() =>
-  import('@/pages/CatalogPage').then((module) => ({
-    default: module.CatalogPage,
+const CatalogPageContainer = lazy(() =>
+  import('@/pages/CatalogPage/CatalogPageContainer').then((module) => ({
+    default: module.CatalogPageContainer,
   })),
 )
 const SkillPage = lazy(() =>
@@ -40,7 +39,7 @@ export function AppRouter() {
     <BrowserRouter>
       <Suspense fallback={<div>Загрузка...</div>}>
         <Routes>
-          <Route path={ROUTES.HOME} element={<CatalogPage {...catalogPageMock} />} />
+          <Route path={ROUTES.HOME} element={<CatalogPageContainer />} />
           <Route path={ROUTES.SKILL} element={<SkillPage {...skillPageMock} />} />
           <Route path={ROUTES.FAVORITES} element={<FavoritesPage />} />
           <Route path={ROUTES.LOGIN} element={<LoginPage />} />
