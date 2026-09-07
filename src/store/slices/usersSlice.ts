@@ -133,7 +133,8 @@ export const selectEffectiveLikesCount = createSelector(
     if (!user) {
       return 0
     }
-    return user.likesCount + (favoriteUserIds.includes(user.id) ? 1 : 0)
+    const baseLikes = Number(user.likesCount) || 0
+    return baseLikes + (favoriteUserIds.includes(user.id) ? 1 : 0)
   },
 )
 export default usersSlice.reducer
