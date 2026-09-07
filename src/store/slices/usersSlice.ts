@@ -2,9 +2,9 @@ import { createAsyncThunk, createSelector, createSlice, type PayloadAction } fro
 import { fetchUsers as fetchUsersApi } from '@/api/users'
 import { STORAGE_KEYS } from '@/shared/lib/constants'
 import { storageService } from '@/shared/lib/storageService'
+import { selectFavoriteUserIds } from '@/store/slices/favoritesSlice'
 import type { User } from '@/shared/types'
 import type { RootState } from '@/store'
-
 export interface UsersState {
   mockUsers: User[]
   localUser: User | null
@@ -19,10 +19,8 @@ const initialState: UsersState = {
   status: 'idle',
   error: null,
 }
-
 //Разовый запрос (без фонового refresh-механизма) — обычно вызывается один раз при старте приложения/каталога.
 export const fetchUsers = createAsyncThunk<User[]>('users/fetchUsers', async () => fetchUsersApi())
-
 const usersSlice = createSlice({
   name: 'users',
   initialState,
@@ -70,7 +68,6 @@ const usersSlice = createSlice({
       })
   },
 })
-
 export const {
   setMockUsers,
   addUser,
@@ -79,14 +76,11 @@ export const {
   setUsersStatus,
   setUsersError,
 } = usersSlice.actions
-
 // Селекторы — доступ к пользователям и статусу загрузки из компонентов.
 export const selectMockUsers = (state: RootState) => state.users.mockUsers
 export const selectLocalUser = (state: RootState) => state.users.localUser
-
 // Получает id авторизованного пользователя из текущей сессии.
 const selectAuthUserId = (state: RootState) => state.auth.session?.userId ?? null
-
 // Объединяет моковых пользователей и локального пользователя для каталога.
 export const selectAllUsers = createSelector(
   [selectMockUsers, selectLocalUser],
@@ -94,14 +88,11 @@ export const selectAllUsers = createSelector(
     if (!localUser) {
       return mockUsers
     }
-
     // Исключает возможный дубль локального пользователя из общего каталога.
     const usersWithoutDuplicate = mockUsers.filter((user) => user.id !== localUser.id)
-
     return [...usersWithoutDuplicate, localUser]
   },
 )
-
 // Возвращает локального пользователя, если его id совпадает с текущей сессией.
 export const selectCurrentUser = createSelector(
   [selectLocalUser, selectAuthUserId],
@@ -109,22 +100,18 @@ export const selectCurrentUser = createSelector(
     if (!localUser || localUser.id !== authUserId) {
       return null
     }
-
     return localUser
   },
 )
-
 // Находит пользователя по id в общем каталоге.
 export const selectUserById = createSelector(
   [selectAllUsers, (_state: RootState, userId: string) => userId],
   (users, userId) => users.find((user) => user.id === userId) ?? null,
 )
-
 // Сортирует пользователей по количеству лайков от большего к меньшему.
 export const selectPopularUsers = createSelector([selectAllUsers], (users) =>
   [...users].sort((firstUser, secondUser) => secondUser.likesCount - firstUser.likesCount),
 )
-
 // Сортирует пользователей по дате создания от новых к старым.
 export const selectNewUsers = createSelector([selectAllUsers], (users) =>
   [...users].sort(
@@ -133,5 +120,21 @@ export const selectNewUsers = createSelector([selectAllUsers], (users) =>
 )
 export const selectUsersStatus = (state: RootState) => state.users.status
 export const selectUsersError = (state: RootState) => state.users.error
-
+/**
+ * Вычисляет актуальное количество лайков пользователя: базовый likesCount
+ * (из users.json / локального пользователя) + 1, если пользователь есть в
+ * Favorites. Отдельного стейта для overrides лайков нигде не хранится —
+ * значение всегда пересчитывается заново из users + favorites, поэтому оно
+ * корректно восстанавливается и после F5.
+ */
+export const selectEffectiveLikesCount = createSelector(
+  [selectUserById, selectFavoriteUserIds],
+  (user, favoriteUserIds) => {
+    if (!user) {
+      return 0
+    }
+    const baseLikes = Number(user.likesCount) || 0
+    return baseLikes + (favoriteUserIds.includes(user.id) ? 1 : 0)
+  },
+)
 export default usersSlice.reducer
