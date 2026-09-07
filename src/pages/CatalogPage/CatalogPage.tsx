@@ -9,7 +9,18 @@ import { AppliedFiltersBar } from '@/widgets/AppliedFiltersBar'
 import { SortButton } from '@/widgets/SortButton'
 import { UserSkillCard } from '@/widgets/UserSkillCard'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
-import { resetCatalogFilters, setCatalogFilters, setCatalogSort } from '@/store/slices/catalogFiltersSlice'
+import {
+  resetCatalogFilters,
+  setCatalogFilters,
+  setCatalogSort,
+} from '@/store/slices/catalogFiltersSlice'
+import { selectFavoriteUserIds } from '@/store/slices/favoritesSlice'
+import {
+  selectEffectiveLikesCount,
+  selectEffectiveLearningSubcategoryIds,
+  selectCatalogUsers,
+  selectNewUsers,
+} from '@/store/slices/usersSlice'
 import {
   buildAppliedCatalogFilters,
   getActiveCatalogFiltersCount,
@@ -18,7 +29,7 @@ import {
   mapUserToCatalogCard,
   removeCatalogFilter,
 } from './CatalogPage.utils'
-import { selectCatalogUsers, selectNewUsers } from '@/store/slices/usersSlice'
+
 import styles from './CatalogPage.module.css'
 
 export interface CatalogPageHeaderUser {
@@ -77,14 +88,27 @@ export const CatalogPage = ({
   // Хранит все выбранные фильтры каталога.
   const filters = useAppSelector((state) => state.catalogFilters.filters)
 
+  // Список id пользователей, находящихся в избранном.
+  const favoriteUserIds = useAppSelector(selectFavoriteUserIds)
+  // Строит карту "id пользователя → его эффективный список learningSubcategoryIds".
+  const effectiveLearningSubcategoryIdsByUserId = useAppSelector((state) =>
+    Object.fromEntries(
+      users.map((user) => [user.id, selectEffectiveLearningSubcategoryIds(state, user.id)]),
+    ),
+  )
+  // Строит карту "id пользователя → его эффективное количество лайков".
+  const effectiveLikesCountByUserId = useAppSelector((state) =>
+    Object.fromEntries(users.map((user) => [user.id, selectEffectiveLikesCount(state, user.id)])),
+  )
+
   // Получает готовую отфильтрованную и отсортированную выдачу каталога.
-  const catalogUsers =useAppSelector(selectCatalogUsers)
+  const catalogUsers = useAppSelector(selectCatalogUsers)
 
   // Получает пользователей, заранее отсортированных от новых к старым.
-const newUsers = useAppSelector(selectNewUsers)
+  const newUsers = useAppSelector(selectNewUsers)
 
-// Хранит только состояние раскрытия секции «Новое».
-const [isNewExpanded, setIsNewExpanded] = useState(false)
+  // Хранит только состояние раскрытия секции «Новое».
+  const [isNewExpanded, setIsNewExpanded] = useState(false)
 
   // Хранит единственное открытое меню Header.
   const [openHeaderMenu, setOpenHeaderMenu] = useState<HeaderMenu | null>(() =>
@@ -97,27 +121,72 @@ const [isNewExpanded, setIsNewExpanded] = useState(false)
   // Подготавливает карточки для секции «Популярное».
   const popularItems = useMemo(
     () =>
-      getPopularCatalogUsers(users, 3).map((user) =>
-        mapUserToCatalogCard(user, categories, cities),
+      getPopularCatalogUsers(users, 3, effectiveLikesCountByUserId).map((user) =>
+        mapUserToCatalogCard(
+          user,
+          categories,
+          cities,
+          favoriteUserIds.includes(user.id),
+          effectiveLikesCountByUserId[user.id] ?? user.likesCount,
+          effectiveLearningSubcategoryIdsByUserId[user.id] ?? user.learningSubcategoryIds,
+        ),
       ),
-    [users, categories, cities],
+    [
+      users,
+      categories,
+      cities,
+      favoriteUserIds,
+      effectiveLearningSubcategoryIdsByUserId,
+      effectiveLikesCountByUserId,
+    ],
   )
   // Ограничивает секцию тремя или девятью новейшими пользователями
-// и преобразует их в данные карточек.
-const newItems = useMemo(() => {
-  const limit = isNewExpanded
-    ? NEW_USERS_EXPANDED_LIMIT
-    : NEW_USERS_COLLAPSED_LIMIT
+  // и преобразует их в данные карточек.
+  const newItems = useMemo(() => {
+    const limit = isNewExpanded ? NEW_USERS_EXPANDED_LIMIT : NEW_USERS_COLLAPSED_LIMIT
 
-  return newUsers
-    .slice(0, limit)
-    .map((user) => mapUserToCatalogCard(user, categories, cities))
-}, [newUsers, isNewExpanded, categories, cities])
-
+    return newUsers
+      .slice(0, limit)
+      .map((user) =>
+        mapUserToCatalogCard(
+          user,
+          categories,
+          cities,
+          favoriteUserIds.includes(user.id),
+          effectiveLikesCountByUserId[user.id] ?? user.likesCount,
+          effectiveLearningSubcategoryIdsByUserId[user.id] ?? user.learningSubcategoryIds,
+        ),
+      )
+  }, [
+    newUsers,
+    isNewExpanded,
+    categories,
+    cities,
+    favoriteUserIds,
+    effectiveLikesCountByUserId,
+    effectiveLearningSubcategoryIdsByUserId,
+  ])
   // Подготавливает карточки для секции «Рекомендуем».
   const recommendedItems = useMemo(
-    () => users.map((user) => mapUserToCatalogCard(user, categories, cities)),
-    [users, categories, cities],
+    () =>
+      users.map((user) =>
+        mapUserToCatalogCard(
+          user,
+          categories,
+          cities,
+          favoriteUserIds.includes(user.id),
+          effectiveLikesCountByUserId[user.id] ?? user.likesCount,
+          effectiveLearningSubcategoryIdsByUserId[user.id] ?? user.learningSubcategoryIds,
+        ),
+      ),
+    [
+      users,
+      categories,
+      cities,
+      favoriteUserIds,
+      effectiveLearningSubcategoryIdsByUserId,
+      effectiveLikesCountByUserId,
+    ],
   )
   // Проверяет наличие выбранных фильтров.
   const isFiltered = useMemo(() => hasActiveCatalogFilters(filters), [filters])
@@ -129,10 +198,24 @@ const newItems = useMemo(() => {
   // Фильтрует пользователей и преобразует результат в карточки.
   const filteredResults = useMemo(
     () =>
-      catalogUsers.map((user)=>
-      mapUserToCatalogCard(user, categories, cities),
-  ),
-  [catalogUsers, categories, cities],
+      catalogUsers.map((user) =>
+        mapUserToCatalogCard(
+          user,
+          categories,
+          cities,
+          favoriteUserIds.includes(user.id),
+          effectiveLikesCountByUserId[user.id] ?? user.likesCount,
+          effectiveLearningSubcategoryIdsByUserId[user.id] ?? user.learningSubcategoryIds,
+        ),
+      ),
+    [
+      catalogUsers,
+      categories,
+      cities,
+      favoriteUserIds,
+      effectiveLikesCountByUserId,
+      effectiveLearningSubcategoryIdsByUserId,
+    ],
   )
   // Подсчитывает количество выбранных фильтров.
   const filtersCount = useMemo(() => getActiveCatalogFiltersCount(filters), [filters])
@@ -238,7 +321,12 @@ const newItems = useMemo(() => {
                 onFavoriteClick={onFavoriteClick}
                 onDetailsClick={onDetailsClick}
               />
-              <RecommendedSection items={recommendedItems} isLoading={false} />
+              <RecommendedSection
+                items={recommendedItems}
+                isLoading={false}
+                onFavoriteClick={onFavoriteClick}
+                onDetailsClick={onDetailsClick}
+              />
             </div>
           )}
         </div>

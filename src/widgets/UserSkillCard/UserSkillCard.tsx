@@ -10,6 +10,8 @@ export interface UserSkillCardData {
   age: number
   gender?: 'male' | 'female'
   avatarUrl: string | null
+  isFavorite?: boolean
+  likesCount: number
   canTeach: { label: string; variant: SkillTagVariant }
   learnTags: { label: string; variant: SkillTagVariant }[]
 }
@@ -34,14 +36,16 @@ function getAgeLabel(age: number): string {
 export const UserSkillCard = ({ user, onFavoriteClick, onDetailsClick, className }: UserSkillCardProps) => {
   return (
     <div className={`${styles['card']} ${className ?? styles.default}`}>
-      <UserInfo
-        avatar={user.avatarUrl ?? ''}
-        name={user.name}
-        city={user.city}
-        age={`${user.age} ${getAgeLabel(user.age)}`}
-        withFavoriteButton
-        onFavoriteClick={onFavoriteClick}
-      />
+    <UserInfo
+      avatar={user.avatarUrl ?? ''}
+      name={user.name}
+      city={user.city}
+      age={`${user.age} ${getAgeLabel(user.age)}`}
+      withFavoriteButton
+      isFavorite={user.isFavorite}
+      likesCount={user.likesCount}
+      onFavoriteClick={onFavoriteClick}
+    />
 
       <SkillTagsBlock canTeach={user.canTeach} wantsToLearn={user.learnTags} />
 

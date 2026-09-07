@@ -60,12 +60,15 @@ export function mapUserToCatalogCard(
   user: User,
   categories: Category[],
   cities: City[],
+  isFavorite: boolean,
+  effectiveLikesCount: number,
+  effectiveLearningSubcategoryIds: string[],
 ): UserSkillsSectionItem {
   const city = cities.find(({ id }) => id === user.cityId)
 
   const offeredSubcategory = findSubcategory(categories, user.offeredSkill.subcategoryId)
 
-  const learnTags = user.learningSubcategoryIds.flatMap((subcategoryId) => {
+  const learnTags = effectiveLearningSubcategoryIds.flatMap((subcategoryId) => {
     const subcategoryData = findSubcategory(categories, subcategoryId)
 
     if (!subcategoryData) {
@@ -87,6 +90,8 @@ export function mapUserToCatalogCard(
     age: calculateAge(user.birthDate),
     gender: user.gender === 'preferNotToSay' ? undefined : user.gender,
     avatarUrl: user.avatarUrl,
+    isFavorite,
+    likesCount: effectiveLikesCount,
     canTeach: {
       label: offeredSubcategory?.subcategory.name ?? user.offeredSkill.title,
       variant: getCategoryVariant(user.offeredSkill.categoryId),
@@ -198,18 +203,16 @@ export function removeCatalogFilter(filters: CatalogFilters, filterId: string): 
 }
 
 // Сортирует пользователей по количеству добавлений в избранное.
-export function getPopularCatalogUsers(users: User[], limit: number): User[] {
-  return [...users]
-    .sort((firstUser, secondUser) => secondUser.likesCount - firstUser.likesCount)
-    .slice(0, limit)
-}
-
-// Сортирует пользователей по дате создания предложения.
-export function getNewCatalogUsers(users: User[], limit: number): User[] {
+export function getPopularCatalogUsers(
+  users: User[],
+  limit: number,
+  effectiveLikesCountByUserId: Record<string, number>,
+): User[] {
   return [...users]
     .sort(
       (firstUser, secondUser) =>
-        new Date(secondUser.createdAt).getTime() - new Date(firstUser.createdAt).getTime(),
+        (effectiveLikesCountByUserId[secondUser.id] ?? secondUser.likesCount) -
+        (effectiveLikesCountByUserId[firstUser.id] ?? firstUser.likesCount),
     )
     .slice(0, limit)
 }

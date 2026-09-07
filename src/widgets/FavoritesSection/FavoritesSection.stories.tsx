@@ -43,6 +43,7 @@ const users: FavoriteUser[] = [
     city: 'Москва',
     age: 29,
     avatarUrl: '/images/users/user-001/avatar.webp',
+    likesCount: 27,
     canTeach: { label: 'Французский язык', variant: 'languages' },
     learnTags: [
       { label: 'Фотография', variant: 'creative' },
@@ -55,6 +56,7 @@ const users: FavoriteUser[] = [
     city: 'Казань',
     age: 41,
     avatarUrl: '/images/users/user-001/avatar.webp',
+    likesCount: 15,
     canTeach: { label: 'Программирование', variant: 'education' },
     learnTags: [
       { label: 'Испанский язык', variant: 'languages' },
@@ -67,6 +69,7 @@ const users: FavoriteUser[] = [
     city: 'Новосибирск',
     age: 26,
     avatarUrl: '/images/users/user-001/avatar.webp',
+    likesCount: 42,
     canTeach: { label: 'Графический дизайн', variant: 'creative' },
     learnTags: [
       { label: 'Финансовая грамотность', variant: 'more' },
@@ -79,6 +82,7 @@ const users: FavoriteUser[] = [
     city: 'Екатеринбург',
     age: 37,
     avatarUrl: '/images/users/user-001/avatar.webp',
+    likesCount: 8,
     canTeach: { label: 'Шахматы', variant: 'more' },
     learnTags: [
       { label: 'Веб-разработка', variant: 'business' },
@@ -91,6 +95,7 @@ const users: FavoriteUser[] = [
     city: 'Нижний Новгород',
     age: 32,
     avatarUrl: '/images/users/user-001/avatar.webp',
+    likesCount: 36,
     canTeach: { label: 'Маркетинг', variant: 'business' },
     learnTags: [
       { label: 'Медитация', variant: 'health' },

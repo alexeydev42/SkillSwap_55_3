@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { fn } from 'storybook/test'
 
 import { RecommendedSection } from './RecommendedSection'
 import type { UserSkillsSectionItem } from '@/widgets/UserSkillsSection'
@@ -10,6 +11,7 @@ const items: UserSkillsSectionItem[] = [
     city: 'Кемерово',
     age: 30,
     avatarUrl: 'https://randomuser.me/api/portraits/women/23.jpg',
+    likesCount: 45,
     canTeach: { label: 'Игра на барабанах', variant: 'creative' },
     learnTags: [
       { label: 'Тайм менеджмент', variant: 'more' },
@@ -24,6 +26,7 @@ const items: UserSkillsSectionItem[] = [
     city: 'Владивосток',
     age: 25,
     avatarUrl: 'https://randomuser.me/api/portraits/women/24.jpg',
+    likesCount: 38,
     canTeach: { label: 'Игра на барабанах', variant: 'creative' },
     learnTags: [
       { label: 'Тайм менеджмент', variant: 'more' },
@@ -38,6 +41,7 @@ const items: UserSkillsSectionItem[] = [
     city: 'Сочи',
     age: 31,
     avatarUrl: 'https://randomuser.me/api/portraits/women/25.jpg',
+    likesCount: 52,
     canTeach: { label: 'Игра на барабанах', variant: 'creative' },
     learnTags: [
       { label: 'Тайм менеджмент', variant: 'more' },
@@ -52,6 +56,7 @@ const items: UserSkillsSectionItem[] = [
     city: 'Красноярск',
     age: 28,
     avatarUrl: 'https://randomuser.me/api/portraits/women/26.jpg',
+    likesCount: 29,
     canTeach: { label: 'Игра на барабанах', variant: 'creative' },
     learnTags: [
       { label: 'Тайм менеджмент', variant: 'more' },
@@ -66,6 +71,7 @@ const items: UserSkillsSectionItem[] = [
     city: 'Иркутск',
     age: 36,
     avatarUrl: 'https://randomuser.me/api/portraits/men/27.jpg',
+    likesCount: 61,
     canTeach: { label: 'Игра на барабанах', variant: 'creative' },
     learnTags: [
       { label: 'Тайм менеджмент', variant: 'more' },
@@ -80,6 +86,7 @@ const items: UserSkillsSectionItem[] = [
     city: 'Абакан',
     age: 24,
     avatarUrl: 'https://randomuser.me/api/portraits/women/28.jpg',
+    likesCount: 17,
     canTeach: { label: 'Игра на барабанах', variant: 'creative' },
     learnTags: [
       { label: 'Тайм менеджмент', variant: 'more' },
@@ -94,6 +101,10 @@ const meta = {
   title: 'Widgets/RecommendedSection',
   component: RecommendedSection,
   tags: ['autodocs'],
+  args: {
+    onFavoriteClick: fn(),
+    onDetailsClick: fn(),
+  },
 } satisfies Meta<typeof RecommendedSection>
 
 export default meta
