@@ -9,6 +9,10 @@ export interface RecommendedSectionProps {
   items: UserSkillsSectionItem[]
   /** Показывать ли Spinner (VERST-15) под сеткой карточек. */
   isLoading: boolean
+  /** Клик по сердечку конкретной карточки — пробрасывается наружу. */
+  onFavoriteClick: (id: string) => void
+  /** Клик по кнопке «Подробнее» конкретной карточки — пробрасывается наружу. */
+  onDetailsClick: (id: string) => void
 }
 
 /**
@@ -18,15 +22,20 @@ export interface RecommendedSectionProps {
  * загрузки поверх готовой секции. Получение данных, IntersectionObserver,
  * пагинация и бесконечная прокрутка на этом этапе не реализуются.
  */
-export function RecommendedSection({ items, isLoading }: RecommendedSectionProps) {
+export function RecommendedSection({
+  items,
+  isLoading,
+  onFavoriteClick,
+  onDetailsClick,
+}: RecommendedSectionProps) {
   return (
     <div className={styles.section}>
       <UserSkillsSection
         title="Рекомендуем"
         items={items}
         showViewAll={false}
-        onFavoriteClick={() => undefined}
-        onDetailsClick={() => undefined}
+        onFavoriteClick={onFavoriteClick}
+        onDetailsClick={onDetailsClick}
       />
       {isLoading && (
         <div className={styles.spinnerWrapper}>
