@@ -12,14 +12,13 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { resetCatalogFilters, setCatalogFilters, setCatalogSort } from '@/store/slices/catalogFiltersSlice'
 import {
   buildAppliedCatalogFilters,
-  filterCatalogUsers,
   getActiveCatalogFiltersCount,
   getPopularCatalogUsers,
   hasActiveCatalogFilters,
   mapUserToCatalogCard,
   removeCatalogFilter,
 } from './CatalogPage.utils'
-import { selectNewUsers } from '@/store/slices/usersSlice'
+import { selectCatalogUsers, selectNewUsers } from '@/store/slices/usersSlice'
 import styles from './CatalogPage.module.css'
 
 export interface CatalogPageHeaderUser {
@@ -78,6 +77,9 @@ export const CatalogPage = ({
   // Хранит все выбранные фильтры каталога.
   const filters = useAppSelector((state) => state.catalogFilters.filters)
 
+  // Получает готовую отфильтрованную и отсортированную выдачу каталога.
+  const catalogUsers =useAppSelector(selectCatalogUsers)
+
   // Получает пользователей, заранее отсортированных от новых к старым.
 const newUsers = useAppSelector(selectNewUsers)
 
@@ -111,6 +113,7 @@ const newItems = useMemo(() => {
     .slice(0, limit)
     .map((user) => mapUserToCatalogCard(user, categories, cities))
 }, [newUsers, isNewExpanded, categories, cities])
+
   // Подготавливает карточки для секции «Рекомендуем».
   const recommendedItems = useMemo(
     () => users.map((user) => mapUserToCatalogCard(user, categories, cities)),
@@ -126,10 +129,10 @@ const newItems = useMemo(() => {
   // Фильтрует пользователей и преобразует результат в карточки.
   const filteredResults = useMemo(
     () =>
-      filterCatalogUsers(users, filters).map((user) =>
-        mapUserToCatalogCard(user, categories, cities),
-      ),
-    [users, filters, categories, cities],
+      catalogUsers.map((user)=>
+      mapUserToCatalogCard(user, categories, cities),
+  ),
+  [catalogUsers, categories, cities],
   )
   // Подсчитывает количество выбранных фильтров.
   const filtersCount = useMemo(() => getActiveCatalogFiltersCount(filters), [filters])
