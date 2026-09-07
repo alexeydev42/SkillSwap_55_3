@@ -23,7 +23,7 @@
   letter-spacing: -0.264px;
 }
 
-.userInfo:has(> .favoriteButton) .name {
+.userInfo:has(> .favoriteControl) .name {
   font-size: var(--font-size-h3);
   line-height: var(--line-height-h3);
   letter-spacing: -0.22px;
@@ -37,10 +37,26 @@
   line-height: 16px;
 }
 
-.favoriteButton {
+.favoriteControl {
   position: absolute;
   top: 0;
   right: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.likesCount {
+  color: var(--color-caption);
+  font-family: var(--font-body);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-caption);
+  letter-spacing: var(--letter-spacing-caption);
+}
+
+.favoriteButton {
+  position: static;
 }
 
 .favoriteButtonActive {

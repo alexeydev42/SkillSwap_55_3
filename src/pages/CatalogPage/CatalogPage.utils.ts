@@ -95,6 +95,7 @@ export function mapUserToCatalogCard(
   categories: Category[],
   cities: City[],
   isFavorite: boolean,
+  effectiveLikesCount: number,
   effectiveLearningSubcategoryIds: string[],
 ): UserSkillsSectionItem {
   const city = cities.find(({ id }) => id === user.cityId)
@@ -124,6 +125,7 @@ export function mapUserToCatalogCard(
     gender: user.gender === 'preferNotToSay' ? undefined : user.gender,
     avatarUrl: user.avatarUrl,
     isFavorite,
+    likesCount: effectiveLikesCount,
     canTeach: {
       label: offeredSubcategory?.subcategory.name ?? user.offeredSkill.title,
       variant: getCategoryVariant(user.offeredSkill.categoryId),

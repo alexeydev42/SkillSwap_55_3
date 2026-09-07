@@ -11,6 +11,7 @@ export interface UserInfoProps {
   age: string
   withFavoriteButton?: boolean
   isFavorite?: boolean
+  likesCount?: number
   onFavoriteClick?: () => void
 }
 
@@ -21,6 +22,7 @@ export function UserInfo({
   age,
   withFavoriteButton = false,
   isFavorite = false,
+  likesCount,
   onFavoriteClick,
 }: UserInfoProps) {
   return (
@@ -35,12 +37,15 @@ export function UserInfo({
       </div>
 
       {withFavoriteButton && (
-        <IconButton
-          icon={isFavorite ? <LikeFilledIcon /> : <LikeIcon />}
-          className={isFavorite ? `${styles.favoriteButton} ${styles.favoriteButtonActive}` : styles.favoriteButton}
-          aria-label={isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'}
-          onClick={onFavoriteClick}
-        />
+        <div className={styles.favoriteControl}>
+          <span className={styles.likesCount}>{likesCount ?? 0}</span>
+          <IconButton
+            icon={isFavorite ? <LikeFilledIcon /> : <LikeIcon />}
+            className={isFavorite ? `${styles.favoriteButton} ${styles.favoriteButtonActive}` : styles.favoriteButton}
+            aria-label={isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'}
+            onClick={onFavoriteClick}
+          />
+        </div>
       )}
     </div>
   )

@@ -84,9 +84,10 @@ export const CatalogPage = ({
     ),
   )
   // Строит карту "id пользователя → его эффективное количество лайков".
-  const effectiveLikesCountByUserId = useAppSelector((state) =>
-    Object.fromEntries(users.map((user) => [user.id, selectEffectiveLikesCount(state, user.id)])),
-  )
+const effectiveLikesCountByUserId = useAppSelector((state) =>
+  Object.fromEntries(users.map((user) => [user.id, selectEffectiveLikesCount(state, user.id)])),
+)
+
 
   // Хранит единственное открытое меню Header.
   const [openHeaderMenu, setOpenHeaderMenu] = useState<HeaderMenu | null>(() =>
@@ -105,6 +106,7 @@ export const CatalogPage = ({
           categories,
           cities,
           favoriteUserIds.includes(user.id),
+          effectiveLikesCountByUserId[user.id] ?? user.likesCount,
           effectiveLearningSubcategoryIdsByUserId[user.id] ?? user.learningSubcategoryIds,
         ),
       ),
@@ -126,10 +128,18 @@ export const CatalogPage = ({
           categories,
           cities,
           favoriteUserIds.includes(user.id),
+          effectiveLikesCountByUserId[user.id] ?? user.likesCount,
           effectiveLearningSubcategoryIdsByUserId[user.id] ?? user.learningSubcategoryIds,
         ),
       ),
-    [users, categories, cities, favoriteUserIds, effectiveLearningSubcategoryIdsByUserId],
+    [
+      users,
+      categories,
+      cities,
+      favoriteUserIds,
+      effectiveLearningSubcategoryIdsByUserId,
+      effectiveLikesCountByUserId,
+    ],
   )
   // Подготавливает карточки для секции «Рекомендуем».
   const recommendedItems = useMemo(
@@ -140,10 +150,18 @@ export const CatalogPage = ({
           categories,
           cities,
           favoriteUserIds.includes(user.id),
+          effectiveLikesCountByUserId[user.id] ?? user.likesCount,
           effectiveLearningSubcategoryIdsByUserId[user.id] ?? user.learningSubcategoryIds,
         ),
       ),
-    [users, categories, cities, favoriteUserIds, effectiveLearningSubcategoryIdsByUserId],
+    [
+      users,
+      categories,
+      cities,
+      favoriteUserIds,
+      effectiveLearningSubcategoryIdsByUserId,
+      effectiveLikesCountByUserId,
+    ],
   )
   // Проверяет наличие выбранных фильтров.
   const isFiltered = useMemo(() => hasActiveCatalogFilters(filters), [filters])
@@ -161,10 +179,19 @@ export const CatalogPage = ({
           categories,
           cities,
           favoriteUserIds.includes(user.id),
+          effectiveLikesCountByUserId[user.id] ?? user.likesCount,
           effectiveLearningSubcategoryIdsByUserId[user.id] ?? user.learningSubcategoryIds,
         ),
       ),
-    [users, filters, categories, cities, favoriteUserIds, effectiveLearningSubcategoryIdsByUserId],
+    [
+      users,
+      filters,
+      categories,
+      cities,
+      favoriteUserIds,
+      effectiveLearningSubcategoryIdsByUserId,
+      effectiveLikesCountByUserId,
+    ],
   )
   // Подсчитывает количество выбранных фильтров.
   const filtersCount = useMemo(() => getActiveCatalogFiltersCount(filters), [filters])
