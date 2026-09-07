@@ -13,15 +13,13 @@ import { resetCatalogFilters, setCatalogFilters, setCatalogSort } from '@/store/
 import {
   buildAppliedCatalogFilters,
   getActiveCatalogFiltersCount,
-  getNewCatalogUsers,
   getPopularCatalogUsers,
   hasActiveCatalogFilters,
   mapUserToCatalogCard,
   removeCatalogFilter,
 } from './CatalogPage.utils'
+import { selectCatalogUsers, selectNewUsers } from '@/store/slices/usersSlice'
 import styles from './CatalogPage.module.css'
-
-import { selectCatalogUsers } from '@/store/slices/usersSlice'
 
 export interface CatalogPageHeaderUser {
   userName: string
@@ -41,6 +39,9 @@ export interface CatalogPageProps {
   onFavoriteClick: (id: string) => void
   onDetailsClick: (id: string) => void
 }
+
+const NEW_USERS_COLLAPSED_LIMIT = 3
+const NEW_USERS_EXPANDED_LIMIT = 9
 
 // Определяет меню Header, которое должно быть открыто изначально.
 function getInitialHeaderMenu(
@@ -72,9 +73,19 @@ export const CatalogPage = ({
   onDetailsClick,
 }: CatalogPageProps) => {
   const dispatch = useAppDispatch()
+
   // Хранит все выбранные фильтры каталога.
   const filters = useAppSelector((state) => state.catalogFilters.filters)
+
+  // Получает готовую отфильтрованную и отсортированную выдачу каталога.
   const catalogUsers =useAppSelector(selectCatalogUsers)
+
+  // Получает пользователей, заранее отсортированных от новых к старым.
+const newUsers = useAppSelector(selectNewUsers)
+
+// Хранит только состояние раскрытия секции «Новое».
+const [isNewExpanded, setIsNewExpanded] = useState(false)
+
   // Хранит единственное открытое меню Header.
   const [openHeaderMenu, setOpenHeaderMenu] = useState<HeaderMenu | null>(() =>
     getInitialHeaderMenu(
@@ -91,12 +102,18 @@ export const CatalogPage = ({
       ),
     [users, categories, cities],
   )
-  // Подготавливает карточки для секции «Новое».
-  const newItems = useMemo(
-    () =>
-      getNewCatalogUsers(users, 3).map((user) => mapUserToCatalogCard(user, categories, cities)),
-    [users, categories, cities],
-  )
+  // Ограничивает секцию тремя или девятью новейшими пользователями
+// и преобразует их в данные карточек.
+const newItems = useMemo(() => {
+  const limit = isNewExpanded
+    ? NEW_USERS_EXPANDED_LIMIT
+    : NEW_USERS_COLLAPSED_LIMIT
+
+  return newUsers
+    .slice(0, limit)
+    .map((user) => mapUserToCatalogCard(user, categories, cities))
+}, [newUsers, isNewExpanded, categories, cities])
+
   // Подготавливает карточки для секции «Рекомендуем».
   const recommendedItems = useMemo(
     () => users.map((user) => mapUserToCatalogCard(user, categories, cities)),
@@ -215,7 +232,9 @@ export const CatalogPage = ({
               <UserSkillsSection
                 title="Новое"
                 items={newItems}
-                showViewAll
+                showViewAll={newUsers.length > NEW_USERS_COLLAPSED_LIMIT}
+                viewAllLabel={isNewExpanded ? 'Свернуть' : 'Смотреть все'}
+                onViewAllClick={() => setIsNewExpanded((currentValue) => !currentValue)}
                 onFavoriteClick={onFavoriteClick}
                 onDetailsClick={onDetailsClick}
               />

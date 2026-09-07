@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+import { ROUTES } from '@/shared/lib/constants'
 import styles from './Footer.module.css'
 import { Logo } from '../../shared/ui/Logo'
 
@@ -10,7 +12,7 @@ export const Footer = () => {
           <nav className={styles.nav} aria-label="Навигация в подвале">
             <ul className={styles.menu}>
               <li>
-                <a href="#">О проекте</a>
+                <Link to={ROUTES.ABOUT}>О проекте</Link>
               </li>
               <li>
                 <a href="#">Все навыки</a>
