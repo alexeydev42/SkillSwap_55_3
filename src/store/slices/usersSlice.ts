@@ -137,4 +137,31 @@ export const selectEffectiveLikesCount = createSelector(
     return baseLikes + (favoriteUserIds.includes(user.id) ? 1 : 0)
   },
 )
+/**
+ * Вычисляет полный список подкатегорий «Хочу научиться» для пользователя.
+ * Для локального пользователя добавляет к базовому списку подкатегории
+ * навыков всех пользователей, находящихся в избранном.
+ * Для мокового пользователя возвращает исходный список без вычислений.
+ */
+export const selectEffectiveLearningSubcategoryIds = createSelector(
+  [selectUserById, selectLocalUser, selectFavoriteUserIds, selectAllUsers],
+  (user, localUser, favoriteUserIds, allUsers) => {
+    if (!user) {
+      return []
+    }
+
+    if (!localUser || user.id !== localUser.id) {
+      return user.learningSubcategoryIds
+    }
+
+    const favoriteSubcategoryIds = allUsers
+      .filter((favoriteUser) => favoriteUserIds.includes(favoriteUser.id))
+      .map((favoriteUser) => favoriteUser.offeredSkill.subcategoryId)
+
+    return Array.from(
+      new Set([...user.learningSubcategoryIds, ...favoriteSubcategoryIds]),
+    )
+  },
+)
+
 export default usersSlice.reducer
