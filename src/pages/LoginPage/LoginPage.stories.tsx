@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import LoginPage from './index'
+import LoginPage from './LoginPage'
 
 const meta = {
   title: 'Pages/LoginPage',

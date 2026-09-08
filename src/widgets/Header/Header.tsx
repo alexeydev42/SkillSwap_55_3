@@ -1,5 +1,5 @@
 import { useCallback, useState, useRef, useEffect, type FC, type MouseEventHandler } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { ROUTES } from '@/shared/lib/constants'
 import { Logo } from '@/shared/ui/Logo'
 import { SearchInput } from '@/shared/ui/SearchInput'
@@ -43,6 +43,7 @@ interface GuestHeaderProps extends HeaderBaseProps {
 export type HeaderProps = AuthenticatedHeaderProps | GuestHeaderProps
 
 export const Header: FC<HeaderProps> = (props) => {
+  const navigate = useNavigate()
   const {
     isAuthenticated,
     user,
@@ -60,6 +61,14 @@ export const Header: FC<HeaderProps> = (props) => {
     onLogin,
     onRegister,
   } = props
+
+  const handleRegister = () => {
+    if (onRegister) {
+      onRegister()
+      return
+    }
+    navigate(ROUTES.REGISTER)
+  }
 
   // Хранит состояние меню, когда Header управляет им самостоятельно.
   const [internalIsSkillsMenuOpen, setInternalIsSkillsMenuOpen] = useState(false)
@@ -149,7 +158,7 @@ export const Header: FC<HeaderProps> = (props) => {
             <button className={styles.loginBtn} onClick={onLogin}>
               Войти
             </button>
-            <button className={styles.registerBtn} onClick={onRegister}>
+            <button type="button" className={styles.registerBtn} onClick={handleRegister}>
               Зарегистрироваться
             </button>
           </div>
