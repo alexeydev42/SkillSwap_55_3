@@ -1,23 +1,30 @@
 import { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
-import { selectAllUsers, selectMockUsers, setMockUsers } from '@/store/slices/usersSlice'
+import {
+  fetchUsers,
+  selectAllUsers,
+  selectMockUsers,
+  selectUsersError,
+  selectUsersStatus,
+} from '@/store/slices/usersSlice'
 import { addFavorite, removeFavorite, selectFavoriteUserIds } from '@/store/slices/favoritesSlice'
 import { CatalogPage } from './CatalogPage'
-import { catalogCategories, catalogCities, catalogUsers } from './CatalogPage.mock'
+import { catalogCategories, catalogCities } from './CatalogPage.mock'
 
 export function CatalogPageContainer() {
   const dispatch = useAppDispatch()
+
   const mockUsers = useAppSelector(selectMockUsers)
   const users = useAppSelector(selectAllUsers)
   const favoriteUserIds = useAppSelector(selectFavoriteUserIds)
+  const usersStatus = useAppSelector(selectUsersStatus)
+  const usersError = useAppSelector(selectUsersError)
 
-  // Кладёт моковых пользователей каталога в Redux при первом монтировании,
-  // но не переписывает их повторно, если они уже загружены.
   useEffect(() => {
-    if (mockUsers.length === 0) {
-      dispatch(setMockUsers(catalogUsers))
+    if (usersStatus === 'idle') {
+      dispatch(fetchUsers())
     }
-  }, [dispatch, mockUsers.length])
+  }, [dispatch, usersStatus])
 
   const handleFavoriteClick = (userId: string) => {
     if (favoriteUserIds.includes(userId)) {
@@ -27,11 +34,19 @@ export function CatalogPageContainer() {
     }
   }
 
+  const handleRetry = () => {
+    dispatch(fetchUsers())
+  }
+
   return (
     <CatalogPage
       users={users}
       categories={catalogCategories}
       cities={catalogCities}
+      usersStatus={usersStatus}
+      usersError={usersError}
+      hasMockUsers={mockUsers.length > 0}
+      onRetry={handleRetry}
       onFavoriteClick={handleFavoriteClick}
       onDetailsClick={(id) => console.log('Подробнее:', id)}
     />
