@@ -258,6 +258,13 @@ export const catalogPageMock: CatalogPageProps = {
   users: catalogUsers,
   categories: catalogCategories,
   cities: catalogCities,
-  onFavoriteClick: (id) => console.log('Избранное:', id),
-  onDetailsClick: (id) => console.log('Подробнее:', id),
+  usersStatus: 'success',
+  usersError: null,
+  onRetry: () => {},
+  onFavoriteClick: (id) => {
+    console.log('Избранное:', id)
+  },
+  onDetailsClick: (id) => {
+    console.log('Подробнее:', id)
+  },
 }

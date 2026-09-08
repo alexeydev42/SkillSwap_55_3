@@ -124,6 +124,9 @@ function renderCatalogPage(mockUsers: User[], localUser: User | null = null) {
         users={[]}
         categories={categories}
         cities={cities}
+        usersStatus="success"
+        usersError={null}
+        onRetry={vi.fn()}
         onFavoriteClick={vi.fn()}
         onDetailsClick={vi.fn()}
       />
@@ -163,5 +166,143 @@ describe('CatalogPage — секция «Новое»', () => {
     const newSection = screen.getByRole('region', { name: 'Новое' })
 
     expect(within(newSection).getByText('Локальный пользователь')).toBeInTheDocument()
+  })
+})
+
+describe('CatalogPage — loading/error states', () => {
+  it('показывает Spinner при первоначальной загрузке', () => {
+    const testStore = configureStore({
+      reducer: {
+        users: usersReducer,
+        catalogFilters: catalogFiltersReducer,
+        favorites: favoritesReducer,
+      },
+      preloadedState: {
+        users: {
+          mockUsers: [],
+          localUser: null,
+          status: 'loading' as const,
+          error: null,
+        },
+        catalogFilters: {
+          filters: defaultFilters,
+          sort: defaultSort,
+        },
+        favorites: {
+          favoriteUserIds: [],
+        },
+      },
+    })
+
+    render(
+      <Provider store={testStore}>
+        <CatalogPage
+          users={[]}
+          categories={categories}
+          cities={cities}
+          usersStatus="loading"
+          usersError={null}
+          onRetry={vi.fn()}
+          onFavoriteClick={vi.fn()}
+          onDetailsClick={vi.fn()}
+        />
+      </Provider>,
+    )
+
+    expect(screen.getByRole('status')).toBeInTheDocument()
+    expect(screen.getByLabelText('Загрузка...')).toBeInTheDocument()
+  })
+
+  it('показывает ошибку при первоначальной загрузке пользователей', () => {
+    const testStore = configureStore({
+      reducer: {
+        users: usersReducer,
+        catalogFilters: catalogFiltersReducer,
+        favorites: favoritesReducer,
+      },
+      preloadedState: {
+        users: {
+          mockUsers: [],
+          localUser: null,
+          status: 'error' as const,
+          error: 'Network Error',
+        },
+        catalogFilters: {
+          filters: defaultFilters,
+          sort: defaultSort,
+        },
+        favorites: {
+          favoriteUserIds: [],
+        },
+      },
+    })
+
+    render(
+      <Provider store={testStore}>
+        <CatalogPage
+          users={[]}
+          categories={categories}
+          cities={cities}
+          usersStatus="error"
+          usersError="Network Error"
+          onRetry={vi.fn()}
+          onFavoriteClick={vi.fn()}
+          onDetailsClick={vi.fn()}
+        />
+      </Provider>,
+    )
+
+    expect(screen.getByText('Не удалось загрузить пользователей')).toBeInTheDocument()
+
+    expect(screen.getByText('Network Error')).toBeInTheDocument()
+
+    expect(screen.getByRole('button', { name: 'Повторить' })).toBeInTheDocument()
+  })
+
+  it('вызывает onRetry при нажатии «Повторить»', async () => {
+    const user = userEvent.setup()
+    const onRetry = vi.fn()
+
+    const testStore = configureStore({
+      reducer: {
+        users: usersReducer,
+        catalogFilters: catalogFiltersReducer,
+        favorites: favoritesReducer,
+      },
+      preloadedState: {
+        users: {
+          mockUsers: [],
+          localUser: null,
+          status: 'error' as const,
+          error: 'Network Error',
+        },
+        catalogFilters: {
+          filters: defaultFilters,
+          sort: defaultSort,
+        },
+        favorites: {
+          favoriteUserIds: [],
+        },
+      },
+    })
+
+    render(
+      <Provider store={testStore}>
+        <CatalogPage
+          users={[]}
+          categories={categories}
+          cities={cities}
+          usersStatus="error"
+          usersError="Network Error"
+          onRetry={onRetry}
+          onFavoriteClick={vi.fn()}
+          onDetailsClick={vi.fn()}
+        />
+      </Provider>,
+    )
+
+    await user.click(screen.getByRole('button', { name: 'Повторить' }))
+
+    expect(onRetry).toHaveBeenCalledTimes(1)
   })
 })
