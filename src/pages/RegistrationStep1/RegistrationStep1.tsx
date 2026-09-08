@@ -127,7 +127,7 @@ export const RegistrationStep1 = ({
                 hidePasswordIcon={<EyeSlashIcon />}
               />
 
-              <span className={styles.passwordHint}>Пароль должен содержать не менее 8 знаков</span>
+              <span className={styles.passwordHint}>Пароль: от 8 до 64 символов, заглавная и строчная буквы, цифра и специальный символ</span>
             </div>
           </div>
         </div>

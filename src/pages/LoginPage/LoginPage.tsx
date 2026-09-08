@@ -6,6 +6,8 @@ import EyeIcon from '../../shared/assets/icons/icon-eye.svg?react'
 import EyeOffIcon from '../../shared/assets/icons/icon-eye-slash.svg?react'
 import LightBulb from '../../shared/assets/illustrations/illustration-light-bulb.svg?react'
 import { AuthLayout } from '@/widgets/AuthLayout'
+import { Link } from 'react-router-dom'
+import { ROUTES } from '@/shared/lib/constants'
 import styles from './LoginPage.module.css'
 
 interface LoginPageProps {
@@ -54,9 +56,9 @@ export default function LoginPage({ hasError = false }: LoginPageProps) {
           <Button className={styles.submitButton} type="submit">
             Войти
           </Button>
-          <a href="#" className={styles.registerLink}>
+          <Link to={ROUTES.REGISTER} className={styles.registerLink}>
             Зарегистрироваться
-          </a>
+          </Link>
         </form>
       </div>
     </AuthLayout>
