@@ -375,7 +375,6 @@ export const CatalogPage = ({
                 />
                 <RecommendedSection
                   items={recommendedItems}
-                  isLoading={false}
                   isFavoriteDisabled={isFavoriteDisabled}
                   onFavoriteClick={onFavoriteClick}
                   onDetailsClick={onDetailsClick}

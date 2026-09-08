@@ -114,13 +114,5 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   args: {
     items,
-    isLoading: false,
-  },
-}
-
-export const Loading: Story = {
-  args: {
-    items,
-    isLoading: true,
   },
 }

@@ -4,7 +4,7 @@
  * целиком приходят из UserSkillsSection, здесь их вёрстка не дублируется.
  */
 
- .section {
+.section {
   display: flex;
   flex-direction: column;
 
@@ -17,4 +17,8 @@
 .spinnerWrapper {
   display: flex;
   justify-content: center;
+}
+
+.sentinel {
+  min-height: 1px;
 }
