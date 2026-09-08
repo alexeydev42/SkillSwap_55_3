@@ -57,15 +57,6 @@ export async function validateAndConvertFiles(
 ): Promise<FileValidationResult> {
   const limits = FILE_LIMITS[type]
 
-  if (files.length < limits.min) {
-    return {
-      success: false,
-      error:
-        type === 'skillImages'
-          ? 'Необходимо выбрать хотя бы одно изображение'
-          : 'Некорректное количество файлов',
-    }
-  }
 
   if (files.length > limits.max) {
     return {

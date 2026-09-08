@@ -38,6 +38,12 @@ export const RegistrationStep3 = () => {
   const [imageError, setImageError] = useState<string>()
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+
+    if (images.length < 1) {
+      setImageError('Необходимо выбрать хотя бы одно изображение')
+      return
+    }
+    setImageError(undefined)
   }
 
   return (
@@ -82,12 +88,13 @@ export const RegistrationStep3 = () => {
           />
 
           <ImageUpload
-          images={images}
-          error={imageError}
-          uploadType="skillImages"
-          onImagesChange={setImages}
-          onError={setImageError}
-          hint="Перетащите или выберите изображения навыка" />
+            images={images}
+            error={imageError}
+            uploadType="skillImages"
+            onImagesChange={setImages}
+            onError={setImageError}
+            hint="Перетащите или выберите изображения навыка"
+          />
         </div>
 
         <div className={styles.buttons}>

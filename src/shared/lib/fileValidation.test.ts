@@ -63,12 +63,12 @@ describe('validateAndConvertFiles', () => {
   })
 
   describe('skillImages', () => {
-    it('отклоняет отсутствие изображений', async () => {
+    it('принимает отсутствие изображений', async () => {
       const result = await validateAndConvertFiles([], 'skillImages')
 
       expect(result).toEqual({
-        success: false,
-        error: 'Необходимо выбрать хотя бы одно изображение',
+        success: true,
+        files: [],
       })
     })
 

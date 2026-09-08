@@ -45,6 +45,13 @@ export const ImageUpload = ({
     // Позволяет повторно выбрать тот же файл после ошибки или удаления.
     event.target.value = ''
 
+    const maxLimit = uploadType === 'avatar' ? 1 : 5
+    //проверяем общее количество файлов до конвератции
+    if (images.length + files.length > maxLimit) {
+      onError?.(`Можно загрузить не более ${maxLimit} изображений`)
+      return
+    }
+
     const result = await validateAndConvertFiles(files, uploadType)
 
     if (!result.success) {
@@ -53,7 +60,11 @@ export const ImageUpload = ({
     }
 
     onError?.(undefined)
-    onImagesChange?.(result.files)
+    if (uploadType === 'avatar') {
+      onImagesChange?.(result.files)
+    } else {
+      onImagesChange?.([...images, ...result.files])
+    }
   }
 
   return (
@@ -69,12 +80,18 @@ export const ImageUpload = ({
         {hasImages ? (
           previewContent !== undefined ? (
             <div
-            className={styles.customContent}
-            onClick={handleClick}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(event)=>{if(event.key === 'Enter'|| event.key === ' '){handleClick()}}}>
-            {previewContent}</div>
+              className={styles.customContent}
+              onClick={handleClick}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  handleClick()
+                }
+              }}
+            >
+              {previewContent}
+            </div>
           ) : (
             <div className={styles.previewGrid}>
               {images.map((image, index) => (
@@ -89,13 +106,18 @@ export const ImageUpload = ({
           )
         ) : emptyContent !== undefined ? (
           <div
-          className={styles.customContent}
-          onClick={handleClick}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(event)=>{if(event.key === 'Enter' || event.key === ''){
-            handleClick()}}}>
-          {emptyContent}</div>
+            className={styles.customContent}
+            onClick={handleClick}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                handleClick()
+              }
+            }}
+          >
+            {emptyContent}
+          </div>
         ) : (
           <>
             <p className={styles.hint}>{hint}</p>
