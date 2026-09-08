@@ -1,5 +1,7 @@
-import { Button } from '@/shared/ui/Button'
+import clsx from 'clsx'
+
 import ChevronRightIcon from '@/shared/assets/icons/icon-chevron-right.svg?react'
+import { Button } from '@/shared/ui/Button'
 
 import styles from './SectionHeader.module.css'
 
@@ -8,6 +10,7 @@ export interface SectionHeaderProps {
   variant?: 'default' | 'compact'
   showViewAllButton?: boolean
   viewAllLabel?: string
+  isExpanded?: boolean
   onViewAllClick?: () => void
 }
 
@@ -16,6 +19,7 @@ export function SectionHeader({
   variant = 'default',
   showViewAllButton = false,
   viewAllLabel = 'Смотреть все',
+  isExpanded = false,
   onViewAllClick,
 }: SectionHeaderProps) {
   return (
@@ -26,7 +30,12 @@ export function SectionHeader({
         <Button
           variant="tertiary"
           iconPosition="right"
-          icon={<ChevronRightIcon />}
+          icon={
+            <ChevronRightIcon
+              className={clsx(styles.chevron, isExpanded && styles.chevronExpanded)}
+            />
+          }
+          aria-expanded={isExpanded}
           onClick={onViewAllClick}
         >
           {viewAllLabel}

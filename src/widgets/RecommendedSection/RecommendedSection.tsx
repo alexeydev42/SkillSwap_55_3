@@ -1,32 +1,28 @@
+import { Spinner } from '@/shared/ui/Spinner'
 import { UserSkillsSection } from '@/widgets/UserSkillsSection'
 import type { UserSkillsSectionItem } from '@/widgets/UserSkillsSection'
-import { Spinner } from '@/shared/ui/Spinner'
 
 import styles from './RecommendedSection.module.css'
 
 export interface RecommendedSectionProps {
-  /** Данные карточек — передаются как есть в UserSkillsSection (VERST-45). */
+  /** Данные карточек для UserSkillsSection. */
   items: UserSkillsSectionItem[]
-  /** Показывать ли Spinner (VERST-15) под сеткой карточек. */
+  /** Показывать ли Spinner под сеткой карточек. */
   isLoading: boolean
-  /** Клик по сердечку конкретной карточки — пробрасывается наружу. */
+  /** Клик по сердечку конкретной карточки. */
   onFavoriteClick: (id: string) => void
-  /** Клик по кнопке «Подробнее» конкретной карточки — пробрасывается наружу. */
+  /** Клик по кнопке «Подробнее». */
   onDetailsClick: (id: string) => void
+  /** Блокирует Favorites для гостя. */
+  isFavoriteDisabled?: boolean
 }
 
-/**
- * RecommendedSection (VERST-46) — секция «Рекомендуем» на странице каталога.
- * Полностью собрана из готовых компонентов (UserSkillsSection, Spinner) —
- * собственной вёрстки заголовка и карточек здесь нет, только состояние
- * загрузки поверх готовой секции. Получение данных, IntersectionObserver,
- * пагинация и бесконечная прокрутка на этом этапе не реализуются.
- */
 export function RecommendedSection({
   items,
   isLoading,
   onFavoriteClick,
   onDetailsClick,
+  isFavoriteDisabled = false,
 }: RecommendedSectionProps) {
   return (
     <div className={styles.section}>
@@ -34,9 +30,11 @@ export function RecommendedSection({
         title="Рекомендуем"
         items={items}
         showViewAll={false}
+        isFavoriteDisabled={isFavoriteDisabled}
         onFavoriteClick={onFavoriteClick}
         onDetailsClick={onDetailsClick}
       />
+
       {isLoading && (
         <div className={styles.spinnerWrapper}>
           <Spinner />

@@ -52,6 +52,7 @@ export interface CatalogPageProps {
   usersError: string | null
   hasMockUsers: boolean
   headerUser?: CatalogPageHeaderUser
+  isFavoriteDisabled?: boolean
   isProfileMenuInitiallyOpen?: boolean
   isNotificationsMenuInitiallyOpen?: boolean
   isAllSkillsMenuInitiallyOpen?: boolean
@@ -89,6 +90,7 @@ export const CatalogPage = ({
   categories,
   cities,
   headerUser,
+  isFavoriteDisabled = false,
   usersStatus,
   usersError,
   hasMockUsers,
@@ -139,13 +141,11 @@ export const CatalogPage = ({
       isAllSkillsMenuInitiallyOpen,
     ),
   )
-  
+
   // Ограничивает секцию тремя или девятью популярными пользователями
   // и преобразует их в данные карточек.
   const popularItems = useMemo(() => {
-    const limit = isPopularExpanded
-      ? POPULAR_USERS_EXPANDED_LIMIT
-      : POPULAR_USERS_COLLAPSED_LIMIT
+    const limit = isPopularExpanded ? POPULAR_USERS_EXPANDED_LIMIT : POPULAR_USERS_COLLAPSED_LIMIT
 
     return popularUsers
       .slice(0, limit)
@@ -271,18 +271,18 @@ export const CatalogPage = ({
   // Подготавливает Header для гостя или авторизованного пользователя.
   const headerProps: HeaderProps = headerUser
     ? {
-      isAuthenticated: true,
-      user: headerUser,
-      isProfileMenuOpen: openHeaderMenu === 'profile',
-      isNotificationsMenuOpen: openHeaderMenu === 'notifications',
-      onProfileClick: () => toggleHeaderMenu('profile'),
-      onProfileMenuClose: () => setHeaderMenuOpen('profile', false),
-      onNotificationsClick: () => toggleHeaderMenu('notifications'),
-      onNotificationsMenuClose: () => setHeaderMenuOpen('notifications', false),
-    }
+        isAuthenticated: true,
+        user: headerUser,
+        isProfileMenuOpen: openHeaderMenu === 'profile',
+        isNotificationsMenuOpen: openHeaderMenu === 'notifications',
+        onProfileClick: () => toggleHeaderMenu('profile'),
+        onProfileMenuClose: () => setHeaderMenuOpen('profile', false),
+        onNotificationsClick: () => toggleHeaderMenu('notifications'),
+        onNotificationsMenuClose: () => setHeaderMenuOpen('notifications', false),
+      }
     : {
-      isAuthenticated: false,
-    }
+        isAuthenticated: false,
+      }
   return (
     <div className={styles.page}>
       <Header
@@ -341,6 +341,7 @@ export const CatalogPage = ({
                     <UserSkillCard
                       key={item.id}
                       user={item}
+                      isFavoriteDisabled={isFavoriteDisabled}
                       onFavoriteClick={() => onFavoriteClick(item.id)}
                       onDetailsClick={() => onDetailsClick(item.id)}
                       className={styles.resultsCard}
@@ -350,31 +351,36 @@ export const CatalogPage = ({
               </div>
             ) : (
               <div className={styles.sections}>
-  <UserSkillsSection
-    title="Популярное"
-    items={popularItems}
-    showViewAll={popularUsers.length > POPULAR_USERS_COLLAPSED_LIMIT}
-    viewAllLabel={isPopularExpanded ? 'Свернуть' : 'Смотреть все'}
-    onViewAllClick={() => setIsPopularExpanded((currentValue) => !currentValue)}
-    onFavoriteClick={onFavoriteClick}
-    onDetailsClick={onDetailsClick}
-  />
-  <UserSkillsSection
-    title="Новое"
-    items={newItems}
-    showViewAll={newUsers.length > NEW_USERS_COLLAPSED_LIMIT}
-    viewAllLabel={isNewExpanded ? 'Свернуть' : 'Смотреть все'}
-    onViewAllClick={() => setIsNewExpanded((currentValue) => !currentValue)}
-    onFavoriteClick={onFavoriteClick}
-    onDetailsClick={onDetailsClick}
-  />
-  <RecommendedSection
-    items={recommendedItems}
-    isLoading={false}
-    onFavoriteClick={onFavoriteClick}
-    onDetailsClick={onDetailsClick}
-  />
-</div>
+                <UserSkillsSection
+                  title="Популярное"
+                  items={popularItems}
+                  showViewAll={popularUsers.length > POPULAR_USERS_COLLAPSED_LIMIT}
+                  viewAllLabel={isPopularExpanded ? 'Свернуть' : 'Смотреть все'}
+                  isExpanded={isPopularExpanded}
+                  isFavoriteDisabled={isFavoriteDisabled}
+                  onViewAllClick={() => setIsPopularExpanded((currentValue) => !currentValue)}
+                  onFavoriteClick={onFavoriteClick}
+                  onDetailsClick={onDetailsClick}
+                />
+                <UserSkillsSection
+                  title="Новое"
+                  items={newItems}
+                  showViewAll={newUsers.length > NEW_USERS_COLLAPSED_LIMIT}
+                  viewAllLabel={isNewExpanded ? 'Свернуть' : 'Смотреть все'}
+                  isExpanded={isNewExpanded}
+                  isFavoriteDisabled={isFavoriteDisabled}
+                  onViewAllClick={() => setIsNewExpanded((currentValue) => !currentValue)}
+                  onFavoriteClick={onFavoriteClick}
+                  onDetailsClick={onDetailsClick}
+                />
+                <RecommendedSection
+                  items={recommendedItems}
+                  isLoading={false}
+                  isFavoriteDisabled={isFavoriteDisabled}
+                  onFavoriteClick={onFavoriteClick}
+                  onDetailsClick={onDetailsClick}
+                />
+              </div>
             )}
           </div>
         )}
