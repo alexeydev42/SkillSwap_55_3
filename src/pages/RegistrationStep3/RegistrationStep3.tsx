@@ -34,9 +34,16 @@ export const RegistrationStep3 = () => {
   const [category, setCategory] = useState('')
   const [subcategory, setSubcategory] = useState('')
   const [description, setDescription] = useState('')
-
+  const [images, setImages] = useState<string[]>([])
+  const [imageError, setImageError] = useState<string>()
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+
+    if (images.length < 1) {
+      setImageError('Необходимо выбрать хотя бы одно изображение')
+      return
+    }
+    setImageError(undefined)
   }
 
   return (
@@ -80,7 +87,14 @@ export const RegistrationStep3 = () => {
             onChange={(e) => setDescription(e.target.value)}
           />
 
-          <ImageUpload hint="Перетащите или выберите изображения навыка" />
+          <ImageUpload
+            images={images}
+            error={imageError}
+            uploadType="skillImages"
+            onImagesChange={setImages}
+            onError={setImageError}
+            hint="Перетащите или выберите изображения навыка"
+          />
         </div>
 
         <div className={styles.buttons}>

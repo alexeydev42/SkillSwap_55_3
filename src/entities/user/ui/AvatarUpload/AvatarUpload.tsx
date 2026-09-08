@@ -10,14 +10,27 @@ import styles from './AvatarUpload.module.css'
 type AvatarUploadProps = {
   image?: string
   size?: 'small' | 'large'
+  error?: string
+  onImageChange?: (image: string | undefined) => void
+  onError?: (error: string | undefined) => void
 }
 
-export const AvatarUpload = ({ image, size = 'small' }: AvatarUploadProps) => {
+export const AvatarUpload = ({
+  image,
+  size = 'small',
+  error,
+  onImageChange,
+  onError,
+}: AvatarUploadProps) => {
   const isLarge = size === 'large'
 
   return (
     <ImageUpload
       images={image ? [image] : []}
+      error={error}
+      uploadType="avatar"
+      onImagesChange={(images) => onImageChange?.(images[0])}
+      onError={onError}
       className={clsx(styles.avatarUpload, isLarge ? styles.large : styles.small)}
       emptyContent={
         <div className={styles.emptyContent}>
