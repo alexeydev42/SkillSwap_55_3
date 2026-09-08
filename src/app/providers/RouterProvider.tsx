@@ -27,6 +27,17 @@ const ProfilePage = lazy(() =>
 const FavoritesPage = lazy(() => import('@/pages/FavoritesPage'))
 const CreateSkillPage = lazy(() => import('@/pages/CreateSkillPage'))
 const LoginPage = lazy(() => import('@/pages/LoginPage'))
+const RegistrationStep1 = lazy(() =>
+  import('@/pages/RegistrationStep1').then((module) => ({
+    default: module.RegistrationStep1,
+  })),
+)
+
+const RegistrationStep2 = lazy(() =>
+  import('@/pages/RegistrationStep2').then((module) => ({
+    default: module.RegistrationStep2,
+  })),
+)
 const NotFoundPage = lazy(() =>
   import('@/pages/NotFoundPage').then((module) => ({
     default: module.NotFoundPage,
@@ -49,7 +60,8 @@ export function AppRouter() {
           <Route path={ROUTES.SKILL} element={<SkillPage {...skillPageMock} />} />
           <Route path={ROUTES.FAVORITES} element={<FavoritesPage />} />
           <Route path={ROUTES.LOGIN} element={<LoginPage />} />
-          <Route path={ROUTES.REGISTER} element={<LoginPage />} />
+          <Route path={ROUTES.REGISTER} element={<RegistrationStep1 />} />
+          <Route path={ROUTES.REGISTER_STEP_2} element={<RegistrationStep2 />} />
           <Route
             path={ROUTES.SERVER_ERROR}
             element={<ServerErrorPage user={skillPageMock.user} />}
