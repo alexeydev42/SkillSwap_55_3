@@ -100,6 +100,8 @@ export const RegistrationStep2 = () => {
   const [city, setCity] = useState('')
   const [categories, setCategories] = useState<string[]>([])
   const [subcategories, setSubcategories] = useState<string[]>([])
+  const [avatar, setAvatar] =useState<string>()
+  const [avatarError, setAvatarError] = useState<string>()
 
   // Обновляет значение текстового поля имени.
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -123,7 +125,11 @@ export const RegistrationStep2 = () => {
       <form className={styles.form} onSubmit={handleSubmit}>
         {/* Объединяет аватар и поля формы в вертикальную группу. */}
         <div className={styles.fields}>
-          <AvatarUpload />
+          <AvatarUpload
+          image={avatar}
+          error={avatarError}
+          onImageChange={setAvatar}
+          onError={setAvatarError}/>
 
           <Input
             label="Имя"

@@ -84,3 +84,12 @@
   letter-spacing: 0.24px;
   color: var(--color-error);
 }
+
+.fileInput {
+  display: none;
+}
+
+.customContent{
+  width: 100%;
+  cursor: pointer;
+}
