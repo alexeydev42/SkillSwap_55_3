@@ -50,6 +50,7 @@ export interface CatalogPageProps {
   cities: City[]
   usersStatus: UsersState['status']
   usersError: string | null
+  hasMockUsers: boolean
   headerUser?: CatalogPageHeaderUser
   isProfileMenuInitiallyOpen?: boolean
   isNotificationsMenuInitiallyOpen?: boolean
@@ -87,6 +88,7 @@ export const CatalogPage = ({
   headerUser,
   usersStatus,
   usersError,
+  hasMockUsers,
   isProfileMenuInitiallyOpen = false,
   isNotificationsMenuInitiallyOpen = false,
   isAllSkillsMenuInitiallyOpen = false,
@@ -247,8 +249,9 @@ export const CatalogPage = ({
       return currentMenu === menu ? null : currentMenu
     })
   }
-  const isInitialLoading = usersStatus === 'loading' && users.length === 0
-  const isInitialError = usersStatus === 'error' && users.length === 0
+  const isInitialLoading = !hasMockUsers && (usersStatus === 'idle' || usersStatus === 'loading')
+  const isError = usersStatus === 'error'
+
   // Подготавливает Header для гостя или авторизованного пользователя.
   const headerProps: HeaderProps = headerUser
     ? {
@@ -276,89 +279,86 @@ export const CatalogPage = ({
           <div className={styles.state}>
             <Spinner />
           </div>
-        ) : isInitialError ? (
+        ) : isError ? (
           <div className={styles.errorState}>
-            <h2 className={styles.errorTitle}> Не удалось загрузить пользователей</h2>
-
+            <h2 className={styles.errorTitle}>Не удалось загрузить пользователей</h2>
             <p className={styles.errorText}>{usersError ?? 'Попробуйте повторить загрузку'}</p>
             <Button variant="primary" size="md" onClick={onRetry}>
               Повторить
             </Button>
           </div>
         ) : (
-
-            <div className={styles.catalogGrid}>
-              <div className={styles.filtersCard}>
-                <div className={styles.filtersHeader}>
-                  <h2 className={styles.filtersTitle}>
-                    Фильтры{filtersCount > 0 && ` (${filtersCount})`}
+          <div className={styles.catalogGrid}>
+            <div className={styles.filtersCard}>
+              <div className={styles.filtersHeader}>
+                <h2 className={styles.filtersTitle}>
+                  Фильтры{filtersCount > 0 && ` (${filtersCount})`}
+                </h2>
+                {filtersCount > 0 && (
+                  <button
+                    type="button"
+                    className={styles.resetButton}
+                    onClick={() => dispatch(resetCatalogFilters())}
+                  >
+                    Сбросить ×
+                  </button>
+                )}
+              </div>
+              <FiltersSidebar
+                categories={categories}
+                cities={cities}
+                filters={filters}
+                onChange={(nextFilters) => dispatch(setCatalogFilters(nextFilters))}
+              />
+            </div>
+            {isFiltered ? (
+              <div className={styles.results}>
+                <AppliedFiltersBar filters={appliedFilters} onRemove={handleRemoveFilter} />
+                <div className={styles.resultsToolbar}>
+                  <h2 className={styles.resultsTitle}>
+                    Подходящие предложения: {filteredResults.length}
                   </h2>
-                  {filtersCount > 0 && (
-                    <button
-                      type="button"
-                      className={styles.resetButton}
-                      onClick={() => dispatch(resetCatalogFilters())}
-                    >
-                      Сбросить ×
-                    </button>
-                  )}
+                  <SortButton onChange={() => dispatch(setCatalogSort('newest'))} />
                 </div>
-                <FiltersSidebar
-                  categories={categories}
-                  cities={cities}
-                  filters={filters}
-                  onChange={(nextFilters) => dispatch(setCatalogFilters(nextFilters))}
+                <div className={styles.resultsGrid}>
+                  {filteredResults.map((item) => (
+                    <UserSkillCard
+                      key={item.id}
+                      user={item}
+                      onFavoriteClick={() => onFavoriteClick(item.id)}
+                      onDetailsClick={() => onDetailsClick(item.id)}
+                      className={styles.resultsCard}
+                    />
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className={styles.sections}>
+                <UserSkillsSection
+                  title="Популярное"
+                  items={popularItems}
+                  showViewAll
+                  onFavoriteClick={onFavoriteClick}
+                  onDetailsClick={onDetailsClick}
+                />
+                <UserSkillsSection
+                  title="Новое"
+                  items={newItems}
+                  showViewAll={newUsers.length > NEW_USERS_COLLAPSED_LIMIT}
+                  viewAllLabel={isNewExpanded ? 'Свернуть' : 'Смотреть все'}
+                  onViewAllClick={() => setIsNewExpanded((currentValue) => !currentValue)}
+                  onFavoriteClick={onFavoriteClick}
+                  onDetailsClick={onDetailsClick}
+                />
+                <RecommendedSection
+                  items={recommendedItems}
+                  isLoading={false}
+                  onFavoriteClick={onFavoriteClick}
+                  onDetailsClick={onDetailsClick}
                 />
               </div>
-              {isFiltered ? (
-                <div className={styles.results}>
-                  <AppliedFiltersBar filters={appliedFilters} onRemove={handleRemoveFilter} />
-                  <div className={styles.resultsToolbar}>
-                    <h2 className={styles.resultsTitle}>
-                      Подходящие предложения: {filteredResults.length}
-                    </h2>
-                    <SortButton onChange={() => dispatch(setCatalogSort('newest'))} />
-                  </div>
-                  <div className={styles.resultsGrid}>
-                    {filteredResults.map((item) => (
-                      <UserSkillCard
-                        key={item.id}
-                        user={item}
-                        onFavoriteClick={() => onFavoriteClick(item.id)}
-                        onDetailsClick={() => onDetailsClick(item.id)}
-                        className={styles.resultsCard}
-                      />
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <div className={styles.sections}>
-                  <UserSkillsSection
-                    title="Популярное"
-                    items={popularItems}
-                    showViewAll
-                    onFavoriteClick={onFavoriteClick}
-                    onDetailsClick={onDetailsClick}
-                  />
-                  <UserSkillsSection
-                    title="Новое"
-                    items={newItems}
-                    showViewAll={newUsers.length > NEW_USERS_COLLAPSED_LIMIT}
-                    viewAllLabel={isNewExpanded ? 'Свернуть' : 'Смотреть все'}
-                    onViewAllClick={() => setIsNewExpanded((currentValue) => !currentValue)}
-                    onFavoriteClick={onFavoriteClick}
-                    onDetailsClick={onDetailsClick}
-                  />
-                  <RecommendedSection
-                    items={recommendedItems}
-                    isLoading={false}
-                    onFavoriteClick={onFavoriteClick}
-                    onDetailsClick={onDetailsClick}
-                  />
-                </div>
-              )}
-            </div>
-
+            )}
+          </div>
         )}
       </main>
       <div className={styles.footer}>

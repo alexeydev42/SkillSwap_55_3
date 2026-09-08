@@ -8,7 +8,7 @@ import catalogFiltersReducer, {
   defaultFilters,
   defaultSort,
 } from '@/store/slices/catalogFiltersSlice'
-import usersReducer from '@/store/slices/usersSlice'
+import usersReducer, { type UsersState } from '@/store/slices/usersSlice'
 import favoritesReducer from '@/store/slices/favoritesSlice'
 import type { Category, City, User } from '@/shared/types'
 import type { UserSkillsSectionProps } from '@/widgets/UserSkillsSection'
@@ -95,6 +95,10 @@ function createUser(index: number): User {
 }
 
 function renderCatalogPage(mockUsers: User[], localUser: User | null = null) {
+  const users = localUser
+    ? [...mockUsers.filter((user) => user.id !== localUser.id), localUser]
+    : mockUsers
+
   const testStore = configureStore({
     reducer: {
       users: usersReducer,
@@ -121,34 +125,110 @@ function renderCatalogPage(mockUsers: User[], localUser: User | null = null) {
   render(
     <Provider store={testStore}>
       <CatalogPage
-        users={[]}
+        users={users}
         categories={categories}
         cities={cities}
         usersStatus="success"
         usersError={null}
+        hasMockUsers={mockUsers.length > 0}
         onRetry={vi.fn()}
         onFavoriteClick={vi.fn()}
         onDetailsClick={vi.fn()}
       />
     </Provider>,
   )
+
+  return { testStore }
+}
+
+function renderCatalogState({
+  mockUsers = [],
+  localUser = null,
+  status,
+  error = null,
+  onRetry = vi.fn(),
+}: {
+  mockUsers?: User[]
+  localUser?: User | null
+  status: UsersState['status']
+  error?: string | null
+  onRetry?: () => void
+}) {
+  const users = localUser
+    ? [...mockUsers.filter((user) => user.id !== localUser.id), localUser]
+    : mockUsers
+
+  const testStore = configureStore({
+    reducer: {
+      users: usersReducer,
+      catalogFilters: catalogFiltersReducer,
+      favorites: favoritesReducer,
+    },
+    preloadedState: {
+      users: {
+        mockUsers,
+        localUser,
+        status,
+        error,
+      },
+      catalogFilters: {
+        filters: defaultFilters,
+        sort: defaultSort,
+      },
+      favorites: {
+        favoriteUserIds: [],
+      },
+    },
+  })
+
+  render(
+    <Provider store={testStore}>
+      <CatalogPage
+        users={users}
+        categories={categories}
+        cities={cities}
+        usersStatus={status}
+        usersError={error}
+        hasMockUsers={mockUsers.length > 0}
+        onRetry={onRetry}
+        onFavoriteClick={vi.fn()}
+        onDetailsClick={vi.fn()}
+      />
+    </Provider>,
+  )
+
+  return { testStore }
 }
 
 describe('CatalogPage — секция «Новое»', () => {
   it('показывает 3 карточки, раскрывает до 9 и сворачивает обратно', async () => {
     const user = userEvent.setup()
+
     renderCatalogPage(Array.from({ length: 10 }, (_, index) => createUser(index)))
 
     const newSection = screen.getByRole('region', { name: 'Новое' })
 
     expect(within(newSection).getAllByTestId('new-user-card')).toHaveLength(3)
 
-    await user.click(within(newSection).getByRole('button', { name: 'Смотреть все' }))
+    await user.click(
+      within(newSection).getByRole('button', {
+        name: 'Смотреть все',
+      }),
+    )
 
     expect(within(newSection).getAllByTestId('new-user-card')).toHaveLength(9)
-    expect(within(newSection).getByRole('button', { name: 'Свернуть' })).toBeInTheDocument()
 
-    await user.click(within(newSection).getByRole('button', { name: 'Свернуть' }))
+    expect(
+      within(newSection).getByRole('button', {
+        name: 'Свернуть',
+      }),
+    ).toBeInTheDocument()
+
+    await user.click(
+      within(newSection).getByRole('button', {
+        name: 'Свернуть',
+      }),
+    )
 
     expect(within(newSection).getAllByTestId('new-user-card')).toHaveLength(3)
   })
@@ -170,139 +250,81 @@ describe('CatalogPage — секция «Новое»', () => {
 })
 
 describe('CatalogPage — loading/error states', () => {
-  it('показывает Spinner при первоначальной загрузке', () => {
-    const testStore = configureStore({
-      reducer: {
-        users: usersReducer,
-        catalogFilters: catalogFiltersReducer,
-        favorites: favoritesReducer,
-      },
-      preloadedState: {
-        users: {
-          mockUsers: [],
-          localUser: null,
-          status: 'loading' as const,
-          error: null,
-        },
-        catalogFilters: {
-          filters: defaultFilters,
-          sort: defaultSort,
-        },
-        favorites: {
-          favoriteUserIds: [],
-        },
-      },
+  it('показывает Spinner уже в idle до запуска первоначального thunk', () => {
+    renderCatalogState({
+      status: 'idle',
     })
-
-    render(
-      <Provider store={testStore}>
-        <CatalogPage
-          users={[]}
-          categories={categories}
-          cities={cities}
-          usersStatus="loading"
-          usersError={null}
-          onRetry={vi.fn()}
-          onFavoriteClick={vi.fn()}
-          onDetailsClick={vi.fn()}
-        />
-      </Provider>,
-    )
 
     expect(screen.getByRole('status')).toBeInTheDocument()
     expect(screen.getByLabelText('Загрузка...')).toBeInTheDocument()
   })
 
-  it('показывает ошибку при первоначальной загрузке пользователей', () => {
-    const testStore = configureStore({
-      reducer: {
-        users: usersReducer,
-        catalogFilters: catalogFiltersReducer,
-        favorites: favoritesReducer,
-      },
-      preloadedState: {
-        users: {
-          mockUsers: [],
-          localUser: null,
-          status: 'error' as const,
-          error: 'Network Error',
-        },
-        catalogFilters: {
-          filters: defaultFilters,
-          sort: defaultSort,
-        },
-        favorites: {
-          favoriteUserIds: [],
-        },
-      },
+  it('показывает Spinner при первой загрузке, даже если существует локальный пользователь', () => {
+    const localUser: User = {
+      ...baseUser,
+      id: 'local-user',
+      name: 'Локальный пользователь',
+    }
+
+    renderCatalogState({
+      localUser,
+      status: 'loading',
     })
 
-    render(
-      <Provider store={testStore}>
-        <CatalogPage
-          users={[]}
-          categories={categories}
-          cities={cities}
-          usersStatus="error"
-          usersError="Network Error"
-          onRetry={vi.fn()}
-          onFavoriteClick={vi.fn()}
-          onDetailsClick={vi.fn()}
-        />
-      </Provider>,
-    )
+    expect(screen.getByRole('status')).toBeInTheDocument()
+    expect(screen.getByLabelText('Загрузка...')).toBeInTheDocument()
+  })
+
+  it('не показывает Spinner при повторной загрузке уже имеющихся моковых пользователей', () => {
+    renderCatalogState({
+      mockUsers: [baseUser],
+      status: 'loading',
+    })
+
+    expect(screen.queryByRole('status')).not.toBeInTheDocument()
+
+    expect(screen.getByRole('region', { name: 'Популярное' })).toBeInTheDocument()
+  })
+
+  it('показывает ошибку и retry, если первая загрузка упала при наличии локального пользователя', async () => {
+    const user = userEvent.setup()
+    const onRetry = vi.fn()
+
+    const localUser: User = {
+      ...baseUser,
+      id: 'local-user',
+      name: 'Локальный пользователь',
+    }
+
+    renderCatalogState({
+      localUser,
+      status: 'error',
+      error: 'Network Error',
+      onRetry,
+    })
 
     expect(screen.getByText('Не удалось загрузить пользователей')).toBeInTheDocument()
 
     expect(screen.getByText('Network Error')).toBeInTheDocument()
 
     expect(screen.getByRole('button', { name: 'Повторить' })).toBeInTheDocument()
-  })
-
-  it('вызывает onRetry при нажатии «Повторить»', async () => {
-    const user = userEvent.setup()
-    const onRetry = vi.fn()
-
-    const testStore = configureStore({
-      reducer: {
-        users: usersReducer,
-        catalogFilters: catalogFiltersReducer,
-        favorites: favoritesReducer,
-      },
-      preloadedState: {
-        users: {
-          mockUsers: [],
-          localUser: null,
-          status: 'error' as const,
-          error: 'Network Error',
-        },
-        catalogFilters: {
-          filters: defaultFilters,
-          sort: defaultSort,
-        },
-        favorites: {
-          favoriteUserIds: [],
-        },
-      },
-    })
-
-    render(
-      <Provider store={testStore}>
-        <CatalogPage
-          users={[]}
-          categories={categories}
-          cities={cities}
-          usersStatus="error"
-          usersError="Network Error"
-          onRetry={onRetry}
-          onFavoriteClick={vi.fn()}
-          onDetailsClick={vi.fn()}
-        />
-      </Provider>,
-    )
 
     await user.click(screen.getByRole('button', { name: 'Повторить' }))
 
     expect(onRetry).toHaveBeenCalledTimes(1)
+  })
+
+  it('показывает error-state после ошибки повторного запроса и сохраняет данные в Redux', () => {
+    const { testStore } = renderCatalogState({
+      mockUsers: [baseUser],
+      status: 'error',
+      error: 'Network Error',
+    })
+
+    expect(screen.getByText('Не удалось загрузить пользователей')).toBeInTheDocument()
+
+    expect(screen.getByRole('button', { name: 'Повторить' })).toBeInTheDocument()
+
+    expect(testStore.getState().users.mockUsers).toEqual([baseUser])
   })
 })

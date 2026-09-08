@@ -260,6 +260,7 @@ export const catalogPageMock: CatalogPageProps = {
   cities: catalogCities,
   usersStatus: 'success',
   usersError: null,
+  hasMockUsers: true,
   onRetry: () => {},
   onFavoriteClick: (id) => {
     console.log('Избранное:', id)

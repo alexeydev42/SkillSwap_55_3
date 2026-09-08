@@ -21,10 +21,10 @@ export function CatalogPageContainer() {
   const usersError = useAppSelector(selectUsersError)
 
   useEffect(() => {
-    if (mockUsers.length === 0) {
+    if (usersStatus === 'idle') {
       dispatch(fetchUsers())
     }
-  }, [dispatch, mockUsers.length])
+  }, [dispatch, usersStatus])
 
   const handleFavoriteClick = (userId: string) => {
     if (favoriteUserIds.includes(userId)) {
@@ -45,6 +45,7 @@ export function CatalogPageContainer() {
       cities={catalogCities}
       usersStatus={usersStatus}
       usersError={usersError}
+      hasMockUsers={mockUsers.length > 0}
       onRetry={handleRetry}
       onFavoriteClick={handleFavoriteClick}
       onDetailsClick={(id) => console.log('Подробнее:', id)}
