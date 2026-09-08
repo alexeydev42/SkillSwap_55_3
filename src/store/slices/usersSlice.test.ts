@@ -51,7 +51,12 @@ const initialState: UsersState = {
 
 // Создаёт состояние Redux для проверки селекторов usersSlice.
 function createRootState(users: UsersState): RootState {
-  return { users } as RootState
+  return {
+    users,
+    favorites: {
+      favoriteUserIds: [],
+    },
+  } as unknown as RootState
 }
 
 // Создаёт состояние Redux с авторизованным пользователем.
@@ -64,7 +69,17 @@ function createAuthenticatedRootState(users: UsersState, userId: string): RootSt
       status: 'idle',
       error: null,
     },
-  } as RootState
+  } as unknown as RootState
+}
+
+function createRootStateWithFavorites(
+  users: UsersState,
+  favoriteUserIds: string[],
+): RootState {
+  return {
+    ...createRootState(users),
+    favorites: { favoriteUserIds },
+  } as unknown as RootState
 }
 
 beforeEach(() => {
@@ -242,24 +257,43 @@ describe('usersSlice — базовые селекторы', () => {
         status: 'idle',
         error: null,
       },
-    } as RootState
+    } as unknown as RootState
 
     expect(selectCurrentUser(state)).toBeNull()
   })
+
+   it('сразу пересортировывает пользователей после изменения Favorites', () => {
+    const firstUser: User = {
+      ...mockUser,
+      id: 'first-user',
+      likesCount: 10,
+    }
+
+    const secondUser: User = {
+      ...mockUser,
+      id: 'second-user',
+      likesCount: 10,
+    }
+
+    const stateWithoutFavorite = createRootStateWithFavorites(
+      { ...initialState, mockUsers: [firstUser, secondUser] },
+      [],
+    )
+
+    const stateWithFavorite = createRootStateWithFavorites(
+      { ...initialState, mockUsers: [firstUser, secondUser] },
+      [secondUser.id],
+    )
+
+    expect(selectPopularUsers(stateWithoutFavorite)).toEqual([firstUser, secondUser])
+    expect(selectPopularUsers(stateWithFavorite)).toEqual([secondUser, firstUser])
+  })
 })
-describe('usersSlice — selectEffectiveLikesCount', () => {
+
+   describe('usersSlice — selectEffectiveLikesCount', () => {
   // Добавляет к состоянию из createRootState срез favorites — нужен для
   // проверки вычисляемого likesCount, который зависит от users + favorites.
-  function createRootStateWithFavorites(
-    users: UsersState,
-    favoriteUserIds: string[],
-  ): RootState {
-    return {
-      ...createRootState(users),
-      favorites: { favoriteUserIds },
-    } as RootState
-  }
-
+  
   it('возвращает базовый likesCount, если пользователь не в Favorites', () => {
     const state = createRootStateWithFavorites(
       { ...initialState, mockUsers: [{ ...mockUser, likesCount: 10 }] },
@@ -306,16 +340,7 @@ describe('usersSlice — selectEffectiveLikesCount', () => {
 
 describe('usersSlice — selectEffectiveLearningSubcategoryIds', () => {
   // Создаёт состояние Redux со срезом Favorites.
-  function createRootStateWithFavorites(
-    users: UsersState,
-    favoriteUserIds: string[],
-  ): RootState {
-    return {
-      ...createRootState(users),
-      favorites: { favoriteUserIds },
-    } as RootState
-  }
-
+  
   const firstFavoriteUser: User = {
     ...mockUser,
     id: 'favorite-user-1',

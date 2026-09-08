@@ -16,15 +16,15 @@ import {
 } from '@/store/slices/catalogFiltersSlice'
 import { selectFavoriteUserIds } from '@/store/slices/favoritesSlice'
 import {
-  selectEffectiveLikesCount,
-  selectEffectiveLearningSubcategoryIds,
   selectCatalogUsers,
+  selectEffectiveLearningSubcategoryIds,
+  selectEffectiveLikesCount,
   selectNewUsers,
+  selectPopularUsers,
 } from '@/store/slices/usersSlice'
 import {
   buildAppliedCatalogFilters,
   getActiveCatalogFiltersCount,
-  getPopularCatalogUsers,
   hasActiveCatalogFilters,
   mapUserToCatalogCard,
   removeCatalogFilter,
@@ -59,6 +59,9 @@ export interface CatalogPageProps {
   onDetailsClick: (id: string) => void
   onRetry: () => void
 }
+
+const POPULAR_USERS_COLLAPSED_LIMIT = 3
+const POPULAR_USERS_EXPANDED_LIMIT = 9
 
 const NEW_USERS_COLLAPSED_LIMIT = 3
 const NEW_USERS_EXPANDED_LIMIT = 9
@@ -117,8 +120,13 @@ export const CatalogPage = ({
   // Получает готовую отфильтрованную и отсортированную выдачу каталога.
   const catalogUsers = useAppSelector(selectCatalogUsers)
 
+  const popularUsers = useAppSelector(selectPopularUsers)
+
   // Получает пользователей, заранее отсортированных от новых к старым.
   const newUsers = useAppSelector(selectNewUsers)
+
+  // Хранит только состояние раскрытия секции «Популярное».
+  const [isPopularExpanded, setIsPopularExpanded] = useState(false)
 
   // Хранит только состояние раскрытия секции «Новое».
   const [isNewExpanded, setIsNewExpanded] = useState(false)
@@ -131,10 +139,17 @@ export const CatalogPage = ({
       isAllSkillsMenuInitiallyOpen,
     ),
   )
-  // Подготавливает карточки для секции «Популярное».
-  const popularItems = useMemo(
-    () =>
-      getPopularCatalogUsers(users, 3, effectiveLikesCountByUserId).map((user) =>
+  
+  // Ограничивает секцию тремя или девятью популярными пользователями
+  // и преобразует их в данные карточек.
+  const popularItems = useMemo(() => {
+    const limit = isPopularExpanded
+      ? POPULAR_USERS_EXPANDED_LIMIT
+      : POPULAR_USERS_COLLAPSED_LIMIT
+
+    return popularUsers
+      .slice(0, limit)
+      .map((user) =>
         mapUserToCatalogCard(
           user,
           categories,
@@ -143,16 +158,17 @@ export const CatalogPage = ({
           effectiveLikesCountByUserId[user.id] ?? user.likesCount,
           effectiveLearningSubcategoryIdsByUserId[user.id] ?? user.learningSubcategoryIds,
         ),
-      ),
-    [
-      users,
-      categories,
-      cities,
-      favoriteUserIds,
-      effectiveLearningSubcategoryIdsByUserId,
-      effectiveLikesCountByUserId,
-    ],
-  )
+      )
+  }, [
+    popularUsers,
+    isPopularExpanded,
+    categories,
+    cities,
+    favoriteUserIds,
+    effectiveLikesCountByUserId,
+    effectiveLearningSubcategoryIdsByUserId,
+  ])
+
   // Ограничивает секцию тремя или девятью новейшими пользователями
   // и преобразует их в данные карточек.
   const newItems = useMemo(() => {
@@ -255,18 +271,18 @@ export const CatalogPage = ({
   // Подготавливает Header для гостя или авторизованного пользователя.
   const headerProps: HeaderProps = headerUser
     ? {
-        isAuthenticated: true,
-        user: headerUser,
-        isProfileMenuOpen: openHeaderMenu === 'profile',
-        isNotificationsMenuOpen: openHeaderMenu === 'notifications',
-        onProfileClick: () => toggleHeaderMenu('profile'),
-        onProfileMenuClose: () => setHeaderMenuOpen('profile', false),
-        onNotificationsClick: () => toggleHeaderMenu('notifications'),
-        onNotificationsMenuClose: () => setHeaderMenuOpen('notifications', false),
-      }
+      isAuthenticated: true,
+      user: headerUser,
+      isProfileMenuOpen: openHeaderMenu === 'profile',
+      isNotificationsMenuOpen: openHeaderMenu === 'notifications',
+      onProfileClick: () => toggleHeaderMenu('profile'),
+      onProfileMenuClose: () => setHeaderMenuOpen('profile', false),
+      onNotificationsClick: () => toggleHeaderMenu('notifications'),
+      onNotificationsMenuClose: () => setHeaderMenuOpen('notifications', false),
+    }
     : {
-        isAuthenticated: false,
-      }
+      isAuthenticated: false,
+    }
   return (
     <div className={styles.page}>
       <Header
@@ -334,29 +350,31 @@ export const CatalogPage = ({
               </div>
             ) : (
               <div className={styles.sections}>
-                <UserSkillsSection
-                  title="Популярное"
-                  items={popularItems}
-                  showViewAll
-                  onFavoriteClick={onFavoriteClick}
-                  onDetailsClick={onDetailsClick}
-                />
-                <UserSkillsSection
-                  title="Новое"
-                  items={newItems}
-                  showViewAll={newUsers.length > NEW_USERS_COLLAPSED_LIMIT}
-                  viewAllLabel={isNewExpanded ? 'Свернуть' : 'Смотреть все'}
-                  onViewAllClick={() => setIsNewExpanded((currentValue) => !currentValue)}
-                  onFavoriteClick={onFavoriteClick}
-                  onDetailsClick={onDetailsClick}
-                />
-                <RecommendedSection
-                  items={recommendedItems}
-                  isLoading={false}
-                  onFavoriteClick={onFavoriteClick}
-                  onDetailsClick={onDetailsClick}
-                />
-              </div>
+  <UserSkillsSection
+    title="Популярное"
+    items={popularItems}
+    showViewAll={popularUsers.length > POPULAR_USERS_COLLAPSED_LIMIT}
+    viewAllLabel={isPopularExpanded ? 'Свернуть' : 'Смотреть все'}
+    onViewAllClick={() => setIsPopularExpanded((currentValue) => !currentValue)}
+    onFavoriteClick={onFavoriteClick}
+    onDetailsClick={onDetailsClick}
+  />
+  <UserSkillsSection
+    title="Новое"
+    items={newItems}
+    showViewAll={newUsers.length > NEW_USERS_COLLAPSED_LIMIT}
+    viewAllLabel={isNewExpanded ? 'Свернуть' : 'Смотреть все'}
+    onViewAllClick={() => setIsNewExpanded((currentValue) => !currentValue)}
+    onFavoriteClick={onFavoriteClick}
+    onDetailsClick={onDetailsClick}
+  />
+  <RecommendedSection
+    items={recommendedItems}
+    isLoading={false}
+    onFavoriteClick={onFavoriteClick}
+    onDetailsClick={onDetailsClick}
+  />
+</div>
             )}
           </div>
         )}

@@ -200,6 +200,55 @@ function renderCatalogState({
   return { testStore }
 }
 
+describe('CatalogPage — секция «Популярное»', () => {
+  it('показывает 3 карточки, раскрывает до 9 и сворачивает обратно', async () => {
+    const user = userEvent.setup()
+    const users = Array.from({ length: 10 }, (_, index) => ({
+      ...createUser(index),
+      likesCount: 100 - index,
+    }))
+
+    renderCatalogPage(users)
+
+    const popularSection = screen.getByRole('region', { name: 'Популярное' })
+
+    expect(within(popularSection).getAllByTestId('new-user-card')).toHaveLength(3)
+
+    await user.click(
+      within(popularSection).getByRole('button', {
+        name: 'Смотреть все',
+      }),
+    )
+
+    expect(within(popularSection).getAllByTestId('new-user-card')).toHaveLength(9)
+    expect(
+      within(popularSection).getByRole('button', {
+        name: 'Свернуть',
+      }),
+    ).toBeInTheDocument()
+
+    await user.click(
+      within(popularSection).getByRole('button', {
+        name: 'Свернуть',
+      }),
+    )
+
+    expect(within(popularSection).getAllByTestId('new-user-card')).toHaveLength(3)
+  })
+
+  it('не показывает кнопку раскрытия, если пользователей не больше трёх', () => {
+    renderCatalogPage([createUser(0), createUser(1), createUser(2)])
+
+    const popularSection = screen.getByRole('region', { name: 'Популярное' })
+
+    expect(
+      within(popularSection).queryByRole('button', {
+        name: 'Смотреть все',
+      }),
+    ).not.toBeInTheDocument()
+  })
+})
+
 describe('CatalogPage — секция «Новое»', () => {
   it('показывает 3 карточки, раскрывает до 9 и сворачивает обратно', async () => {
     const user = userEvent.setup()

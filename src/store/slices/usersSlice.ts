@@ -110,9 +110,19 @@ export const selectUserById = createSelector(
   [selectAllUsers, (_state: RootState, userId: string) => userId],
   (users, userId) => users.find((user) => user.id === userId) ?? null,
 )
-// Сортирует пользователей по количеству лайков от большего к меньшему.
-export const selectPopularUsers = createSelector([selectAllUsers], (users) =>
-  [...users].sort((firstUser, secondUser) => secondUser.likesCount - firstUser.likesCount),
+// Возвращает актуальное количество лайков пользователя с учётом Favorites.
+const getEffectiveLikesCount = (user: User, favoriteUserIds: string[]): number =>
+  (Number(user.likesCount) || 0) + (favoriteUserIds.includes(user.id) ? 1 : 0)
+
+// Сортирует весь список пользователей по актуальному количеству лайков.
+export const selectPopularUsers = createSelector(
+  [selectAllUsers, selectFavoriteUserIds],
+  (users, favoriteUserIds) =>
+    [...users].sort(
+      (firstUser, secondUser) =>
+        getEffectiveLikesCount(secondUser, favoriteUserIds) -
+        getEffectiveLikesCount(firstUser, favoriteUserIds),
+    ),
 )
 // Сортирует пользователей по дате создания от новых к старым.
 export const selectNewUsers = createSelector([selectAllUsers], (users) =>
@@ -120,6 +130,7 @@ export const selectNewUsers = createSelector([selectAllUsers], (users) =>
     (firstUser, secondUser) => Date.parse(secondUser.createdAt) - Date.parse(firstUser.createdAt),
   ),
 )
+
 export const selectUsersStatus = (state: RootState) => state.users.status
 export const selectUsersError = (state: RootState) => state.users.error
 /**
@@ -135,8 +146,8 @@ export const selectEffectiveLikesCount = createSelector(
     if (!user) {
       return 0
     }
-    const baseLikes = Number(user.likesCount) || 0
-    return baseLikes + (favoriteUserIds.includes(user.id) ? 1 : 0)
+
+    return getEffectiveLikesCount(user, favoriteUserIds)
   },
 )
 /**
