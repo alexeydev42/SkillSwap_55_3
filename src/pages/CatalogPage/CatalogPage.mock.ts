@@ -1,84 +1,12 @@
-import type { Category, City, User } from '@/shared/types'
+import { categories, cities } from '@/shared/config'
+import type { User } from '@/shared/types'
+
 import type { CatalogPageProps } from './CatalogPage'
 
-export const catalogCategories: Category[] = [
-  {
-    id: 'business-career',
-    name: 'Бизнес и карьера',
-    subcategories: [
-      { id: 'team-management', name: 'Управление командой' },
-      { id: 'marketing-advertising', name: 'Маркетинг и реклама' },
-      { id: 'sales-negotiations', name: 'Продажи и переговоры' },
-      { id: 'personal-brand', name: 'Личный бренд' },
-      { id: 'resume-interview', name: 'Резюме и собеседование' },
-      { id: 'time-management', name: 'Тайм-менеджмент' },
-      { id: 'project-management', name: 'Проектное управление' },
-      { id: 'entrepreneurship', name: 'Предпринимательство' },
-    ],
-  },
-  {
-    id: 'foreign-languages',
-    name: 'Иностранные языки',
-    subcategories: [
-      { id: 'english', name: 'Английский' },
-      { id: 'french', name: 'Французский' },
-      { id: 'spanish', name: 'Испанский' },
-      { id: 'german', name: 'Немецкий' },
-    ],
-  },
-  {
-    id: 'home-comfort',
-    name: 'Дом и уют',
-    subcategories: [
-      { id: 'cleaning-organization', name: 'Уборка и организация' },
-      { id: 'home-finance', name: 'Домашние финансы' },
-      { id: 'cooking', name: 'Приготовление еды' },
-      { id: 'houseplants', name: 'Домашние растения' },
-    ],
-  },
-  {
-    id: 'creativity-art',
-    name: 'Творчество и искусство',
-    subcategories: [
-      { id: 'drawing-illustration', name: 'Рисование и иллюстрация' },
-      { id: 'photography', name: 'Фотография' },
-      { id: 'video-editing', name: 'Видеомонтаж' },
-      { id: 'music-sound', name: 'Музыка и звук' },
-    ],
-  },
-  {
-    id: 'education-development',
-    name: 'Образование и развитие',
-    subcategories: [
-      { id: 'personal-development', name: 'Личностное развитие' },
-      { id: 'learning-skills', name: 'Навыки обучения' },
-      { id: 'cognitive-techniques', name: 'Когнитивные техники' },
-      { id: 'speed-reading', name: 'Скорочтение' },
-    ],
-  },
-  {
-    id: 'health-lifestyle',
-    name: 'Здоровье и лайфстайл',
-    subcategories: [
-      { id: 'yoga-meditation', name: 'Йога и медитация' },
-      { id: 'nutrition-wellness', name: 'Питание и ЗОЖ' },
-      { id: 'mental-health', name: 'Ментальное здоровье' },
-      { id: 'mindfulness', name: 'Осознанность' },
-    ],
-  },
-]
-
-export const catalogCities: City[] = [
-  { id: 'moscow', name: 'Москва' },
-  { id: 'saint-petersburg', name: 'Санкт-Петербург' },
-  { id: 'novosibirsk', name: 'Новосибирск' },
-  { id: 'yekaterinburg', name: 'Екатеринбург' },
-  { id: 'kazan', name: 'Казань' },
-  { id: 'rostov-on-don', name: 'Ростов-на-Дону' },
-  { id: 'murmansk', name: 'Мурманск' },
-  { id: 'noginsk', name: 'Ногинск' },
-  { id: 'irkutsk', name: 'Иркутск' },
-]
+// Сохраняем прежние названия экспортов для совместимости
+// с существующими stories и другими импортами.
+export const catalogCategories = categories
+export const catalogCities = cities
 
 export const catalogUsers: User[] = [
   {

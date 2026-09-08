@@ -13,9 +13,11 @@ export interface UserSkillsSectionProps {
   items: UserSkillsSectionItem[]
   showViewAll?: boolean
   viewAllLabel?: string
+  isExpanded?: boolean
   onViewAllClick?: () => void
   onFavoriteClick: (id: string) => void
   onDetailsClick: (id: string) => void
+  isFavoriteDisabled?: boolean
 }
 
 export const UserSkillsSection = ({
@@ -23,9 +25,11 @@ export const UserSkillsSection = ({
   items,
   showViewAll,
   viewAllLabel,
+  isExpanded = false,
   onViewAllClick,
   onFavoriteClick,
   onDetailsClick,
+  isFavoriteDisabled = false,
 }: UserSkillsSectionProps) => {
   return (
     <div className={styles.section}>
@@ -33,6 +37,7 @@ export const UserSkillsSection = ({
         title={title}
         showViewAllButton={showViewAll}
         viewAllLabel={viewAllLabel}
+        isExpanded={isExpanded}
         onViewAllClick={onViewAllClick}
       />
 
@@ -41,6 +46,7 @@ export const UserSkillsSection = ({
           <UserSkillCard
             key={item.id}
             user={item}
+            isFavoriteDisabled={isFavoriteDisabled}
             onFavoriteClick={() => onFavoriteClick(item.id)}
             onDetailsClick={() => onDetailsClick(item.id)}
             className={styles.card}
