@@ -110,6 +110,29 @@ export const selectUserById = createSelector(
   [selectAllUsers, (_state: RootState, userId: string) => userId],
   (users, userId) => users.find((user) => user.id === userId) ?? null,
 )
+
+export const selectSimilarUsers = createSelector(
+  [selectAllUsers, (_state: RootState, userId: string) => userId],
+  (users, userId) => {
+    const currentUser = users.find((user) => user.id === userId)
+    if (!currentUser) {
+      return []
+    }
+    const { categoryId, subcategoryId } = currentUser.offeredSkill
+
+    const sameSubcategoryUsers = users.filter(
+      (user) => user.id !== currentUser.id && user.offeredSkill.subcategoryId === subcategoryId,
+    )
+
+    const sameCategoryOtherSubcategoryUsers = users.filter(
+      (user) =>
+        user.id !== currentUser.id &&
+        user.offeredSkill.categoryId === categoryId &&
+        user.offeredSkill.subcategoryId !== subcategoryId,
+    )
+    return [...sameSubcategoryUsers, ...sameCategoryOtherSubcategoryUsers].slice(0, 8)
+  },
+)
 // Возвращает актуальное количество лайков пользователя с учётом Favorites.
 const getEffectiveLikesCount = (user: User, favoriteUserIds: string[]): number =>
   (Number(user.likesCount) || 0) + (favoriteUserIds.includes(user.id) ? 1 : 0)
@@ -193,88 +216,80 @@ export const selectEffectiveLearningSubcategoryIds = createSelector(
 )
 
 /* Возвращает итоговую выдачу каталога:
-* фильтрация + сортировка.
-*
-* OR внутри одной группы:
-* - подкатегории;
-* - города.
-*
-* AND между группами:
-* - режим;
-* - подкатегории;
-* - пол;
-* - город.
-*
-* Сортировка выполняется только после фильтрации.
-*/
+ * фильтрация + сортировка.
+ *
+ * OR внутри одной группы:
+ * - подкатегории;
+ * - города.
+ *
+ * AND между группами:
+ * - режим;
+ * - подкатегории;
+ * - пол;
+ * - город.
+ *
+ * Сортировка выполняется только после фильтрации.
+ */
 export const selectCatalogUsers = createSelector(
- [
- selectAllUsers,
- (state: RootState) => state.catalogFilters.filters,
- (state: RootState) => state.catalogFilters.sort,
- selectLocalUser,
- selectFavoriteUserIds,
- ],
- (users, filters: CatalogFilters, sort, localUser, favoriteUserIds) => {
- const filteredUsers = users.filter((user) => {
- const effectiveLearningSubcategoryIds =
- getEffectiveLearningSubcategoryIds(
- user,
-localUser,
- favoriteUserIds,
- users,
-)
+  [
+    selectAllUsers,
+    (state: RootState) => state.catalogFilters.filters,
+    (state: RootState) => state.catalogFilters.sort,
+    selectLocalUser,
+    selectFavoriteUserIds,
+  ],
+  (users, filters: CatalogFilters, sort, localUser, favoriteUserIds) => {
+    const filteredUsers = users.filter((user) => {
+      const effectiveLearningSubcategoryIds = getEffectiveLearningSubcategoryIds(
+        user,
+        localUser,
+        favoriteUserIds,
+        users,
+      )
 
-// OR внутри группы подкатегорий.
- const matchesSubcategory =
- filters.subcategoryIds.length === 0 ||
- filters.subcategoryIds.some((subcategoryId) => {
- const matchesTeaching =
- user.offeredSkill.subcategoryId === subcategoryId
+      // OR внутри группы подкатегорий.
+      const matchesSubcategory =
+        filters.subcategoryIds.length === 0 ||
+        filters.subcategoryIds.some((subcategoryId) => {
+          const matchesTeaching = user.offeredSkill.subcategoryId === subcategoryId
 
-const matchesLearning =
-effectiveLearningSubcategoryIds.includes(subcategoryId)
+          const matchesLearning = effectiveLearningSubcategoryIds.includes(subcategoryId)
 
-if (filters.offerType === 'teaching') {
- return matchesTeaching
- }
+          if (filters.offerType === 'teaching') {
+            return matchesTeaching
+          }
 
- if (filters.offerType === 'learning') {
-return matchesLearning
-}
+          if (filters.offerType === 'learning') {
+            return matchesLearning
+          }
 
-// Режим «Все»:
- // подкатегория должна находиться либо в offeredSkill,
-// либо в вычисляемом «Хочу научиться».
- return matchesTeaching || matchesLearning
- })
+          // Режим «Все»:
+          // подкатегория должна находиться либо в offeredSkill,
+          // либо в вычисляемом «Хочу научиться».
+          return matchesTeaching || matchesLearning
+        })
 
- // OR внутри группы городов.
- const matchesCity =
- filters.cityIds.length === 0 ||
- filters.cityIds.includes(user.cityId)
+      // OR внутри группы городов.
+      const matchesCity = filters.cityIds.length === 0 || filters.cityIds.includes(user.cityId)
 
- // Фильтр пола.
- const matchesGender =
- filters.gender === 'all' ||
-user.gender === filters.gender
+      // Фильтр пола.
+      const matchesGender = filters.gender === 'all' || user.gender === filters.gender
 
-// AND между группами фильтров.
- return matchesSubcategory && matchesCity && matchesGender
- })
+      // AND между группами фильтров.
+      return matchesSubcategory && matchesCity && matchesGender
+    })
 
-// Сортировка выполняется строго ПОСЛЕ фильтрации.
-if (sort === 'newest') {
- return [...filteredUsers].sort(
-(firstUser, secondUser) =>
- Date.parse(secondUser.createdAt) -
- Date.parse(firstUser.createdAt),
- )
- }
+    // Сортировка выполняется строго ПОСЛЕ фильтрации.
+    if (sort === 'newest') {
+      return [...filteredUsers].sort(
+        (firstUser, secondUser) =>
+          Date.parse(secondUser.createdAt) - Date.parse(firstUser.createdAt),
+      )
+    }
 
-// default — исходный порядок после фильтрации.
-return filteredUsers
-},
+    // default — исходный порядок после фильтрации.
+    return filteredUsers
+  },
 )
 
 export default usersSlice.reducer

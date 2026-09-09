@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import usersReducer, {
+  selectSimilarUsers,
   fetchUsers,
   selectAllUsers,
   selectCatalogUsers,
@@ -72,10 +73,7 @@ function createAuthenticatedRootState(users: UsersState, userId: string): RootSt
   } as unknown as RootState
 }
 
-function createRootStateWithFavorites(
-  users: UsersState,
-  favoriteUserIds: string[],
-): RootState {
+function createRootStateWithFavorites(users: UsersState, favoriteUserIds: string[]): RootState {
   return {
     ...createRootState(users),
     favorites: { favoriteUserIds },
@@ -262,7 +260,7 @@ describe('usersSlice — базовые селекторы', () => {
     expect(selectCurrentUser(state)).toBeNull()
   })
 
-   it('сразу пересортировывает пользователей после изменения Favorites', () => {
+  it('сразу пересортировывает пользователей после изменения Favorites', () => {
     const firstUser: User = {
       ...mockUser,
       id: 'first-user',
@@ -290,10 +288,10 @@ describe('usersSlice — базовые селекторы', () => {
   })
 })
 
-   describe('usersSlice — selectEffectiveLikesCount', () => {
+describe('usersSlice — selectEffectiveLikesCount', () => {
   // Добавляет к состоянию из createRootState срез favorites — нужен для
   // проверки вычисляемого likesCount, который зависит от users + favorites.
-  
+
   it('возвращает базовый likesCount, если пользователь не в Favorites', () => {
     const state = createRootStateWithFavorites(
       { ...initialState, mockUsers: [{ ...mockUser, likesCount: 10 }] },
@@ -340,7 +338,7 @@ describe('usersSlice — базовые селекторы', () => {
 
 describe('usersSlice — selectEffectiveLearningSubcategoryIds', () => {
   // Создаёт состояние Redux со срезом Favorites.
-  
+
   const firstFavoriteUser: User = {
     ...mockUser,
     id: 'favorite-user-1',
@@ -373,12 +371,9 @@ describe('usersSlice — selectEffectiveLearningSubcategoryIds', () => {
       [firstFavoriteUser.id],
     )
 
-    expect(
-      selectEffectiveLearningSubcategoryIds(
-        state,
-        mockUserWithLearningIds.id,
-      ),
-    ).toEqual(['guitar'])
+    expect(selectEffectiveLearningSubcategoryIds(state, mockUserWithLearningIds.id)).toEqual([
+      'guitar',
+    ])
   })
 
   it('у локального пользователя без Favorites возвращает только базовый список', () => {
@@ -393,9 +388,7 @@ describe('usersSlice — selectEffectiveLearningSubcategoryIds', () => {
       [],
     )
 
-    expect(
-      selectEffectiveLearningSubcategoryIds(state, localUser.id),
-    ).toEqual(['guitar'])
+    expect(selectEffectiveLearningSubcategoryIds(state, localUser.id)).toEqual(['guitar'])
   })
 
   it('добавляет subcategoryId избранного пользователя к базовому списку', () => {
@@ -411,9 +404,10 @@ describe('usersSlice — selectEffectiveLearningSubcategoryIds', () => {
       [firstFavoriteUser.id],
     )
 
-    expect(
-      selectEffectiveLearningSubcategoryIds(state, localUser.id),
-    ).toEqual(['guitar', 'public-speaking'])
+    expect(selectEffectiveLearningSubcategoryIds(state, localUser.id)).toEqual([
+      'guitar',
+      'public-speaking',
+    ])
   })
 
   it('после удаления пользователя из Favorites список возвращается к базовому', () => {
@@ -426,26 +420,18 @@ describe('usersSlice — selectEffectiveLearningSubcategoryIds', () => {
       },
     }
 
-    const stateWithFavorite = createRootStateWithFavorites(
-      usersState,
-      [firstFavoriteUser.id],
-    )
+    const stateWithFavorite = createRootStateWithFavorites(usersState, [firstFavoriteUser.id])
 
-    expect(
-      selectEffectiveLearningSubcategoryIds(
-        stateWithFavorite,
-        localUser.id,
-      ),
-    ).toEqual(['guitar', 'public-speaking'])
+    expect(selectEffectiveLearningSubcategoryIds(stateWithFavorite, localUser.id)).toEqual([
+      'guitar',
+      'public-speaking',
+    ])
 
     const stateWithoutFavorite = createRootStateWithFavorites(usersState, [])
 
-    expect(
-      selectEffectiveLearningSubcategoryIds(
-        stateWithoutFavorite,
-        localUser.id,
-      ),
-    ).toEqual(['guitar'])
+    expect(selectEffectiveLearningSubcategoryIds(stateWithoutFavorite, localUser.id)).toEqual([
+      'guitar',
+    ])
   })
 
   it('убирает дубликаты подкатегорий', () => {
@@ -461,34 +447,25 @@ describe('usersSlice — selectEffectiveLearningSubcategoryIds', () => {
     const state = createRootStateWithFavorites(
       {
         ...initialState,
-        mockUsers: [
-          firstFavoriteUser,
-          secondFavoriteUser,
-          duplicateFavoriteUser,
-        ],
+        mockUsers: [firstFavoriteUser, secondFavoriteUser, duplicateFavoriteUser],
         localUser: {
           ...localUser,
           learningSubcategoryIds: ['time-management'],
         },
       },
-      [
-        firstFavoriteUser.id,
-        secondFavoriteUser.id,
-        duplicateFavoriteUser.id,
-      ],
+      [firstFavoriteUser.id, secondFavoriteUser.id, duplicateFavoriteUser.id],
     )
 
-    expect(
-      selectEffectiveLearningSubcategoryIds(state, localUser.id),
-    ).toEqual(['time-management', 'public-speaking'])
+    expect(selectEffectiveLearningSubcategoryIds(state, localUser.id)).toEqual([
+      'time-management',
+      'public-speaking',
+    ])
   })
 
   it('возвращает пустой массив, если пользователь не найден', () => {
     const state = createRootStateWithFavorites(initialState, [])
 
-    expect(
-      selectEffectiveLearningSubcategoryIds(state, 'unknown-user'),
-    ).toEqual([])
+    expect(selectEffectiveLearningSubcategoryIds(state, 'unknown-user')).toEqual([])
   })
 })
 
@@ -765,5 +742,154 @@ describe('usersSlice — selectCatalogUsers', () => {
     const secondResult = selectCatalogUsers(state)
 
     expect(secondResult).toBe(firstResult)
+  })
+})
+
+describe('usersSlice — selectSimilarUsers', () => {
+  // Создаёт пользователя с нужной категорией и подкатегорией.
+  function createSimilarUser(id: string, categoryId: string, subcategoryId: string): User {
+    return {
+      ...mockUser,
+      id,
+      offeredSkill: {
+        ...mockUser.offeredSkill,
+        categoryId,
+        subcategoryId,
+      },
+    }
+  }
+
+  it('исключает текущего пользователя из похожих предложений', () => {
+    const currentUser = createSimilarUser('current-user', 'business-career', 'team-management')
+
+    const similarUser = createSimilarUser('similar-user', 'business-career', 'team-management')
+
+    const state = createRootState({
+      ...initialState,
+      mockUsers: [currentUser, similarUser],
+    })
+
+    const result = selectSimilarUsers(state, currentUser.id)
+
+    expect(result).toEqual([similarUser])
+    expect(result).not.toContain(currentUser)
+  })
+
+  it('сначала возвращает пользователей с той же подкатегорией', () => {
+    const currentUser = createSimilarUser('current-user', 'business-career', 'team-management')
+
+    const sameSubcategoryUser = createSimilarUser(
+      'same-subcategory',
+      'business-career',
+      'team-management',
+    )
+
+    const otherSubcategoryUser = createSimilarUser(
+      'other-subcategory',
+      'business-career',
+      'time-management',
+    )
+
+    const state = createRootState({
+      ...initialState,
+      mockUsers: [currentUser, otherSubcategoryUser, sameSubcategoryUser],
+    })
+
+    const result = selectSimilarUsers(state, currentUser.id)
+
+    expect(result).toEqual([sameSubcategoryUser, otherSubcategoryUser])
+  })
+
+  it('если пользователей с той же подкатегорией меньше 8, добирает из той же категории', () => {
+    const currentUser = createSimilarUser('current-user', 'business-career', 'team-management')
+
+    const sameSubcategoryUser = createSimilarUser(
+      'same-subcategory',
+      'business-career',
+      'team-management',
+    )
+
+    const otherSubcategoryUser = createSimilarUser(
+      'other-subcategory',
+      'business-career',
+      'time-management',
+    )
+
+    const anotherCategoryUser = createSimilarUser(
+      'another-category',
+      'foreign-languages',
+      'english',
+    )
+
+    const state = createRootState({
+      ...initialState,
+      mockUsers: [currentUser, sameSubcategoryUser, otherSubcategoryUser, anotherCategoryUser],
+    })
+
+    const result = selectSimilarUsers(state, currentUser.id)
+
+    expect(result).toEqual([sameSubcategoryUser, otherSubcategoryUser])
+
+    expect(result).not.toContain(anotherCategoryUser)
+  })
+
+  it('не добавляет пользователей из другой категории', () => {
+    const currentUser = createSimilarUser('current-user', 'business-career', 'team-management')
+
+    const wrongCategoryUser = createSimilarUser('wrong-category', 'foreign-languages', 'english')
+
+    const state = createRootState({
+      ...initialState,
+      mockUsers: [currentUser, wrongCategoryUser],
+    })
+
+    const result = selectSimilarUsers(state, currentUser.id)
+
+    expect(result).toEqual([])
+  })
+
+  it('ограничивает результат максимум 8 пользователями', () => {
+    const currentUser = createSimilarUser('current-user', 'business-career', 'team-management')
+    const similarUsers = Array.from({ length: 10 }, (_, index) =>
+      createSimilarUser(`similar-user-${index + 1}`, 'business-career', 'team-management'),
+    )
+
+    const state = createRootState({
+      ...initialState,
+      mockUsers: [currentUser, ...similarUsers],
+    })
+
+    const result = selectSimilarUsers(state, currentUser.id)
+
+    expect(result).toHaveLength(8)
+    expect(result).toEqual(similarUsers.slice(0, 8))
+  })
+
+  it('если подходящих пользователей нет, возвращает пустой массив', () => {
+    const currentUser = createSimilarUser('current-user', 'business-career', 'team-management')
+
+    const unrelatedUser = createSimilarUser('unrelated-user', 'foreign-languages', 'english')
+
+    const state = createRootState({
+      ...initialState,
+      mockUsers: [currentUser, unrelatedUser],
+    })
+
+    const result = selectSimilarUsers(state, currentUser.id)
+
+    expect(result).toEqual([])
+  })
+
+  it('если текущий пользователь не найден, возвращает пустой массив', () => {
+    const user = createSimilarUser('user-1', 'business-career', 'team-management')
+
+    const state = createRootState({
+      ...initialState,
+      mockUsers: [user],
+    })
+
+    const result = selectSimilarUsers(state, 'unknown-user')
+
+    expect(result).toEqual([])
   })
 })

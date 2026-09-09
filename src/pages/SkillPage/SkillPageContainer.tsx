@@ -2,42 +2,71 @@ import { useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { NotFoundPage } from '@/pages/NotFoundPage'
+import { mapUserToCatalogCard } from '@/pages/CatalogPage/CatalogPage.utils'
+import DoneIcon from '@/shared/assets/icons/icon-done.svg?react'
 import { categories, cities } from '@/shared/config'
+import { ROUTES } from '@/shared/lib/constants'
+import { Modal } from '@/shared/ui/Modal'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
-import { fetchUsers, selectUserById, selectUsersStatus } from '@/store/slices/usersSlice'
+import { addFavorite, removeFavorite, selectFavoriteUserIds } from '@/store/slices/favoritesSlice'
+import {
+  fetchUsers,
+  selectEffectiveLearningSubcategoryIds,
+  selectEffectiveLikesCount,
+  selectSimilarUsers,
+  selectUserById,
+  selectUsersStatus,
+} from '@/store/slices/usersSlice'
+import { StatusModalContent } from '@/widgets/StatusModalContent'
 
 import { SkillPage } from './SkillPage'
 import { mapUserToSkillPageProps } from './SkillPage.utils'
-
-import DoneIcon from '@/shared/assets/icons/icon-done.svg?react'
-import { Modal } from '@/shared/ui/Modal'
-import { StatusModalContent } from '@/widgets/StatusModalContent'
 
 interface SkillPageLocationState {
   registrationCompleted?: boolean
 }
 
-export function SkillPageContainer() {
+export const SkillPageContainer = () => {
   const location = useLocation()
   const navigate = useNavigate()
+  const dispatch = useAppDispatch()
+  const { userId } = useParams<{ userId: string }>()
 
   const [isRegistrationSuccessOpen, setIsRegistrationSuccessOpen] = useState(() =>
     Boolean((location.state as SkillPageLocationState | null)?.registrationCompleted),
   )
-  const dispatch = useAppDispatch()
-  const { userId } = useParams<{ userId: string }>()
+
   const usersStatus = useAppSelector(selectUsersStatus)
   const user = useAppSelector((state) => (userId ? selectUserById(state, userId) : null))
+  const similarUsers = useAppSelector((state) => (userId ? selectSimilarUsers(state, userId) : []))
+  const favoriteUserIds = useAppSelector(selectFavoriteUserIds)
+
+  const effectiveLikesCountByUserId = useAppSelector((state) =>
+    Object.fromEntries(
+      similarUsers.map((similarUser) => [
+        similarUser.id,
+        selectEffectiveLikesCount(state, similarUser.id),
+      ]),
+    ),
+  )
+
+  const effectiveLearningSubcategoryIdsByUserId = useAppSelector((state) =>
+    Object.fromEntries(
+      similarUsers.map((similarUser) => [
+        similarUser.id,
+        selectEffectiveLearningSubcategoryIds(state, similarUser.id),
+      ]),
+    ),
+  )
 
   const authSession = useAppSelector((state) => state.auth.session)
   const authAccount = useAppSelector((state) => state.auth.account)
-
   const currentUser = useAppSelector((state) =>
     authSession ? selectUserById(state, authSession.userId) : null,
   )
 
-  // Список моковых пользователей может быть ещё не загружен, если на страницу
-  // навыка зашли напрямую по ссылке (например, после F5), минуя каталог.
+  const isAuthenticated = Boolean(authSession && authAccount)
+
   useEffect(() => {
     if (usersStatus === 'idle') {
       dispatch(fetchUsers())
@@ -47,11 +76,26 @@ export function SkillPageContainer() {
   const handleCloseRegistrationSuccess = () => {
     setIsRegistrationSuccessOpen(false)
 
-    // Удаляем одноразовый флаг из текущей записи истории.
     navigate(location.pathname, {
       replace: true,
       state: null,
     })
+  }
+
+  const handleFavoriteClick = (similarUserId: string) => {
+    if (!isAuthenticated) {
+      return
+    }
+
+    if (favoriteUserIds.includes(similarUserId)) {
+      dispatch(removeFavorite(similarUserId))
+    } else {
+      dispatch(addFavorite(similarUserId))
+    }
+  }
+
+  const handleDetailsClick = (similarUserId: string) => {
+    navigate(ROUTES.SKILL.replace(':userId', similarUserId))
   }
 
   if (!userId) {
@@ -59,8 +103,6 @@ export function SkillPageContainer() {
   }
 
   if (!user) {
-    // Пока список пользователей загружается — рано показывать 404,
-    // локальный пользователь при этом доступен сразу, без ожидания fetchUsers.
     if (usersStatus === 'idle' || usersStatus === 'loading') {
       return <div>Загрузка...</div>
     }
@@ -70,14 +112,26 @@ export function SkillPageContainer() {
 
   const skillPageProps = mapUserToSkillPageProps(user, categories, cities)
 
-  // Похожие предложения не входят в LOGIC-34 — подключение SimilarOffersSection
-  // к реальным данным будет отдельной задачей.
+  const similarOffers = similarUsers.map((similarUser) => ({
+    user: mapUserToCatalogCard(
+      similarUser,
+      categories,
+      cities,
+      favoriteUserIds.includes(similarUser.id),
+      effectiveLikesCountByUserId[similarUser.id] ?? similarUser.likesCount,
+      effectiveLearningSubcategoryIdsByUserId[similarUser.id] ?? similarUser.learningSubcategoryIds,
+    ),
+    isFavoriteDisabled: !isAuthenticated,
+    onFavoriteClick: () => handleFavoriteClick(similarUser.id),
+    onDetailsClick: () => handleDetailsClick(similarUser.id),
+  }))
+
   return (
     <>
       <SkillPage
         {...skillPageProps}
-        similarOffers={[]}
-        isAuth={Boolean(authSession && authAccount)}
+        similarOffers={similarOffers}
+        isAuth={isAuthenticated}
         authUser={
           currentUser
             ? {

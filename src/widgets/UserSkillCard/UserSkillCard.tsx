@@ -5,6 +5,7 @@ import type { SkillTagVariant } from '@/shared/ui/SkillTag/SkillTag'
 import { UserInfo } from '@/entities/user/ui/UserInfo'
 
 export interface UserSkillCardData {
+  id: string
   name: string
   city: string
   age: number
