@@ -18,6 +18,8 @@ export interface SkillPageProps {
   skill: SkillDetailsProps
   gallery: string[]
   similarOffers: UserSkillCardProps[]
+  isAuth: boolean
+  authUser?: { userName: string; avatarSrc: string }
 }
 
 export function SkillPage({
@@ -27,16 +29,16 @@ export function SkillPage({
   skill,
   gallery,
   similarOffers,
+  isAuth, // <--- добавлено
+  authUser,
 }: SkillPageProps) {
   return (
     <div className={styles.page}>
-      <Header
-        isAuthenticated
-        user={{
-          userName: user.name,
-          avatarSrc: user.avatar,
-        }}
-      />
+      {isAuth && authUser ? (
+        <Header isAuthenticated={true} user={authUser} />
+      ) : (
+        <Header isAuthenticated={false} />
+      )}
 
       <main className={styles.main}>
         <div className={styles.content}>

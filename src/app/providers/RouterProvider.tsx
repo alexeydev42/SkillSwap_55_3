@@ -14,11 +14,11 @@ const AboutProjectPage = lazy(() =>
     default: module.AboutProjectPage,
   })),
 )
-const SkillPage = lazy(() =>
-  import('@/pages/SkillPage').then((module) => ({
-    default: module.SkillPage,
-  })),
-)
+const SkillPageContainer = lazy(() =>
+ import('@/pages/SkillPage/SkillPageContainer').then((module) => ({
+default: module.SkillPageContainer,
+})),
+  )
 const ProfilePage = lazy(() =>
   import('@/pages/ProfilePage').then((module) => ({
     default: module.ProfilePage,
@@ -57,7 +57,7 @@ export function AppRouter() {
         <Routes>
           <Route path={ROUTES.HOME} element={<CatalogPageContainer />} />
           <Route path={ROUTES.ABOUT} element={<AboutProjectPage />} />
-          <Route path={ROUTES.SKILL} element={<SkillPage {...skillPageMock} />} />
+          <Route path={ROUTES.SKILL} element={<SkillPageContainer />} />
           <Route path={ROUTES.FAVORITES} element={<FavoritesPage />} />
           <Route path={ROUTES.LOGIN} element={<LoginPage />} />
           <Route path={ROUTES.REGISTER} element={<RegistrationStep1 />} />

@@ -5,47 +5,46 @@ const colorPlaceholder = (hex: string) =>
 
 export const skillPageMock: SkillPageProps = {
   user: {
-  avatar: colorPlaceholder('7c9cbf'),
-  name: 'Иван',
-  city: 'Санкт-Петербург',
-  age: '34 года',
-},
-
-userDescription:
-  'Привет! Люблю ритм, кофе по утрам и людей, которые не боятся пробовать новое',
-
-skills: {
-  canTeach: {
-    variant: 'creative',
-    label: 'Игра на барабанах',
+    avatar: colorPlaceholder('7c9cbf'),
+    name: 'Иван',
+    city: 'Санкт-Петербург',
+    age: '34 года',
   },
-  wantsToLearn: [
-    {
-      variant: 'education',
-      label: 'Тайм менеджмент',
-    },
-    {
-      variant: 'health',
-      label: 'Медитация',
-    },
-  ],
-},
 
-skill: {
-  title: 'Игра на барабанах',
-  category: 'Творчество и искусство',
-  subcategory: 'Музыка и звук',
-  description:
-    'Привет! Я играю на барабанах уже больше 10 лет — от репетиций в гараже до выступлений на сцене с живыми группами. Научу основам техники (и как не отбить себе пальцы), играть любимые ритмы и разбирать песни, импровизировать и звучать уверенно даже без паритуры',
-},
+  userDescription: 'Привет! Люблю ритм, кофе по утрам и людей, которые не боятся пробовать новое',
+
+  skills: {
+    canTeach: {
+      variant: 'creative',
+      label: 'Игра на барабанах',
+    },
+    wantsToLearn: [
+      {
+        variant: 'education',
+        label: 'Тайм менеджмент',
+      },
+      {
+        variant: 'health',
+        label: 'Медитация',
+      },
+    ],
+  },
+
+  skill: {
+    title: 'Игра на барабанах',
+    category: 'Творчество и искусство',
+    subcategory: 'Музыка и звук',
+    description:
+      'Привет! Я играю на барабанах уже больше 10 лет — от репетиций в гараже до выступлений на сцене с живыми группами. Научу основам техники (и как не отбить себе пальцы), играть любимые ритмы и разбирать песни, импровизировать и звучать уверенно даже без паритуры',
+  },
 
   gallery: [
-  colorPlaceholder('8fb99f'),
-  colorPlaceholder('c98b8b'),
-  colorPlaceholder('d6b26e'),
-  colorPlaceholder('9a8cbd'),
-  colorPlaceholder('6e7fa3'),
-],
+    colorPlaceholder('8fb99f'),
+    colorPlaceholder('c98b8b'),
+    colorPlaceholder('d6b26e'),
+    colorPlaceholder('9a8cbd'),
+    colorPlaceholder('6e7fa3'),
+  ],
 
   similarOffers: [
     {
@@ -141,4 +140,6 @@ skill: {
       onDetailsClick: () => {},
     },
   ],
+  isAuth: false,
+  authUser: undefined,
 }

@@ -1,5 +1,7 @@
 import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
+import { ROUTES } from '@/shared/lib/constants'
 import { categories, cities } from '@/shared/config'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { addFavorite, removeFavorite, selectFavoriteUserIds } from '@/store/slices/favoritesSlice'
@@ -15,6 +17,7 @@ import { CatalogPage } from './CatalogPage'
 
 export function CatalogPageContainer() {
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
 
   const mockUsers = useAppSelector(selectMockUsers)
   const users = useAppSelector(selectAllUsers)
@@ -46,6 +49,11 @@ export function CatalogPageContainer() {
     dispatch(fetchUsers())
   }
 
+  // «Подробнее» открывает страницу навыка выбранного пользователя (LOGIC-34).
+  const handleDetailsClick = (userId: string) => {
+    navigate(ROUTES.SKILL.replace(':userId', userId))
+  }
+
   return (
     <CatalogPage
       users={users}
@@ -57,7 +65,7 @@ export function CatalogPageContainer() {
       isFavoriteDisabled={!authSession}
       onRetry={handleRetry}
       onFavoriteClick={handleFavoriteClick}
-      onDetailsClick={(id) => console.log('Подробнее:', id)}
+      onDetailsClick={handleDetailsClick}
     />
   )
 }
