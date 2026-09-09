@@ -1,5 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-
+import { STORAGE_KEYS } from '@/shared/lib/constants'
+import { storageService } from '@/shared/lib/storageService'
 import type { AuthAccount, AuthSession } from '@/shared/types'
 
 export interface AuthState {
@@ -9,10 +10,9 @@ export interface AuthState {
   error: string | null
 }
 
-// Задаёт начальное состояние авторизации.
 const initialState: AuthState = {
-  account: null,
-  session: null,
+  account: storageService.get<AuthAccount>(STORAGE_KEYS.AUTH_ACCOUNT),
+  session: storageService.get<AuthSession>(STORAGE_KEYS.AUTH_SESSION),
   status: 'idle',
   error: null,
 }
@@ -48,12 +48,7 @@ const authSlice = createSlice({
   },
 })
 
-export const {
-  setAuthAccount,
-  setAuthSession,
-  clearAuthSession,
-  setAuthStatus,
-  setAuthError,
-} = authSlice.actions
+export const { setAuthAccount, setAuthSession, clearAuthSession, setAuthStatus, setAuthError } =
+  authSlice.actions
 
 export default authSlice.reducer

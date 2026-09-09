@@ -74,6 +74,14 @@ export const Header: FC<HeaderProps> = (props) => {
     navigate(ROUTES.REGISTER)
   }
 
+  const handleLogin = () => {
+    if (onLogin) {
+      onLogin()
+      return
+    }
+    navigate(ROUTES.LOGIN)
+  }
+
   // Хранит состояние меню, когда Header управляет им самостоятельно.
   const [internalIsSkillsMenuOpen, setInternalIsSkillsMenuOpen] = useState(false)
   const skillsRef = useRef<HTMLDivElement>(null)
@@ -164,7 +172,7 @@ export const Header: FC<HeaderProps> = (props) => {
           />
         ) : (
           <div className={styles.authButtons}>
-            <button className={styles.loginBtn} onClick={onLogin}>
+            <button type="button" className={styles.loginBtn} onClick={handleLogin}>
               Войти
             </button>
             <button type="button" className={styles.registerBtn} onClick={handleRegister}>
