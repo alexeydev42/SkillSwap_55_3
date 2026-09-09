@@ -19,6 +19,7 @@ export const Default: Story = {
     items: [
       {
         user: {
+           id:'story-user-1',
           name: 'Анна Петрова',
           city: 'Москва',
           age: 25,
@@ -44,6 +45,7 @@ export const Default: Story = {
       },
       {
         user: {
+           id:'story-user-2',
           name: 'Максим Иванов',
           city: 'Санкт-Петербург',
           age: 31,
@@ -69,6 +71,7 @@ export const Default: Story = {
       },
       {
         user: {
+           id:'story-user-3',
           name: 'Екатерина Смирнова',
           city: 'Казань',
           age: 28,
@@ -94,6 +97,7 @@ export const Default: Story = {
       },
       {
         user: {
+           id:'story-user-4',
           name: 'Дмитрий Волков',
           city: 'Новосибирск',
           age: 34,

@@ -65,7 +65,7 @@ export function SkillPage({
           </div>
         </div>
 
-        <SimilarOffersSection items={similarOffers} />
+        <SimilarOffersSection items={similarOffers}/>
       </main>
 
       <div className={styles.footer}>
