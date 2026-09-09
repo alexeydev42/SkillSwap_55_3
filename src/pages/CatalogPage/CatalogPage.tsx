@@ -106,6 +106,10 @@ export const CatalogPage = ({
   // Хранит все выбранные фильтры каталога.
   const filters = useAppSelector((state) => state.catalogFilters.filters)
 
+  const sort = useAppSelector((state) => state.catalogFilters.sort)
+
+  const [searchQuery, setSearchQuery] = useState('')
+
   // Список id пользователей, находящихся в избранном.
   const favoriteUserIds = useAppSelector(selectFavoriteUserIds)
   // Строит карту "id пользователя → его эффективный список learningSubcategoryIds".
@@ -224,10 +228,21 @@ export const CatalogPage = ({
     () => buildAppliedCatalogFilters(filters, categories, cities),
     [filters, categories, cities],
   )
+
+  const normalizedSearchQuery = searchQuery.trim().toLowerCase()
+
+  const searchedCatalogUsers = useMemo(() => {
+    if (!normalizedSearchQuery) {
+      return catalogUsers
+    }
+    return catalogUsers.filter((user) =>
+      user.offeredSkill.title.toLowerCase().includes(normalizedSearchQuery),
+    )
+  }, [catalogUsers, normalizedSearchQuery])
   // Фильтрует пользователей и преобразует результат в карточки.
   const filteredResults = useMemo(
     () =>
-      catalogUsers.map((user) =>
+      searchedCatalogUsers.map((user) =>
         mapUserToCatalogCard(
           user,
           categories,
@@ -238,7 +253,7 @@ export const CatalogPage = ({
         ),
       ),
     [
-      catalogUsers,
+      searchedCatalogUsers,
       categories,
       cities,
       favoriteUserIds,
@@ -248,9 +263,19 @@ export const CatalogPage = ({
   )
   // Подсчитывает количество выбранных фильтров.
   const filtersCount = useMemo(() => getActiveCatalogFiltersCount(filters), [filters])
+
+  const hasSearch = normalizedSearchQuery.length > 0
+
+  const hasActiveCatalogOptions = isFiltered || hasSearch || sort !== 'default'
+
   // Удаляет один фильтр через панель применённых фильтров.
   const handleRemoveFilter = (filterId: string) => {
     dispatch(setCatalogFilters(removeCatalogFilter(filters, filterId)))
+  }
+
+  const handleReset = () => {
+    setSearchQuery('')
+    dispatch(resetCatalogFilters())
   }
   // Переключает выбранное меню и закрывает ранее открытое.
   const toggleHeaderMenu = (menu: HeaderMenu) => {
@@ -289,6 +314,8 @@ export const CatalogPage = ({
         {...headerProps}
         isAllSkillsMenuOpen={openHeaderMenu === 'allSkills'}
         onAllSkillsMenuOpenChange={(isOpen) => setHeaderMenuOpen('allSkills', isOpen)}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
       />
       <main className={styles.main}>
         {isInitialLoading ? (
@@ -310,12 +337,8 @@ export const CatalogPage = ({
                 <h2 className={styles.filtersTitle}>
                   Фильтры{filtersCount > 0 && ` (${filtersCount})`}
                 </h2>
-                {filtersCount > 0 && (
-                  <button
-                    type="button"
-                    className={styles.resetButton}
-                    onClick={() => dispatch(resetCatalogFilters())}
-                  >
+                {hasActiveCatalogOptions && (
+                  <button type="button" className={styles.resetButton} onClick={handleReset}>
                     Сбросить ×
                   </button>
                 )}
@@ -327,7 +350,7 @@ export const CatalogPage = ({
                 onChange={(nextFilters) => dispatch(setCatalogFilters(nextFilters))}
               />
             </div>
-            {isFiltered ? (
+            {hasActiveCatalogOptions ? (
               <div className={styles.results}>
                 <AppliedFiltersBar filters={appliedFilters} onRemove={handleRemoveFilter} />
                 <div className={styles.resultsToolbar}>
@@ -336,18 +359,27 @@ export const CatalogPage = ({
                   </h2>
                   <SortButton onChange={() => dispatch(setCatalogSort('newest'))} />
                 </div>
-                <div className={styles.resultsGrid}>
-                  {filteredResults.map((item) => (
-                    <UserSkillCard
-                      key={item.id}
-                      user={item}
-                      isFavoriteDisabled={isFavoriteDisabled}
-                      onFavoriteClick={() => onFavoriteClick(item.id)}
-                      onDetailsClick={() => onDetailsClick(item.id)}
-                      className={styles.resultsCard}
-                    />
-                  ))}
-                </div>
+                {filteredResults.length > 0 ? (
+                  <div className={styles.resultsGrid}>
+                    {filteredResults.map((item) => (
+                      <UserSkillCard
+                        key={item.id}
+                        user={item}
+                        isFavoriteDisabled={isFavoriteDisabled}
+                        onFavoriteClick={() => onFavoriteClick(item.id)}
+                        onDetailsClick={() => onDetailsClick(item.id)}
+                        className={styles.resultsCard}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className={styles.emptyState}>
+                    <h2 className={styles.emptyTitle}>Ничего не найдено</h2>
+                    <p className={styles.emptyText}>
+                      Попробуйте изменить параметры поиска или сбросить фильтры
+                    </p>
+                  </div>
+                )}
               </div>
             ) : (
               <div className={styles.sections}>

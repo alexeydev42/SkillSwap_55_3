@@ -25,6 +25,8 @@ interface HeaderBaseProps {
   onFavoritesClick?: () => void
   onLogin?: () => void
   onRegister?: () => void
+  onSearchChange?: (value: string) => void
+  searchQuery?: string
 }
 
 interface AuthenticatedHeaderProps extends HeaderBaseProps {
@@ -60,6 +62,8 @@ export const Header: FC<HeaderProps> = (props) => {
     onFavoritesClick,
     onLogin,
     onRegister,
+    searchQuery = '',
+    onSearchChange,
   } = props
 
   const handleRegister = () => {
@@ -132,7 +136,12 @@ export const Header: FC<HeaderProps> = (props) => {
         </div>
       </nav>
 
-      <SearchInput className={styles.search} wrapperClassName={styles.searchField} />
+      <SearchInput
+        className={styles.search}
+        wrapperClassName={styles.searchField}
+        onChange={(event) => onSearchChange?.(event.target.value)}
+        value={searchQuery}
+      />
 
       <div className={styles.right}>
         <IconButton
