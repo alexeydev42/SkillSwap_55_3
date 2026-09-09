@@ -16,10 +16,11 @@ export const UserProfileCard = ({ user, description, skills }: UserProfileCardPr
     <article className={styles.card}>
       {/* Основная информация о пользователе без кнопки избранного. */}
       <div className={styles.about}>
-        <UserInfo {...user} withFavoriteButton={false} />
+  <UserInfo {...user} withFavoriteButton={false} />
 
-        <p className={styles.description}>{description}</p>
-      </div>
+  {/* Публичный блок «О себе» не рендерим, если описание пустое (LOGIC-34). */}
+  {description !== '' && <p className={styles.description}>{description}</p>}
+</div>
 
       {/* Блок навыков использует готовый entity-компонент. */}
       <SkillTagsBlock {...skills} variant="spacious" />
