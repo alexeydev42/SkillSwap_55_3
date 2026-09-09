@@ -36,7 +36,7 @@ const authSlice = createSlice({
       state.session = null
     },
 
-    // ОбновляеregistrationSlice.tsт состояние операции авторизации.
+    // Обновляет состояние операции авторизации.
     setAuthStatus(state, action: PayloadAction<AuthState['status']>) {
       state.status = action.payload
     },
