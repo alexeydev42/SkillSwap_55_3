@@ -12,36 +12,49 @@ export interface SearchInputProps extends Pick<
   InputProps,
   'disabled' | 'className' | 'wrapperClassName' | 'error' | 'helperText' | 'borderless'
 > {
-  /** По умолчанию — текст плейсхолдера из макета, переопределяется редко. */
+  value?: string
+  onValueChange?: (value: string) => void
+  /** По умолчанию — текст плейсхолдера из макета. */
   placeholder?: string
 }
 
 /**
- * SearchInput — поле поиска (VERST-04), собрано поверх базового Input (VERST-03).
- * Дублирования вёрстки самого поля ввода нет: используется icon/trailingIcon-слоты
- * и type='text' базового компонента.
- * Состояния default/focus наследуются от Input как есть.
- *
- * Значение хранится локально (useState) только для того, чтобы показывать
- * крестик очистки, когда поле не пустое, и очищать поле по клику на него —
- * это чисто визуальное поведение, без запросов к серверу и логики фильтрации.
+ * SearchInput может работать самостоятельно или получать значение от родителя.
+ * Внешнее управление используется каталогом, где поисковый запрос хранится
+ * локально на уровне страницы.
  */
-export function SearchInput({ placeholder = 'Искать навык', ...rest }: SearchInputProps) {
-  const [value, setValue] = useState('')
+export function SearchInput({
+  placeholder = 'Искать навык',
+  value,
+  onValueChange,
+  ...rest
+}: SearchInputProps) {
+  const [internalValue, setInternalValue] = useState('')
+
+  const isControlled = value !== undefined
+  const currentValue = isControlled ? value : internalValue
+
+  const handleValueChange = (nextValue: string) => {
+    if (!isControlled) {
+      setInternalValue(nextValue)
+    }
+
+    onValueChange?.(nextValue)
+  }
 
   return (
     <Input
       {...rest}
       type="text"
       placeholder={placeholder}
-      value={value}
-      onChange={(event) => setValue(event.target.value)}
+      value={currentValue}
+      onChange={(event) => handleValueChange(event.target.value)}
       icon={<img src={iconSearch} alt="" />}
       trailingIcon={
-        value ? (
+        currentValue ? (
           <button
             type="button"
-            onClick={() => setValue('')}
+            onClick={() => handleValueChange('')}
             aria-label="Очистить поле поиска"
             className={styles['clear-button']}
           >
