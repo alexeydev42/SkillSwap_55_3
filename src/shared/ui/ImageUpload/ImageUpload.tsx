@@ -2,6 +2,7 @@ import { useRef, type ChangeEvent, type ReactNode } from 'react'
 import clsx from 'clsx'
 
 import GalleryAddIcon from '../../assets/icons/icon-gallery-add.svg?react'
+import CrossIcon from '../../assets/icons/icon-cross.svg?react'
 import { validateAndConvertFiles, type FileUploadType } from '../../lib/fileValidation'
 import styles from './ImageUpload.module.css'
 
@@ -35,6 +36,9 @@ export const ImageUpload = ({
   const hasImages = images.length > 0
   const isAvatar = uploadType === 'avatar'
 
+  const maxLimit = isAvatar ? 1 : 5
+  const canAddImages = !isAvatar && images.length < maxLimit
+
   const handleClick = () => {
     inputRef.current?.click()
   }
@@ -45,7 +49,6 @@ export const ImageUpload = ({
     // Позволяет повторно выбрать тот же файл после ошибки или удаления.
     event.target.value = ''
 
-    const maxLimit = uploadType === 'avatar' ? 1 : 5
     //проверяем общее количество файлов до конвератции
     if (images.length + files.length > maxLimit) {
       onError?.(`Можно загрузить не более ${maxLimit} изображений`)
@@ -65,6 +68,13 @@ export const ImageUpload = ({
     } else {
       onImagesChange?.([...images, ...result.files])
     }
+  }
+
+  const handleRemoveImage = (indexToRemove: number) => {
+    const nextImages = images.filter((_, index) => index !== indexToRemove)
+
+    onImagesChange?.(nextImages)
+    onError?.(undefined)
   }
 
   return (
@@ -95,13 +105,30 @@ export const ImageUpload = ({
           ) : (
             <div className={styles.previewGrid}>
               {images.map((image, index) => (
-                <img
-                  key={`${image}-${index}`}
-                  className={styles.previewImage}
-                  src={image}
-                  alt={`Превью изображения ${index + 1}`}
-                />
+                <div className={styles.previewItem} key={`${image}-${index}`}>
+                  <img
+                    className={styles.previewImage}
+                    src={image}
+                    alt={`Превью изображения ${index + 1}`}
+                  />
+
+                  <button
+                    className={styles.removeButton}
+                    type="button"
+                    aria-label={`Удалить изображение ${index + 1}`}
+                    onClick={() => handleRemoveImage(index)}
+                  >
+                    <CrossIcon className={styles.removeIcon} />
+                  </button>
+                </div>
               ))}
+
+              {canAddImages && (
+                <button type="button" className={styles.addTile} onClick={handleClick}>
+                  <GalleryAddIcon className={styles.icon} />
+                  <span className={styles.addTileText}>Добавить</span>
+                </button>
+              )}
             </div>
           )
         ) : emptyContent !== undefined ? (
