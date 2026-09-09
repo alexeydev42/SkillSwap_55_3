@@ -20,7 +20,7 @@ const step2Data = {
   gender: 'male' as const,
   cityId: 'saint-petersburg',
   avatarUrl: null,
-  learningSubcategoryIds: ['english', 'guitar'],
+  learningSubcategoryIds: ['english'],
 }
 
 const offeredSkill: RegistrationDraft['offeredSkill'] = {

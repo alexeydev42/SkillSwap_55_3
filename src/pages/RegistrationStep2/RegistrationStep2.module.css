@@ -60,6 +60,12 @@
   letter-spacing: 0.32px;
 }
 
+.error {
+  color: var(--color-error);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
+}
+
 /* Адаптирует корневой контейнер CityAutocomplete под ширину формы. */
 
 .cityAutocomplete.cityAutocomplete {
