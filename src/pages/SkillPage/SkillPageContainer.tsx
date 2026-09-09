@@ -1,5 +1,5 @@
-import { useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { NotFoundPage } from '@/pages/NotFoundPage'
 import { categories, cities } from '@/shared/config'
@@ -9,7 +9,21 @@ import { fetchUsers, selectUserById, selectUsersStatus } from '@/store/slices/us
 import { SkillPage } from './SkillPage'
 import { mapUserToSkillPageProps } from './SkillPage.utils'
 
+import DoneIcon from '@/shared/assets/icons/icon-done.svg?react'
+import { Modal } from '@/shared/ui/Modal'
+import { StatusModalContent } from '@/widgets/StatusModalContent'
+
+interface SkillPageLocationState {
+  registrationCompleted?: boolean
+}
+
 export function SkillPageContainer() {
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  const [isRegistrationSuccessOpen, setIsRegistrationSuccessOpen] = useState(() =>
+    Boolean((location.state as SkillPageLocationState | null)?.registrationCompleted),
+  )
   const dispatch = useAppDispatch()
   const { userId } = useParams<{ userId: string }>()
   const usersStatus = useAppSelector(selectUsersStatus)
@@ -30,6 +44,16 @@ export function SkillPageContainer() {
     }
   }, [dispatch, usersStatus])
 
+  const handleCloseRegistrationSuccess = () => {
+    setIsRegistrationSuccessOpen(false)
+
+    // Удаляем одноразовый флаг из текущей записи истории.
+    navigate(location.pathname, {
+      replace: true,
+      state: null,
+    })
+  }
+
   if (!userId) {
     return <NotFoundPage />
   }
@@ -49,19 +73,32 @@ export function SkillPageContainer() {
   // Похожие предложения не входят в LOGIC-34 — подключение SimilarOffersSection
   // к реальным данным будет отдельной задачей.
   return (
-    <SkillPage
-      {...skillPageProps}
-      similarOffers={[]}
-      // 3. Передаем в шапку данные текущего пользователя, а не просматриваемого
-      isAuth={!!authSession && !!authAccount}
-      authUser={
-        currentUser
-          ? {
-              userName: currentUser.name,
-              avatarSrc: currentUser.avatarUrl ?? '',
-            }
-          : undefined
-      }
-    />
+    <>
+      <SkillPage
+        {...skillPageProps}
+        similarOffers={[]}
+        isAuth={Boolean(authSession && authAccount)}
+        authUser={
+          currentUser
+            ? {
+                userName: currentUser.name,
+                avatarSrc: currentUser.avatarUrl ?? '',
+              }
+            : undefined
+        }
+      />
+
+      {isRegistrationSuccessOpen && (
+        <Modal>
+          <StatusModalContent
+            icon={<DoneIcon />}
+            title="Ваше предложение создано"
+            text="Теперь вы можете предложить обмен"
+            buttonText="Готово"
+            onButtonClick={handleCloseRegistrationSuccess}
+          />
+        </Modal>
+      )}
+    </>
   )
 }
