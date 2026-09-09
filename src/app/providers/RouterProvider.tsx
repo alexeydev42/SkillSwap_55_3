@@ -38,6 +38,11 @@ const RegistrationStep2 = lazy(() =>
     default: module.RegistrationStep2,
   })),
 )
+const RegistrationStep3 = lazy(() =>
+  import('@/pages/RegistrationStep3').then((module) => ({
+    default: module.RegistrationStep3,
+  })),
+)
 const NotFoundPage = lazy(() =>
   import('@/pages/NotFoundPage').then((module) => ({
     default: module.NotFoundPage,
@@ -62,6 +67,7 @@ export function AppRouter() {
           <Route path={ROUTES.LOGIN} element={<LoginPage />} />
           <Route path={ROUTES.REGISTER} element={<RegistrationStep1 />} />
           <Route path={ROUTES.REGISTER_STEP_2} element={<RegistrationStep2 />} />
+          <Route path={ROUTES.REGISTER_STEP_3} element={<RegistrationStep3 />} />
           <Route
             path={ROUTES.SERVER_ERROR}
             element={<ServerErrorPage user={skillPageMock.user} />}

@@ -3,10 +3,9 @@ import { clsx } from 'clsx'
 import { Input } from '../Input'
 import { IconButton } from '../IconButton'
 import { DropdownContainer } from '../DropdownContainer'
+import { cities } from '../../config/referenceData'
 import crossIcon from '../../assets/icons/icon-cross.svg'
 import styles from './CityAutocomplete.module.css'
-
-const CITIES = ['Санкт-Петербург', 'Самара', 'Саратов', 'Сочи']
 
 interface CityAutocompleteProps {
   value: string
@@ -26,7 +25,9 @@ export const CityAutocomplete = ({
 
   // Оставляет в списке только города, соответствующие введённому тексту.
   const normalizedValue = value.trim().toLowerCase()
-  const filteredCities = CITIES.filter((city) => city.toLowerCase().includes(normalizedValue))
+  const filteredCities = cities.filter((city) =>
+    city.name.toLowerCase().includes(normalizedValue),
+  )
 
   // Передаёт введённое значение родителю и открывает список при наличии текста.
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -72,13 +73,13 @@ export const CityAutocomplete = ({
         <DropdownContainer className={styles.dropdown}>
           <ul className={styles.cityList}>
             {filteredCities.map((city) => (
-              <li key={city}>
+              <li key={city.id}>
                 <button
                   className={styles.cityItem}
                   type="button"
-                  onClick={() => handleCitySelect(city)}
+                  onClick={() => handleCitySelect(city.name)}
                 >
-                  {city}
+                  {city.name}
                 </button>
               </li>
             ))}

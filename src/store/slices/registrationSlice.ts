@@ -4,9 +4,11 @@ import type { RegistrationDraft } from '@/shared/types'
 
 type RegistrationStep1Draft = Pick<RegistrationDraft, 'email' | 'password'>
 
-type RegistrationStep2Draft = Pick<
-  RegistrationDraft,
-  'name' | 'birthDate' | 'gender' | 'cityId' | 'avatarUrl' | 'learningSubcategoryIds'
+type RegistrationStep2Draft = Partial<
+  Pick<
+    RegistrationDraft,
+    'name' | 'birthDate' | 'gender' | 'cityId' | 'avatarUrl' | 'learningSubcategoryIds'
+  >
 >
 
 type RegistrationStep3Draft = Pick<RegistrationDraft, 'offeredSkill'>
