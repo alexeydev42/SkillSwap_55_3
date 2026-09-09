@@ -62,7 +62,7 @@ export const Header: FC<HeaderProps> = (props) => {
     onFavoritesClick,
     onLogin,
     onRegister,
-    searchQuery = '',
+    searchQuery,
     onSearchChange,
   } = props
 
@@ -139,8 +139,8 @@ export const Header: FC<HeaderProps> = (props) => {
       <SearchInput
         className={styles.search}
         wrapperClassName={styles.searchField}
-        onChange={(event) => onSearchChange?.(event.target.value)}
         value={searchQuery}
+        onValueChange={onSearchChange}
       />
 
       <div className={styles.right}>

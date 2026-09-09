@@ -7,6 +7,7 @@ import { describe, expect, it, vi } from 'vitest'
 import catalogFiltersReducer, {
   defaultFilters,
   defaultSort,
+  type CatalogFiltersState,
 } from '@/store/slices/catalogFiltersSlice'
 import usersReducer, { type UsersState } from '@/store/slices/usersSlice'
 import favoritesReducer from '@/store/slices/favoritesSlice'
@@ -115,7 +116,14 @@ function createUser(index: number): User {
   }
 }
 
-function renderCatalogPage(mockUsers: User[], localUser: User | null = null) {
+function renderCatalogPage(
+  mockUsers: User[],
+  localUser: User | null = null,
+  catalogFiltersState: CatalogFiltersState = {
+    filters: defaultFilters,
+    sort: defaultSort,
+  },
+) {
   const users = localUser
     ? [...mockUsers.filter((user) => user.id !== localUser.id), localUser]
     : mockUsers
@@ -133,17 +141,14 @@ function renderCatalogPage(mockUsers: User[], localUser: User | null = null) {
         status: 'success' as const,
         error: null,
       },
-      catalogFilters: {
-        filters: defaultFilters,
-        sort: defaultSort,
-      },
+      catalogFilters: catalogFiltersState,
       favorites: {
         favoriteUserIds: [],
       },
     },
   })
 
-  render(
+  const renderResult = render(
     <Provider store={testStore}>
       <CatalogPage
         users={users}
@@ -159,7 +164,10 @@ function renderCatalogPage(mockUsers: User[], localUser: User | null = null) {
     </Provider>,
   )
 
-  return { testStore }
+  return {
+    testStore,
+    ...renderResult,
+  }
 }
 
 function renderCatalogState({
@@ -560,5 +568,94 @@ describe('CatalogPage — поиск', () => {
     expect(searchInput).toHaveValue('')
 
     expect(screen.queryByText('Ничего не найдено')).not.toBeInTheDocument()
+  })
+
+  it('применяет поиск поверх результата фильтрации', async () => {
+    const user = userEvent.setup()
+
+    const users: User[] = [
+      {
+        ...baseUser,
+        id: 'female-design',
+        name: 'Анна',
+        gender: 'female',
+        offeredSkill: {
+          ...baseUser.offeredSkill,
+          title: 'Веб-дизайн',
+        },
+      },
+      {
+        ...baseUser,
+        id: 'female-python',
+        name: 'Мария',
+        gender: 'female',
+        offeredSkill: {
+          ...baseUser.offeredSkill,
+          title: 'Python',
+        },
+      },
+      {
+        ...baseUser,
+        id: 'male-design',
+        name: 'Иван',
+        gender: 'male',
+        offeredSkill: {
+          ...baseUser.offeredSkill,
+          title: 'Дизайн интерьера',
+        },
+      },
+    ]
+
+    renderCatalogPage(users, null, {
+      filters: {
+        ...defaultFilters,
+        gender: 'female',
+      },
+      sort: defaultSort,
+    })
+
+    await user.type(
+      screen.getByRole('searchbox', {
+        name: 'Поиск по навыкам',
+      }),
+      'дизайн',
+    )
+
+    expect(screen.getByText('Анна')).toBeInTheDocument()
+    expect(screen.queryByText('Мария')).not.toBeInTheDocument()
+    expect(screen.queryByText('Иван')).not.toBeInTheDocument()
+  })
+
+  it('кнопка «Сбросить» очищает поиск, фильтры и сортировку', async () => {
+    const user = userEvent.setup()
+
+    const { testStore } = renderCatalogPage([baseUser], null, {
+      filters: {
+        offerType: 'teaching',
+        gender: 'female',
+        subcategoryIds: ['team-management'],
+        cityIds: ['moscow'],
+      },
+      sort: 'newest',
+    })
+
+    const searchInput = screen.getByRole('searchbox', {
+      name: 'Поиск по навыкам',
+    })
+
+    await user.type(searchInput, 'Управление')
+
+    await user.click(
+      screen.getByRole('button', {
+        name: /сбросить/i,
+      }),
+    )
+
+    expect(searchInput).toHaveValue('')
+    expect(testStore.getState().catalogFilters).toEqual({
+      filters: defaultFilters,
+      sort: defaultSort,
+    })
+    expect(screen.getByRole('region', { name: 'Популярное' })).toBeInTheDocument()
   })
 })

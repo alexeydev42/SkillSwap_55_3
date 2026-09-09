@@ -147,11 +147,11 @@
   gap: var(--space-12);
   padding: var(--space-40);
   border-radius: var(--radius-md);
-  background:var(--color-surface);
+  background: var(--color-surface);
   text-align: center;
 }
 
-.emptytitle {
+.emptyTitle {
   margin: 0;
   font-family: var(--font-heading);
   font-size: var(--font-size-h2);
@@ -160,11 +160,11 @@
   color: var(--color-text);
 }
 
-.eptyText {
+.emptyText {
   max-width: 480px;
   margin: 0;
   font-family: var(--font-body);
-  font-size: var(--font-body);
+  font-size: var(--font-size-body);
   line-height: var(--line-height-body);
   color: var(--color-caption);
 }
