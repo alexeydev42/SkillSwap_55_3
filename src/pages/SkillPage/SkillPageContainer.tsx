@@ -15,6 +15,13 @@ export function SkillPageContainer() {
   const usersStatus = useAppSelector(selectUsersStatus)
   const user = useAppSelector((state) => (userId ? selectUserById(state, userId) : null))
 
+  const authSession = useAppSelector((state) => state.auth.session)
+  const authAccount = useAppSelector((state) => state.auth.account)
+
+  const currentUser = useAppSelector((state) =>
+    authSession ? selectUserById(state, authSession.userId) : null,
+  )
+
   // Список моковых пользователей может быть ещё не загружен, если на страницу
   // навыка зашли напрямую по ссылке (например, после F5), минуя каталог.
   useEffect(() => {
@@ -41,5 +48,20 @@ export function SkillPageContainer() {
 
   // Похожие предложения не входят в LOGIC-34 — подключение SimilarOffersSection
   // к реальным данным будет отдельной задачей.
-  return <SkillPage {...skillPageProps} similarOffers={[]} />
+  return (
+    <SkillPage
+      {...skillPageProps}
+      similarOffers={[]}
+      // 3. Передаем в шапку данные текущего пользователя, а не просматриваемого
+      isAuth={!!authSession && !!authAccount}
+      authUser={
+        currentUser
+          ? {
+              userName: currentUser.name,
+              avatarSrc: currentUser.avatarUrl ?? '',
+            }
+          : undefined
+      }
+    />
+  )
 }
