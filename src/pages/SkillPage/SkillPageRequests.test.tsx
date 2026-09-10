@@ -240,6 +240,12 @@ describe('SkillPage — предложение обмена', () => {
     ])
 
     expect(
+      screen.getByRole('button', {
+        name: 'Обмен предложен',
+      }),
+    ).toBeDisabled()
+
+    expect(
       screen.getByRole('heading', {
         name: 'Вы предложили обмен',
       }),
