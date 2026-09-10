@@ -29,7 +29,6 @@ const ProfilePage = lazy(() =>
   })),
 )
 
-const FavoritesPage = lazy(() => import('@/pages/FavoritesPage'))
 const CreateSkillPage = lazy(() => import('@/pages/CreateSkillPage'))
 const LoginPage = lazy(() => import('@/pages/LoginPage'))
 
@@ -78,7 +77,7 @@ export const AppRouter = () => (
 
         <Route element={<ProtectedRoute />}>
           <Route path={ROUTES.PROFILE} element={<ProfilePage />} />
-          <Route path={ROUTES.FAVORITES} element={<FavoritesPage />} />
+          <Route path={ROUTES.FAVORITES} element={<ProfilePage initialTab="favorites" />} />
         </Route>
 
         <Route path={ROUTES.CREATE} element={<CreateSkillPage />} />
