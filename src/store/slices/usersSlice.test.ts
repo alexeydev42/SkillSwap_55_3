@@ -692,6 +692,33 @@ describe('usersSlice — selectCatalogUsers', () => {
 
     expect(selectCatalogUsers(state)).toEqual([currentLocalUser])
   })
+  it('исключает пользователей с полом preferNotToSay при фильтре по конкретному полу', () => {
+    const maleUser = createCatalogUser('male-user', { gender: 'male' })
+    const preferNotToSayUser = createCatalogUser('prefer-not-to-say-user', {
+      gender: 'preferNotToSay',
+    })
+    const state = createCatalogRootState({
+      mockUsers: [maleUser, preferNotToSayUser],
+      filters: {
+        ...defaultCatalogFilters,
+        gender: 'male',
+      },
+    })
+
+    expect(selectCatalogUsers(state)).toEqual([maleUser])
+  })
+
+  it('показывает пользователей с полом preferNotToSay при фильтре "все"', () => {
+    const preferNotToSayUser = createCatalogUser('prefer-not-to-say-user', {
+      gender: 'preferNotToSay',
+    })
+    const state = createCatalogRootState({
+      mockUsers: [preferNotToSayUser],
+      filters: defaultCatalogFilters,
+    })
+
+    expect(selectCatalogUsers(state)).toEqual([preferNotToSayUser])
+  })
 
   it('сначала фильтрует пользователей, затем сортирует совпавших от новых к старым', () => {
     const olderMatch = createCatalogUser('older-match', {

@@ -7,7 +7,7 @@ import type { AuthSession, SwapRequest } from '@/shared/types'
 import type { AppDispatch, RootState } from '@/store'
 import authReducer from '@/store/slices/authSlice'
 
-import requestsReducer, { createSwapRequest, restoreRequests } from './requestsSlice'
+import requestsReducer, { clearRequests, createSwapRequest, restoreRequests } from './requestsSlice'
 
 const currentUserId = 'current-user-id'
 const targetUserId = 'target-user-id'
@@ -180,5 +180,19 @@ describe('requestsSlice', () => {
     })
 
     expect(restoredState.items).toEqual([])
+  })
+
+  it('clearRequests очищает только Redux, localStorage не трогает', () => {
+    storageService.set(STORAGE_KEYS.REQUESTS, [existingRequest])
+
+    const testStore = createTestStore(
+      { userId: currentUserId },
+      [existingRequest],
+    )
+
+    testStore.dispatch(clearRequests())
+
+    expect(testStore.getState().requests.items).toEqual([])
+    expect(storageService.get<SwapRequest[]>(STORAGE_KEYS.REQUESTS)).toEqual([existingRequest])
   })
 })
