@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { lazy, Suspense } from 'react'
 import { ROUTES } from '@/shared/lib/constants'
-import { skillPageMock } from '@/pages/SkillPage/SkillPage.mock'
+
 
 // Lazy-загрузка страниц — каждая страница грузится только при переходе на неё
 const CatalogPageContainer = lazy(() =>
@@ -70,7 +70,7 @@ export function AppRouter() {
           <Route path={ROUTES.REGISTER_STEP_3} element={<RegistrationStep3 />} />
           <Route
             path={ROUTES.SERVER_ERROR}
-            element={<ServerErrorPage user={skillPageMock.user} />}
+            element={<ServerErrorPage />}
           />
 
           {/* Защищённые маршруты — добавь PrivateRoute обёртку */}

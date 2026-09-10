@@ -8,6 +8,8 @@ import {
 import { STORAGE_KEYS } from '@/shared/lib/constants'
 import { storageService } from '@/shared/lib/storageService'
 import type { AppDispatch, RootState } from '@/store'
+import { clearFavorites } from './slices/favoritesSlice'
+import { resetRegistrationDraft } from './slices/registrationSlice'
 
 export const listenerMiddleware = createListenerMiddleware()
 
@@ -37,6 +39,9 @@ startAppListening({
 startAppListening({
   actionCreator: clearAuthSession,
   effect: (_action, listenerApi) => {
+    storageService.remove(STORAGE_KEYS.AUTH_SESSION)
+    listenerApi.dispatch(clearFavorites())
+    listenerApi.dispatch(resetRegistrationDraft())
     listenerApi.dispatch(resetCatalogFilters())
   },
 })

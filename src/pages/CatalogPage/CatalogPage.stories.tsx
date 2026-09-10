@@ -17,11 +17,6 @@ const catalogPageViewports = {
   },
 } as const
 
-const mockHeaderUser = {
-  userName: 'Мария',
-  avatarSrc: '/images/users/user-001/avatar.webp',
-}
-
 const meta = {
   title: 'Pages/CatalogPage',
   component: CatalogPage,
@@ -69,9 +64,6 @@ export const NotificationsMenuOpen: Story = {
   args: {
     ...catalogPageMock,
 
-    // Показывает Header авторизованного пользователя.
-    headerUser: mockHeaderUser,
-
     // Открывает уведомления при запуске истории.
     isNotificationsMenuInitiallyOpen: true,
   },
@@ -81,9 +73,6 @@ export const ProfileMenuOpen: Story = {
   name: 'Открыто меню профиля',
   args: {
     ...catalogPageMock,
-
-    // Переключаем Header в состояние авторизованного пользователя.
-    headerUser: mockHeaderUser,
 
     // При открытии истории меню сразу показывается по макету.
     isProfileMenuInitiallyOpen: true,

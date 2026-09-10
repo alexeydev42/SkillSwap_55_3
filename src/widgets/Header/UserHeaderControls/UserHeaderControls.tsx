@@ -14,6 +14,7 @@ export interface UserHeaderControlsProps {
   isNotificationsMenuOpen?: boolean
   onProfileClick?: MouseEventHandler<HTMLButtonElement>
   onProfileMenuClose?: () => void
+  onLogout?: () => void
   onNotificationsClick?: MouseEventHandler<HTMLButtonElement>
   onNotificationsMenuClose?: () => void
   onFavoritesClick?: MouseEventHandler<HTMLButtonElement>
@@ -29,6 +30,7 @@ export const UserHeaderControls = ({
   onNotificationsClick,
   onNotificationsMenuClose,
   onFavoritesClick,
+  onLogout,
 }: UserHeaderControlsProps) => {
   const notificationsRef = useRef<HTMLDivElement>(null)
   const profileRef = useRef<HTMLDivElement>(null)
@@ -102,7 +104,7 @@ export const UserHeaderControls = ({
         </button>
 
         {/* Меню появляется только в открытом состоянии. */}
-        {isProfileMenuOpen && <ProfileMenuDropdown />}
+        {isProfileMenuOpen && <ProfileMenuDropdown onLogout={onLogout} />}
       </div>
     </div>
   )

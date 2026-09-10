@@ -1,17 +1,17 @@
 import { Footer } from '@/widgets/Footer'
-import { Header } from '@/widgets/Header'
 import { Button } from '@/shared/ui/Button'
 import { useNavigate } from 'react-router-dom'
 import { ROUTES } from '@/shared/lib/constants'
 import Error404 from '../../shared/assets/illustrations/illustration-error-404.svg?react'
 import styles from './NotFoundPage.module.css'
+import { HeaderContainer } from '@/widgets/Header/HeaderContainer'
 
 export const NotFoundPage = () => {
   const navigate = useNavigate()
 
   return (
     <div className={styles.page}>
-      <Header isAuthenticated={false} />
+      <HeaderContainer />
       <section className={styles.section}>
         <Error404 className={styles.error404image} />
         <h2 className={styles.message}>Страница не найдена</h2>
