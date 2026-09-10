@@ -10,6 +10,7 @@ import { storageService } from '@/shared/lib/storageService'
 import type { AuthAccount, SwapRequest, User } from '@/shared/types'
 import authReducer from '@/store/slices/authSlice'
 import favoritesReducer from '@/store/slices/favoritesSlice'
+import notificationsReducer from '@/store/slices/notificationsSlice'
 import requestsReducer from '@/store/slices/requestsSlice'
 import usersReducer from '@/store/slices/usersSlice'
 
@@ -105,6 +106,7 @@ const createTestStore = ({
       auth: authReducer,
       favorites: favoritesReducer,
       requests: requestsReducer,
+      notifications: notificationsReducer,
       users: usersReducer,
     },
     preloadedState: {
@@ -204,7 +206,7 @@ describe('SkillPage — предложение обмена', () => {
     expect(testStore.getState().requests.items).toEqual([])
   })
 
-  it('создаёт request и показывает success modal', async () => {
+  it('создаёт request и notification, и показывает success modal', async () => {
     vi.spyOn(Date.prototype, 'toISOString').mockReturnValue('2026-09-10T15:30:00.000Z')
 
     vi.spyOn(globalThis.crypto, 'randomUUID').mockReturnValue(
@@ -231,6 +233,11 @@ describe('SkillPage — предложение обмена', () => {
     expect(testStore.getState().requests.items).toEqual([expectedRequest])
 
     expect(storageService.get<SwapRequest[]>(STORAGE_KEYS.REQUESTS)).toEqual([expectedRequest])
+
+    // LOGIC-38: одна успешно созданная заявка создаёт одно уведомление.
+    expect(testStore.getState().notifications.items).toEqual([
+      { requestId: expectedRequest.id, isRead: false },
+    ])
 
     expect(
       screen.getByRole('heading', {

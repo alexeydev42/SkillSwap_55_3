@@ -9,7 +9,7 @@ import { ROUTES } from '@/shared/lib/constants'
 import { Modal } from '@/shared/ui/Modal'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { addFavorite, removeFavorite, selectFavoriteUserIds } from '@/store/slices/favoritesSlice'
-import { createSwapRequest, selectHasRequestToUser } from '@/store/slices/requestsSlice'
+import { selectHasRequestToUser } from '@/store/slices/requestsSlice'
 import {
   fetchUsers,
   selectEffectiveLearningSubcategoryIds,
@@ -18,6 +18,7 @@ import {
   selectUserById,
   selectUsersStatus,
 } from '@/store/slices/usersSlice'
+import { sendSwapRequest } from '@/store/thunks/sendSwapRequest'
 import { StatusModalContent } from '@/widgets/StatusModalContent'
 import { SuccessModal } from '@/widgets/SuccessModal'
 
@@ -119,7 +120,7 @@ export const SkillPageContainer = () => {
     navigate(ROUTES.SKILL.replace(':userId', similarUserId))
   }
 
-  // Создаёт заявку или отправляет гостя на login.
+  // Создаёт заявку (и уведомление о ней, LOGIC-38) или отправляет гостя на login.
   const handleOffer = () => {
     if (!userId) {
       return
@@ -137,9 +138,9 @@ export const SkillPageContainer = () => {
 
     setRequestError(null)
 
-    const request = dispatch(createSwapRequest(userId))
+    const isSuccess = dispatch(sendSwapRequest(userId))
 
-    if (!request) {
+    if (!isSuccess) {
       setRequestError('Не удалось сохранить заявку. Попробуйте ещё раз.')
       return
     }
