@@ -21,13 +21,18 @@ export interface RequestCardProps {
 }
 
 /**
- * RequestCard (VERST-31) — карточка заявки/уведомления об обмене.
- * Разметка единая для всех состояний (новое, просмотренное, на модерации) —
- * различия задаются только через props: title/description/date/icon/actions.
- * Собственной цветной плашки статуса нет (её нет на макете) — статус,
- * если нужен, приходит как часть содержимого через props.
+ * Универсальная карточка сообщения о заявке.
+ * Компонент получает готовые текст, дату и действия через props
+ * и не хранит собственного состояния или статуса заявки.
  */
-export function RequestCard({ icon, title, description, date, actions, className }: RequestCardProps) {
+export function RequestCard({
+  icon,
+  title,
+  description,
+  date,
+  actions,
+  className,
+}: RequestCardProps) {
   return (
     <div className={clsx(styles.card, className)}>
       <div className={styles.main}>

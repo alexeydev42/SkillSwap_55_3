@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Spinner } from '@/shared/ui/Spinner'
 import { UserSkillsSection } from '@/widgets/UserSkillsSection'
-import type { UserSkillsSectionItem } from '@/widgets/UserSkillsSection'
+import type { UserSkillCardData } from '@/widgets/UserSkillCard'
 
 import styles from './RecommendedSection.module.css'
 
 export interface RecommendedSectionProps {
   /** Данные карточек для UserSkillsSection. */
-  items: UserSkillsSectionItem[]
+  items: UserSkillCardData[]
   /** Клик по сердечку конкретной карточки. */
   onFavoriteClick: (id: string) => void
   /** Клик по кнопке «Подробнее». */
@@ -61,7 +61,7 @@ export function RecommendedSection({
     return shuffledItemIds
       .slice(0, visibleItemsCount)
       .map((id) => itemsById.get(id))
-      .filter((item): item is UserSkillsSectionItem => item !== undefined)
+      .filter((item): item is UserSkillCardData => item !== undefined)
   }, [items, shuffledItemIds, visibleItemsCount])
 
   const hasMoreItems = visibleItemsCount < shuffledItemIds.length

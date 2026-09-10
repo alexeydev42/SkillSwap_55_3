@@ -42,11 +42,6 @@ const requestsSlice = createSlice({
       state.items.push(action.payload)
     },
 
-    // Удаляет заявку по идентификатору.
-    removeRequest(state, action: PayloadAction<string>) {
-      state.items = state.items.filter(({ id }) => id !== action.payload)
-    },
-
     // Очищает только активное состояние Redux.
     clearRequests(state) {
       state.items = []
@@ -54,7 +49,7 @@ const requestsSlice = createSlice({
   },
 })
 
-export const { setRequests, addRequest, removeRequest, clearRequests } = requestsSlice.actions
+export const { setRequests, addRequest, clearRequests } = requestsSlice.actions
 
 // Создаёт и сохраняет новую заявку на обмен.
 export const createSwapRequest =
@@ -122,9 +117,6 @@ export const restoreRequests =
 
     dispatch(setRequests(currentUserRequests))
   }
-
-// Возвращает все активные заявки текущего пользователя.
-export const selectRequests = (state: RootState) => state.requests.items
 
 // Проверяет наличие заявки выбранному пользователю.
 export const selectHasRequestToUser = (state: RootState, toUserId: string) => {

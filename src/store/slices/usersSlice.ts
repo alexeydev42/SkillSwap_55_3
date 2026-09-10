@@ -31,10 +31,6 @@ const usersSlice = createSlice({
     setMockUsers(state, action: PayloadAction<User[]>) {
       state.mockUsers = action.payload
     },
-    // Добавляет одного пользователя в общий список.
-    addUser(state, action: PayloadAction<User>) {
-      state.mockUsers.push(action.payload)
-    },
     // Сохраняет пользователя, зарегистрированного в браузере.
     setLocalUser(state, action: PayloadAction<User>) {
       state.localUser = action.payload
@@ -46,10 +42,6 @@ const usersSlice = createSlice({
     // Обновляет состояние загрузки пользователей.
     setUsersStatus(state, action: PayloadAction<UsersState['status']>) {
       state.status = action.payload
-    },
-    // Сохраняет или очищает сообщение об ошибке.
-    setUsersError(state, action: PayloadAction<string | null>) {
-      state.error = action.payload
     },
   },
   extraReducers: (builder) => {
@@ -70,14 +62,7 @@ const usersSlice = createSlice({
       })
   },
 })
-export const {
-  setMockUsers,
-  addUser,
-  setLocalUser,
-  clearLocalUser,
-  setUsersStatus,
-  setUsersError,
-} = usersSlice.actions
+export const { setMockUsers, setLocalUser, clearLocalUser, setUsersStatus } = usersSlice.actions
 // Селекторы — доступ к пользователям и статусу загрузки из компонентов.
 export const selectMockUsers = (state: RootState) => state.users.mockUsers
 export const selectLocalUser = (state: RootState) => state.users.localUser
@@ -216,15 +201,7 @@ export const selectEffectiveLearningSubcategoryIds = createSelector(
       return []
     }
 
-    if (!localUser || user.id !== localUser.id) {
-      return user.learningSubcategoryIds
-    }
-
-    const favoriteSubcategoryIds = allUsers
-      .filter((favoriteUser) => favoriteUserIds.includes(favoriteUser.id))
-      .map((favoriteUser) => favoriteUser.offeredSkill.subcategoryId)
-
-    return Array.from(new Set([...user.learningSubcategoryIds, ...favoriteSubcategoryIds]))
+    return getEffectiveLearningSubcategoryIds(user, localUser, favoriteUserIds, allUsers)
   },
 )
 

@@ -1,2 +1,2 @@
 export { UserSkillsSection } from './UserSkillsSection'
-export type { UserSkillsSectionItem, UserSkillsSectionProps } from './UserSkillsSection'
+export type { UserSkillsSectionProps } from './UserSkillsSection'

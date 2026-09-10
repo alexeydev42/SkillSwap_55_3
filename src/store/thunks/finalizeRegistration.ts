@@ -91,8 +91,7 @@ export const finalizeRegistration =
     dispatch(clearRequests())
     dispatch(clearNotifications())
 
-    // setLocalUser достаточно для появления пользователя
-    // в selectAllUsers. addUser здесь создал бы дубль.
+    // Сохраняет нового локального пользователя в едином users state.
     dispatch(setLocalUser(localUser))
     dispatch(setAuthAccount(account))
     dispatch(setAuthSession(session))

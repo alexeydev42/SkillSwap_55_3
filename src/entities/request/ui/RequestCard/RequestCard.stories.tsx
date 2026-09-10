@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Button } from '@/shared/ui/Button'
 import IdeaIcon from '@/shared/assets/icons/icon-idea.svg?react'
+import { Button } from '@/shared/ui/Button'
 
 import { RequestCard } from './RequestCard'
 
@@ -22,36 +22,21 @@ export default meta
 
 type Story = StoryObj<typeof meta>
 
-export const New: Story = {
+export const WithAction: Story = {
   args: {
     icon: <IdeaIcon />,
-    title: 'Николай принял ваш обмен',
-    description: 'Перейдите в профиль, чтобы обсудить детали',
+    title: 'Николай предложил вам обмен',
+    description: 'Перейдите в профиль, чтобы посмотреть предложение',
     date: 'сегодня',
     actions: <Button>Перейти</Button>,
   },
 }
 
-export const Viewed: Story = {
+export const WithoutAction: Story = {
   args: {
     icon: <IdeaIcon />,
-    title: 'Игорь принял ваш обмен',
-    description: 'Перейдите в профиль, чтобы обсудить детали',
+    title: 'Вы предложили обмен пользователю Игорь',
+    description: 'Договоритесь о времени и месте встречи',
     date: '23 мая',
-  },
-}
-
-export const Moderation: Story = {
-  args: {
-    icon: <IdeaIcon />,
-    title: 'Заявка на модерацию',
-    description: 'Примите решение по заявке',
-    date: 'сегодня',
-    actions: (
-      <>
-        <Button>Принять</Button>
-        <Button variant="secondary">Отклонить</Button>
-      </>
-    ),
   },
 }

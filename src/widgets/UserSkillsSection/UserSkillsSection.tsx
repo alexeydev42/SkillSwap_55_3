@@ -1,16 +1,11 @@
 import { SectionHeader } from '@/widgets/SectionHeader'
-import { UserSkillCard } from '@/widgets/UserSkillCard'
-import type { UserSkillCardData } from '@/widgets/UserSkillCard/UserSkillCard'
+import { UserSkillCard, type UserSkillCardData } from '@/widgets/UserSkillCard'
 
 import styles from './UserSkillsSection.module.css'
 
-export interface UserSkillsSectionItem extends UserSkillCardData {
-  id: string
-}
-
 export interface UserSkillsSectionProps {
   title: string
-  items: UserSkillsSectionItem[]
+  items: UserSkillCardData[]
   showViewAll?: boolean
   viewAllLabel?: string
   isExpanded?: boolean
