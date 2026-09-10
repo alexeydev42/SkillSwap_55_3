@@ -85,6 +85,7 @@
   right: auto;
   width: 100%;
   box-sizing: border-box;
+  padding: 0;
   border-top: 0;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
@@ -93,12 +94,19 @@
 .options {
   display: flex;
   flex-direction: column;
-  gap: var(--space-8);
+  gap: var(--space-4);
+  padding: var(--space-8) 0;
 }
 
 .checkbox {
+  gap: var(--space-8);
   width: 100%;
-  min-height: 48px;
+  min-height: 32px;
+  padding: var(--space-4) 0;
+}
+
+.checkbox > span:last-child {
+  padding-top: 0;
 }
 
 .empty {
