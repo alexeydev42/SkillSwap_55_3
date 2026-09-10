@@ -113,6 +113,20 @@ export default function ProfilePage({ initialTab = DEFAULT_TAB }: ProfilePagePro
       return
     }
 
+    if (tabId === 'favorites') {
+      setActiveTab('favorites')
+      navigate(ROUTES.FAVORITES)
+
+      return
+    }
+
+    if (tabId === 'personal') {
+      setActiveTab('personal')
+      navigate(ROUTES.PROFILE)
+
+      return
+    }
+
     setActiveTab(tabId as ProfileTab)
   }
 

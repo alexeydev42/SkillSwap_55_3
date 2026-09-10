@@ -2,7 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Provider } from 'react-redux'
-import { MemoryRouter, Route, Routes, useParams } from 'react-router-dom'
+import { MemoryRouter, Route, Routes, useLocation, useParams } from 'react-router-dom'
 import { beforeEach, describe, expect, it } from 'vitest'
 
 import { ROUTES, STORAGE_KEYS } from '@/shared/lib/constants'
@@ -105,6 +105,12 @@ const SkillPageProbe = () => {
   return <h1>Страница навыка пользователя {userId}</h1>
 }
 
+const LocationProbe = () => {
+  const location = useLocation()
+
+  return <output aria-label="Текущий маршрут">{location.pathname}</output>
+}
+
 const renderProfilePage = ({
   initialTab = 'personal',
   mockUsers = [],
@@ -119,8 +125,11 @@ const renderProfilePage = ({
   render(
     <Provider store={testStore}>
       <MemoryRouter initialEntries={[ROUTES.PROFILE]}>
+        <LocationProbe />
+
         <Routes>
           <Route path={ROUTES.PROFILE} element={<ProfilePage initialTab={initialTab} />} />
+          <Route path={ROUTES.FAVORITES} element={<ProfilePage initialTab="favorites" />} />
           <Route path={ROUTES.SKILL} element={<SkillPageProbe />} />
         </Routes>
       </MemoryRouter>
@@ -151,6 +160,20 @@ describe('ProfilePage', () => {
         name: `Страница навыка пользователя ${localUser.id}`,
       }),
     ).toBeInTheDocument()
+  })
+
+  it('переходит на страницу Favorites по пункту «Избранное»', async () => {
+    const user = userEvent.setup()
+
+    renderProfilePage()
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'Избранное',
+      }),
+    )
+
+    expect(screen.getByLabelText('Текущий маршрут')).toHaveTextContent(ROUTES.FAVORITES)
   })
 
   it('открывает и закрывает окно изменения пароля', async () => {
