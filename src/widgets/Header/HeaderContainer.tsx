@@ -1,29 +1,34 @@
-import { useAppSelector, useAppDispatch } from '@/store/hooks'
-import { HeaderProps } from './Header'
+import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { selectCurrentUser } from '@/store/slices/usersSlice'
-import Header from './Header'
-import { logout } from '@/store/thunks/authThunks' // Добавила импорт логаута
+import { logout } from '@/store/thunks/authThunks'
+
+import Header, { type HeaderProps } from './Header'
 
 type HeaderContainerProps = Omit<HeaderProps, 'isAuthenticated' | 'user'>
 
-export const HeaderContainer = (props: HeaderContainerProps) => {
-  const dispatch = useAppDispatch() // Добавили dispatch
+export const HeaderContainer = ({ onLogout, ...headerProps }: HeaderContainerProps) => {
+  const dispatch = useAppDispatch()
   const session = useAppSelector((state) => state.auth.session)
   const currentUser = useAppSelector(selectCurrentUser)
 
+  const handleLogout = () => {
+    dispatch(logout())
+    onLogout?.()
+  }
+
   if (!session || !currentUser) {
-    return <Header {...props} isAuthenticated={false} />
+    return <Header {...headerProps} isAuthenticated={false} />
   }
 
   return (
     <Header
-      {...props}
+      {...headerProps}
       isAuthenticated
       user={{
         userName: currentUser.name,
-        avatarSrc: currentUser?.avatarUrl ?? '',
+        avatarSrc: currentUser.avatarUrl ?? '',
       }}
-      onLogout={() => dispatch(logout())}
+      onLogout={handleLogout}
     />
   )
 }
