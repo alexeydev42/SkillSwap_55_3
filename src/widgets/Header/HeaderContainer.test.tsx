@@ -323,4 +323,73 @@ describe('HeaderContainer', () => {
 
     expect(screen.getByLabelText('Есть новые уведомления')).toBeInTheDocument()
   })
+
+  it('показывает гостевой Header, если сессии нет', () => {
+    const testStore = configureStore({
+      reducer: {
+        users: usersReducer,
+        auth: authReducer,
+        registration: registrationReducer,
+        favorites: favoritesReducer,
+        requests: requestsReducer,
+        notifications: notificationsReducer,
+        catalogFilters: catalogFiltersReducer,
+      },
+      preloadedState: {
+        auth: {
+          account: null,
+          session: null,
+          status: 'idle' as const,
+          error: null,
+        },
+        users: {
+          mockUsers: [recipient],
+          localUser: null,
+          status: 'success' as const,
+          error: null,
+        },
+        requests: {
+          items: [],
+        },
+        notifications: {
+          items: [],
+          error: null,
+        },
+      },
+    })
+
+    render(
+      <Provider store={testStore}>
+        <MemoryRouter initialEntries={[ROUTES.HOME]}>
+          <Routes>
+            <Route path={ROUTES.HOME} element={<HeaderContainer />} />
+          </Routes>
+        </MemoryRouter>
+      </Provider>,
+    )
+
+    expect(
+      screen.getByRole('button', {
+        name: 'Войти',
+      }),
+    ).toBeInTheDocument()
+
+    expect(
+      screen.getByRole('button', {
+        name: 'Зарегистрироваться',
+      }),
+    ).toBeInTheDocument()
+
+    expect(
+      screen.queryByRole('button', {
+        name: 'Кнопка уведомлений',
+      }),
+    ).not.toBeInTheDocument()
+
+    expect(
+      screen.queryByRole('button', {
+        name: 'Кнопка избранного',
+      }),
+    ).not.toBeInTheDocument()
+  })
 })
