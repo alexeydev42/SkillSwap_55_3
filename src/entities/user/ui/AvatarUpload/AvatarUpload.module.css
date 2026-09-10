@@ -7,6 +7,11 @@
   border-radius: 50%;
 }
 
+.avatarUpload > div {
+  width: 100%;
+  height: 100%;
+}
+
 .small {
   width: 72px;
   height: 72px;
@@ -64,7 +69,6 @@
   display: block;
   object-fit: cover;
   border-radius: 50%;
-  margin-left: var(--space-12);
 }
 
 .editActionLarge {
