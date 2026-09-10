@@ -82,7 +82,7 @@ export const SkillPageContainer = () => {
   )
 
   const isAuthenticated = Boolean(authSession && authAccount)
-  const isOwnSkill = Boolean(userId) && authSession?.userId === userId
+  const isOwnSkill = isAuthenticated && Boolean(userId) && authSession?.userId === userId
 
   // Загружает пользователей при прямом открытии SkillPage.
   useEffect(() => {
@@ -182,6 +182,7 @@ export const SkillPageContainer = () => {
         {...skillPageProps}
         similarOffers={similarOffers}
         isAuth={isAuthenticated}
+        isOwnSkill={isOwnSkill}
         authUser={
           currentUser
             ? {

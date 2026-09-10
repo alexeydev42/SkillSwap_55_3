@@ -21,13 +21,16 @@ vi.mock('./SkillPage', () => ({
     isOfferDisabled,
     offerText,
     requestError,
+    isOwnSkill,
   }: {
     onOffer: () => void
     isOfferDisabled: boolean
     offerText: string
     requestError: string | null
+    isOwnSkill: boolean
   }) => (
     <div>
+      <output data-testid="is-own-skill">{String(isOwnSkill)}</output>
       <button type="button" onClick={onOffer} disabled={isOfferDisabled}>
         {offerText}
       </button>
@@ -182,6 +185,8 @@ describe('SkillPage — предложение обмена', () => {
       isAuthenticated: false,
     })
 
+    expect(screen.getByTestId('is-own-skill')).toHaveTextContent('false')
+
     await user.click(
       screen.getByRole('button', {
         name: 'Предложить обмен',
@@ -251,11 +256,21 @@ describe('SkillPage — предложение обмена', () => {
       viewedUserId: localUser.id,
     })
 
+    expect(screen.getByTestId('is-own-skill')).toHaveTextContent('true')
     expect(
       screen.getByRole('button', {
         name: 'Предложить обмен',
       }),
     ).toBeDisabled()
+  })
+
+  it('не считает страницу собственной для гостя с совпадающим userId в URL', () => {
+    renderSkillPage({
+      viewedUserId: localUser.id,
+      isAuthenticated: false,
+    })
+
+    expect(screen.getByTestId('is-own-skill')).toHaveTextContent('false')
   })
 
   it('показывает ошибку и не открывает success modal при ошибке сохранения', async () => {
