@@ -16,5 +16,5 @@ export default meta
 
 type Story = StoryObj<typeof meta>
 
-// Базовое состояние без логики закрытия.
+// Базовое состояние шапки страниц авторизации.
 export const Default: Story = {}
