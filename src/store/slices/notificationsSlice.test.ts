@@ -20,6 +20,7 @@ import notificationsReducer, {
   clearReadNotifications,
   markAllAsRead,
   selectVisibleNotifications,
+  setNotifications,
 } from './notificationsSlice'
 
 const createTestStore = () =>
@@ -256,5 +257,54 @@ describe('notificationsSlice', () => {
         toUser: recipient,
       },
     ])
+  })
+
+  it('сортирует видимые уведомления от новых к старым', () => {
+    const testStore = createTestStore()
+
+    const secondRecipient: User = {
+      ...recipient,
+      id: 'user-recipient-2',
+      name: 'Анна',
+    }
+
+    testStore.dispatch(setMockUsers([recipient, secondRecipient]))
+
+    testStore.dispatch(
+      setRequests([
+        {
+          id: 'older-request',
+          fromUserId: accountA.userId,
+          toUserId: recipient.id,
+          createdAt: '2026-09-08T12:00:00.000Z',
+        },
+        {
+          id: 'newer-request',
+          fromUserId: accountA.userId,
+          toUserId: secondRecipient.id,
+          createdAt: '2026-09-10T12:00:00.000Z',
+        },
+      ]),
+    )
+
+    // Намеренно сохраняет старое уведомление первым.
+    testStore.dispatch(
+      setNotifications([
+        {
+          requestId: 'older-request',
+          isRead: false,
+        },
+        {
+          requestId: 'newer-request',
+          isRead: true,
+        },
+      ]),
+    )
+
+    expect(
+      selectVisibleNotifications(testStore.getState()).map(
+        (notification) => notification.requestId,
+      ),
+    ).toEqual(['newer-request', 'older-request'])
   })
 })

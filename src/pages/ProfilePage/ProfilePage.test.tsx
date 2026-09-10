@@ -10,6 +10,8 @@ import type { User } from '@/shared/types'
 import authReducer from '@/store/slices/authSlice'
 import favoritesReducer from '@/store/slices/favoritesSlice'
 import usersReducer from '@/store/slices/usersSlice'
+import notificationsReducer from '@/store/slices/notificationsSlice'
+import requestsReducer from '@/store/slices/requestsSlice'
 
 import ProfilePage, { type ProfileTab } from './ProfilePage'
 
@@ -79,6 +81,8 @@ const createTestStore = (mockUsers: User[] = [], favoriteUserIds: string[] = [])
       auth: authReducer,
       favorites: favoritesReducer,
       users: usersReducer,
+      requests: requestsReducer,
+      notifications: notificationsReducer,
     },
     preloadedState: {
       auth: {

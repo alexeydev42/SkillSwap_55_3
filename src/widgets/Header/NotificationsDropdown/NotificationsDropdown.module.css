@@ -17,7 +17,7 @@
   width: 100%;
 }
 
-/* Строка с названием секции и текстовой кнопкой. */
+/* Строка с названием секции и действием. */
 .sectionHeader {
   display: flex;
   align-items: center;
@@ -36,7 +36,7 @@
   white-space: nowrap;
 }
 
-/* Кнопки «Прочитать все» и «Очистить». */
+/* Кнопки «Прочитать всё» и «Очистить». */
 .sectionAction {
   color: var(--color-accent-pressed);
   font-family: var(--font-body);
@@ -47,7 +47,6 @@
   white-space: nowrap;
 }
 
-/* Подчёркивание показывает интерактивное состояние кнопки. */
 .sectionAction:hover {
   text-decoration: underline;
 }
@@ -60,16 +59,12 @@
   width: 100%;
 }
 
-/* Одно уведомление и необязательная кнопка действия. */
+/* Одно уведомление. */
 .item {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-16);
   width: 100%;
 }
 
-/* Верхняя строка уведомления: сообщение и дата. */
+/* Строка уведомления: сообщение и дата. */
 .itemContent {
   display: flex;
   align-items: flex-start;
@@ -94,7 +89,7 @@
   color: var(--color-text);
 }
 
-/* Группа основного и вспомогательного текста. */
+/* Основной и вспомогательный текст. */
 .textBlock {
   display: flex;
   flex: 1;
@@ -113,7 +108,7 @@
   letter-spacing: 0.32px;
 }
 
-/* Пояснение под основным текстом. */
+/* Название навыка пользователя. */
 .description {
   color: var(--color-text);
   font-family: var(--font-body);
@@ -133,4 +128,16 @@
   line-height: var(--line-height-body);
   letter-spacing: 0.32px;
   white-space: nowrap;
+}
+
+/* Состояние полностью пустого списка. */
+.empty {
+  margin: 0;
+  color: var(--color-caption);
+  font-family: var(--font-body);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body);
+  letter-spacing: 0.32px;
+  text-align: center;
 }

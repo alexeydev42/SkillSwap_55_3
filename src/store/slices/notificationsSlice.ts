@@ -17,9 +17,7 @@ const getOwnRequestIds = (userId: string): Set<string> => {
   const storedRequests = storageService.get<SwapRequest[]>(STORAGE_KEYS.REQUESTS) ?? []
 
   return new Set(
-    storedRequests
-      .filter((request) => request.fromUserId === userId)
-      .map((request) => request.id),
+    storedRequests.filter((request) => request.fromUserId === userId).map((request) => request.id),
   )
 }
 
@@ -159,9 +157,11 @@ export const selectVisibleNotifications = createSelector(
   [selectNotifications, (state: RootState) => state.requests.items, selectAllUsers],
   (notifications, requests, users): NotificationView[] => {
     const requestsById = new Map(requests.map((request) => [request.id, request]))
+
     const usersById = new Map(users.map((user) => [user.id, user]))
 
-    return notifications.flatMap((notification) => {
+    // Собирает только валидные уведомления.
+    const visibleNotifications = notifications.flatMap((notification) => {
       const request = requestsById.get(notification.requestId)
 
       if (!request) {
@@ -183,6 +183,12 @@ export const selectVisibleNotifications = createSelector(
         },
       ]
     })
+
+    // Показывает новые уведомления первыми.
+    return visibleNotifications.sort(
+      (firstNotification, secondNotification) =>
+        Date.parse(secondNotification.createdAt) - Date.parse(firstNotification.createdAt),
+    )
   },
 )
 
