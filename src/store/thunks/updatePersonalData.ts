@@ -1,8 +1,9 @@
 import { cities } from '@/shared/config'
 import { STORAGE_KEYS } from '@/shared/lib/constants'
 import { storageService } from '@/shared/lib/storageService'
-import type { Gender, User } from '@/shared/types'
+import type { AuthAccount, Gender, User } from '@/shared/types'
 import type { PersonalData } from '@/widgets/PersonalDataSection'
+import { setAuthAccount } from '@/store/slices/authSlice'
 import { setLocalUser } from '@/store/slices/usersSlice'
 import type { AppDispatch, RootState } from '@/store'
 
@@ -22,8 +23,10 @@ function formatBirthDate(date: Date | null): string {
 /**
  * Сохраняет отредактированные личные данные текущего локального пользователя
  * (LOGIC-30). offeredSkill, learningSubcategoryIds, likesCount, createdAt и id
- * не затрагиваются — редактирование навыка вне рамок этой задачи. Email и
- * пароль также не меняются здесь — они не редактируются в этой форме.
+ * не затрагиваются — редактирование навыка вне рамок этой задачи. Пароль
+ * здесь не меняется — это отдельный флоу (LOGIC-33). Если email в форме
+ * отличается от текущего auth.account.email, обновляем и AuthAccount, чтобы
+ * email в системе оставался согласован с личными данными.
  * Персистентность — по установленному в проекте паттерну (finalizeRegistration):
  * сначала storageService.set, затем dispatch, если запись удалась.
  */
@@ -55,6 +58,18 @@ export const updatePersonalData =
     }
 
     dispatch(setLocalUser(updatedUser))
+
+    const currentAuthAccount = getState().auth.account
+
+    if (currentAuthAccount && formData.email !== currentAuthAccount.email) {
+      const updatedAccount: AuthAccount = { ...currentAuthAccount, email: formData.email }
+
+      const isAccountSaved = storageService.set(STORAGE_KEYS.AUTH_ACCOUNT, updatedAccount)
+
+      if (isAccountSaved) {
+        dispatch(setAuthAccount(updatedAccount))
+      }
+    }
 
     return true
   }

@@ -3,9 +3,9 @@ import { beforeEach, describe, expect, it } from 'vitest'
 
 import { STORAGE_KEYS } from '@/shared/lib/constants'
 import { storageService } from '@/shared/lib/storageService'
-import type { User } from '@/shared/types'
+import type { AuthAccount, User } from '@/shared/types'
 import type { PersonalData } from '@/widgets/PersonalDataSection'
-import authReducer from '@/store/slices/authSlice'
+import authReducer, { setAuthAccount } from '@/store/slices/authSlice'
 import catalogFiltersReducer from '@/store/slices/catalogFiltersSlice'
 import favoritesReducer from '@/store/slices/favoritesSlice'
 import notificationsReducer from '@/store/slices/notificationsSlice'
@@ -136,5 +136,61 @@ describe('updatePersonalData', () => {
     const { localUser } = testStore.getState().users
     expect(localUser?.name).toBe('Мария Иванова')
     expect(localUser?.description).toBe('Текст')
+  })
+
+  it('обновляет auth.account.email и localStorage, если email в форме отличается от текущего', () => {
+    const testStore = createTestStore()
+    testStore.dispatch(setLocalUser(existingUser))
+    storageService.set(STORAGE_KEYS.LOCAL_USER, existingUser)
+
+    const existingAccount: AuthAccount = {
+      userId: existingUser.id,
+      email: 'old@example.com',
+      password: 'Password1!',
+    }
+    testStore.dispatch(setAuthAccount(existingAccount))
+    storageService.set(STORAGE_KEYS.AUTH_ACCOUNT, existingAccount)
+
+    testStore.dispatch(updatePersonalData({ ...validFormData, email: 'new@example.com' }))
+
+    const expectedAccount: AuthAccount = { ...existingAccount, email: 'new@example.com' }
+
+    expect(testStore.getState().auth.account).toEqual(expectedAccount)
+    expect(storageService.get<AuthAccount>(STORAGE_KEYS.AUTH_ACCOUNT)).toEqual(expectedAccount)
+    // Остальные поля аккаунта (userId, password) не затронуты.
+    expect(testStore.getState().auth.account?.userId).toBe(existingAccount.userId)
+    expect(testStore.getState().auth.account?.password).toBe(existingAccount.password)
+  })
+
+  it('не трогает auth.account, если email в форме совпадает с текущим', () => {
+    const testStore = createTestStore()
+    testStore.dispatch(setLocalUser(existingUser))
+    storageService.set(STORAGE_KEYS.LOCAL_USER, existingUser)
+
+    const existingAccount: AuthAccount = {
+      userId: existingUser.id,
+      email: validFormData.email,
+      password: 'Password1!',
+    }
+    testStore.dispatch(setAuthAccount(existingAccount))
+    storageService.set(STORAGE_KEYS.AUTH_ACCOUNT, existingAccount)
+
+    testStore.dispatch(updatePersonalData(validFormData))
+
+    expect(testStore.getState().auth.account).toEqual(existingAccount)
+    expect(storageService.get<AuthAccount>(STORAGE_KEYS.AUTH_ACCOUNT)).toEqual(existingAccount)
+  })
+
+  it('не падает, если auth.account отсутствует (аккаунт не загружен)', () => {
+    const testStore = createTestStore()
+    testStore.dispatch(setLocalUser(existingUser))
+    storageService.set(STORAGE_KEYS.LOCAL_USER, existingUser)
+
+    const result = testStore.dispatch(
+      updatePersonalData({ ...validFormData, email: 'new@example.com' }),
+    )
+
+    expect(result).toBe(true)
+    expect(testStore.getState().auth.account).toBeNull()
   })
 })
