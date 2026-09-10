@@ -62,11 +62,6 @@ const DEVELOPERS: Developer[] = [
     lastName: 'Сурков',
     githubUrl: 'https://github.com/person5494',
   },
-  {
-    firstName: 'Андрей',
-    lastName: 'Сухаревский',
-    githubUrl: 'https://github.com/gwyn-riot',
-  },
 ]
 
 export const AboutProjectPage = () => {
