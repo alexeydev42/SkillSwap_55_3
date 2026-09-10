@@ -6,6 +6,7 @@ import { storageService } from '@/shared/lib/storageService'
 import type { AuthAccount, AuthSession, User } from '@/shared/types'
 import type { AppDispatch } from '@/store'
 import authReducer from '@/store/slices/authSlice'
+import favoritesReducer from '@/store/slices/favoritesSlice'
 
 import { login, type LoginCredentials } from './login'
 
@@ -39,6 +40,7 @@ const createTestStore = () =>
   configureStore({
     reducer: {
       auth: authReducer,
+      favorites: favoritesReducer,
     },
     preloadedState: {
       auth: {
@@ -46,6 +48,9 @@ const createTestStore = () =>
         session: null,
         status: 'idle' as const,
         error: null,
+      },
+      favorites: {
+        favoriteUserIds: [],
       },
     },
   })
@@ -94,6 +99,21 @@ describe('login', () => {
     expect(storageService.get<AuthSession>(STORAGE_KEYS.AUTH_SESSION)).toEqual({
       userId: account.userId,
     })
+  })
+
+  it('восстанавливает сохранённые Favorites после повторного login', () => {
+    storageService.set(STORAGE_KEYS.AUTH_ACCOUNT, account)
+    storageService.set(STORAGE_KEYS.FAVORITES, ['mock-user-id'])
+
+    const testStore = createTestStore()
+
+    const result = runLogin(testStore, {
+      email: account.email,
+      password: account.password,
+    })
+
+    expect(result).toBe(true)
+    expect(testStore.getState().favorites.favoriteUserIds).toEqual(['mock-user-id'])
   })
 
   it.each([
@@ -161,6 +181,7 @@ describe('login', () => {
 
     storageService.set(STORAGE_KEYS.AUTH_ACCOUNT, account)
     storageService.set(STORAGE_KEYS.AUTH_SESSION, session)
+
     vi.resetModules()
 
     const { default: freshAuthReducer } = await import('@/store/slices/authSlice')
