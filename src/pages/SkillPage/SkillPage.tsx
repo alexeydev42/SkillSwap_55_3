@@ -1,14 +1,16 @@
-
-import { Footer } from '@/widgets/Footer'
-import { UserProfileCard, type UserProfileCardProps } from '@/widgets/UserProfileCard'
-import { SkillActions } from '@/widgets/SkillActions'
-import { SkillDetails, type SkillDetailsProps } from '@/entities/skill/ui/SkillDetails'
+import type { SkillDetailsProps } from '@/entities/skill/ui/SkillDetails'
+import { SkillDetails } from '@/entities/skill/ui/SkillDetails'
 import { SkillGallery } from '@/entities/skill/ui/SkillGallery'
-import { SkillDetailsButtons } from '@/widgets/SkillDetailsButtons'
-import { SimilarOffersSection } from '@/widgets/SimilarOffersSection'
 import type { SkillTagsBlockProps } from '@/entities/skill/ui/SkillTagsBlock'
-import type { UserSkillCardProps } from '../../widgets/UserSkillCard/UserSkillCard'
+import { Footer } from '@/widgets/Footer'
 import { HeaderContainer } from '@/widgets/Header/HeaderContainer'
+import { SimilarOffersSection } from '@/widgets/SimilarOffersSection'
+import { SkillActions } from '@/widgets/SkillActions'
+import { SkillDetailsButtons } from '@/widgets/SkillDetailsButtons'
+import type { UserProfileCardProps } from '@/widgets/UserProfileCard'
+import { UserProfileCard } from '@/widgets/UserProfileCard'
+import type { UserSkillCardProps } from '@/widgets/UserSkillCard'
+
 import styles from './SkillPage.module.css'
 
 export interface SkillPageProps {
@@ -19,20 +21,32 @@ export interface SkillPageProps {
   gallery: string[]
   similarOffers: UserSkillCardProps[]
   isAuth: boolean
-  authUser?: { userName: string; avatarSrc: string }
+  authUser?: {
+    userName: string
+    avatarSrc: string
+  }
+  onOffer: () => void
+  isOfferDisabled?: boolean
+  offerText?: string
+  requestError?: string | null
 }
 
-export function SkillPage({
+export const SkillPage = ({
   user,
   userDescription,
   skills,
   skill,
   gallery,
   similarOffers,
-}: SkillPageProps) {
+  onOffer,
+  isOfferDisabled = false,
+  offerText = 'Предложить обмен',
+  requestError,
+}: SkillPageProps) => {
   return (
     <div className={styles.page}>
-        <HeaderContainer />
+      <HeaderContainer />
+
       <main className={styles.main}>
         <div className={styles.content}>
           <aside className={styles.userProfileCard}>
@@ -48,7 +62,20 @@ export function SkillPage({
               <div className={styles.skillInfo}>
                 <SkillDetails {...skill} />
 
-                <SkillDetailsButtons variant="offer" className={styles.offerButton} />
+                <div className={styles.offerControls}>
+                  <SkillDetailsButtons
+                    variant="offer"
+                    onOffer={onOffer}
+                    disabled={isOfferDisabled}
+                    offerText={offerText}
+                  />
+
+                  {requestError && (
+                    <p className={styles.requestError} role="alert">
+                      {requestError}
+                    </p>
+                  )}
+                </div>
               </div>
 
               <div className={styles.skillGallery}>
@@ -58,7 +85,7 @@ export function SkillPage({
           </div>
         </div>
 
-        <SimilarOffersSection items={similarOffers}/>
+        <SimilarOffersSection items={similarOffers} />
       </main>
 
       <div className={styles.footer}>

@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
-import { NotFoundPage } from '@/pages/NotFoundPage'
 import { mapUserToCatalogCard } from '@/pages/CatalogPage/CatalogPage.utils'
+import { NotFoundPage } from '@/pages/NotFoundPage'
 import DoneIcon from '@/shared/assets/icons/icon-done.svg?react'
 import { categories, cities } from '@/shared/config'
 import { ROUTES } from '@/shared/lib/constants'
 import { Modal } from '@/shared/ui/Modal'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { addFavorite, removeFavorite, selectFavoriteUserIds } from '@/store/slices/favoritesSlice'
+import { createSwapRequest, selectHasRequestToUser } from '@/store/slices/requestsSlice'
 import {
   fetchUsers,
   selectEffectiveLearningSubcategoryIds,
@@ -18,6 +19,7 @@ import {
   selectUsersStatus,
 } from '@/store/slices/usersSlice'
 import { StatusModalContent } from '@/widgets/StatusModalContent'
+import { SuccessModal } from '@/widgets/SuccessModal'
 
 import { SkillPage } from './SkillPage'
 import { mapUserToSkillPageProps } from './SkillPage.utils'
@@ -32,14 +34,27 @@ export const SkillPageContainer = () => {
   const dispatch = useAppDispatch()
   const { userId } = useParams<{ userId: string }>()
 
+  // Управляет модалкой завершения регистрации.
   const [isRegistrationSuccessOpen, setIsRegistrationSuccessOpen] = useState(() =>
     Boolean((location.state as SkillPageLocationState | null)?.registrationCompleted),
   )
 
+  // Управляет результатом предложения обмена.
+  const [isRequestSuccessOpen, setIsRequestSuccessOpen] = useState(false)
+  const [requestError, setRequestError] = useState<string | null>(null)
+
   const usersStatus = useAppSelector(selectUsersStatus)
+
   const user = useAppSelector((state) => (userId ? selectUserById(state, userId) : null))
+
   const similarUsers = useAppSelector((state) => (userId ? selectSimilarUsers(state, userId) : []))
+
   const favoriteUserIds = useAppSelector(selectFavoriteUserIds)
+
+  // Проверяет наличие заявки выбранному пользователю.
+  const hasExistingRequest = useAppSelector((state) =>
+    userId ? selectHasRequestToUser(state, userId) : false,
+  )
 
   const effectiveLikesCountByUserId = useAppSelector((state) =>
     Object.fromEntries(
@@ -61,18 +76,22 @@ export const SkillPageContainer = () => {
 
   const authSession = useAppSelector((state) => state.auth.session)
   const authAccount = useAppSelector((state) => state.auth.account)
+
   const currentUser = useAppSelector((state) =>
     authSession ? selectUserById(state, authSession.userId) : null,
   )
 
   const isAuthenticated = Boolean(authSession && authAccount)
+  const isOwnSkill = Boolean(userId) && authSession?.userId === userId
 
+  // Загружает пользователей при прямом открытии SkillPage.
   useEffect(() => {
     if (usersStatus === 'idle') {
       dispatch(fetchUsers())
     }
   }, [dispatch, usersStatus])
 
+  // Закрывает модалку регистрации и очищает location state.
   const handleCloseRegistrationSuccess = () => {
     setIsRegistrationSuccessOpen(false)
 
@@ -82,6 +101,7 @@ export const SkillPageContainer = () => {
     })
   }
 
+  // Переключает Favorite в похожих предложениях.
   const handleFavoriteClick = (similarUserId: string) => {
     if (!isAuthenticated) {
       return
@@ -94,8 +114,37 @@ export const SkillPageContainer = () => {
     }
   }
 
+  // Открывает выбранное похожее предложение.
   const handleDetailsClick = (similarUserId: string) => {
     navigate(ROUTES.SKILL.replace(':userId', similarUserId))
+  }
+
+  // Создаёт заявку или отправляет гостя на login.
+  const handleOffer = () => {
+    if (!userId) {
+      return
+    }
+
+    if (!isAuthenticated) {
+      const destination = `${location.pathname}${location.search}${location.hash}`
+
+      navigate(ROUTES.LOGIN, {
+        state: { destination },
+      })
+
+      return
+    }
+
+    setRequestError(null)
+
+    const request = dispatch(createSwapRequest(userId))
+
+    if (!request) {
+      setRequestError('Не удалось сохранить заявку. Попробуйте ещё раз.')
+      return
+    }
+
+    setIsRequestSuccessOpen(true)
   }
 
   if (!userId) {
@@ -112,6 +161,7 @@ export const SkillPageContainer = () => {
 
   const skillPageProps = mapUserToSkillPageProps(user, categories, cities)
 
+  // Подготавливает карточки похожих предложений.
   const similarOffers = similarUsers.map((similarUser) => ({
     user: mapUserToCatalogCard(
       similarUser,
@@ -140,6 +190,10 @@ export const SkillPageContainer = () => {
               }
             : undefined
         }
+        onOffer={handleOffer}
+        isOfferDisabled={isOwnSkill || hasExistingRequest}
+        offerText={hasExistingRequest ? 'Обмен предложен' : 'Предложить обмен'}
+        requestError={requestError}
       />
 
       {isRegistrationSuccessOpen && (
@@ -152,6 +206,10 @@ export const SkillPageContainer = () => {
             onButtonClick={handleCloseRegistrationSuccess}
           />
         </Modal>
+      )}
+
+      {isRequestSuccessOpen && (
+        <SuccessModal variant="proposed" onDone={() => setIsRequestSuccessOpen(false)} />
       )}
     </>
   )

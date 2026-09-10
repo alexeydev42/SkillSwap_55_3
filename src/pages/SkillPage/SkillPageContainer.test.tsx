@@ -9,6 +9,7 @@ import type { User } from '@/shared/types'
 import { store } from '@/store'
 import { clearAuthSession, setAuthAccount, setAuthSession } from '@/store/slices/authSlice'
 import { clearLocalUser, setLocalUser, setUsersStatus } from '@/store/slices/usersSlice'
+import { clearRequests } from '@/store/slices/requestsSlice'
 
 import { SkillPageContainer } from './SkillPageContainer'
 
@@ -66,6 +67,7 @@ describe('SkillPageContainer — завершение регистрации', (
   beforeEach(() => {
     store.dispatch(clearLocalUser())
     store.dispatch(clearAuthSession())
+    store.dispatch(clearRequests())
     store.dispatch(setUsersStatus('success'))
 
     store.dispatch(setLocalUser(localUser))
