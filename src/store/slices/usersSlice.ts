@@ -95,6 +95,19 @@ export const selectAllUsers = createSelector(
     return [...usersWithoutDuplicate, localUser]
   },
 )
+// Возвращает избранных пользователей в порядке их добавления.
+export const selectFavoriteUsers = createSelector(
+  [selectFavoriteUserIds, selectAllUsers],
+  (favoriteUserIds, users) => {
+    const usersById = new Map(users.map((user) => [user.id, user]))
+
+    return favoriteUserIds.flatMap((userId) => {
+      const user = usersById.get(userId)
+
+      return user ? [user] : []
+    })
+  },
+)
 // Возвращает локального пользователя, если его id совпадает с текущей сессией.
 export const selectCurrentUser = createSelector(
   [selectLocalUser, selectAuthUserId],

@@ -24,7 +24,7 @@ export const FavoritesSection = ({
       {isEmpty ? (
         <div className={styles.emptyState}>
           <img className={styles.illustration} src={illustrationUserInfo} alt="" />
-          <h2 className={styles.descriptionText}>В избранном пока пусто</h2>
+          <h2 className={styles.descriptionText}>В избранном пока ничего нет</h2>
         </div>
       ) : (
         <div className={styles.grid}>
