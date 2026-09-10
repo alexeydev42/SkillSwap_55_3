@@ -7,7 +7,7 @@ import type { AuthAccount, AuthSession, User } from '@/shared/types'
 import authReducer from '@/store/slices/authSlice'
 import catalogFiltersReducer from '@/store/slices/catalogFiltersSlice'
 import favoritesReducer, { addFavorite } from '@/store/slices/favoritesSlice'
-import notificationsReducer, { addNotification } from '@/store/slices/notificationsSlice'
+import notificationsReducer, { addNotificationToState } from '@/store/slices/notificationsSlice'
 import registrationReducer, {
   updateStep1Draft,
   updateStep2Draft,
@@ -100,7 +100,7 @@ describe('finalizeRegistration', () => {
         createdAt: '2026-01-01T00:00:00.000Z',
       }),
     )
-    testStore.dispatch(addNotification('old-request-id'))
+    testStore.dispatch(addNotificationToState({ requestId: 'old-request-id', isRead: false }))
 
     storageService.set(STORAGE_KEYS.LOCAL_USER, oldLocalUser)
     storageService.set(STORAGE_KEYS.REQUESTS, [{ id: 'old-request-id' }])

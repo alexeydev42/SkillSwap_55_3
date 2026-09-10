@@ -9,6 +9,7 @@ import {
   setAuthStatus,
 } from '@/store/slices/authSlice'
 import { restoreFavorites } from '../slices/favoritesSlice'
+import { restoreNotifications } from '../slices/notificationsSlice'
 import { restoreRequests } from '../slices/requestsSlice'
 
 export interface LoginCredentials {
@@ -40,6 +41,7 @@ export const login =
     dispatch(setAuthSession(session))
     dispatch(restoreFavorites())
     dispatch(restoreRequests())
+    dispatch(restoreNotifications())
     dispatch(setAuthStatus('succeeded'))
     dispatch(setAuthError(null))
 

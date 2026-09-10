@@ -4,6 +4,7 @@ import type { AppDispatch } from '@/store'
 import { clearAuthSession } from '@/store/slices/authSlice'
 import { resetCatalogFilters } from '@/store/slices/catalogFiltersSlice'
 import { clearFavorites } from '@/store/slices/favoritesSlice'
+import { clearNotifications } from '@/store/slices/notificationsSlice'
 import { resetRegistrationDraft } from '@/store/slices/registrationSlice'
 import { clearRequests } from '@/store/slices/requestsSlice'
 
@@ -16,6 +17,7 @@ export const logout =
     dispatch(clearAuthSession())
     dispatch(clearFavorites())
     dispatch(clearRequests())
+    dispatch(clearNotifications())
     dispatch(resetRegistrationDraft())
 
     // Одновременно сбрасывает Redux-state и через listener удаляет
