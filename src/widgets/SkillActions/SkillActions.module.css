@@ -1,4 +1,9 @@
 .actions {
- display: flex;
- gap: var(--space-16);
+  display: flex;
+  gap: var(--space-16);
+}
+
+/* Показывает активное состояние Favorites. */
+.favoriteButtonActive {
+  color: var(--color-accent);
 }

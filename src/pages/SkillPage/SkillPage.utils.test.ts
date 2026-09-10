@@ -6,12 +6,26 @@ const categories: Category[] = [
   {
     id: 'creativity-art',
     name: 'Творчество и искусство',
-    subcategories: [{ id: 'music-sound', name: 'Музыка и звук' }],
+    subcategories: [
+      {
+        id: 'music-sound',
+        name: 'Музыка и звук',
+      },
+      {
+        id: 'photography',
+        name: 'Фотография',
+      },
+    ],
   },
   {
     id: 'education-development',
     name: 'Образование и развитие',
-    subcategories: [{ id: 'time-management', name: 'Тайм-менеджмент' }],
+    subcategories: [
+      {
+        id: 'time-management',
+        name: 'Тайм-менеджмент',
+      },
+    ],
   },
 ]
 
@@ -56,9 +70,7 @@ describe('mapUserToSkillPageProps', () => {
     })
     expect(result.gallery).toEqual(['image-1.png', 'image-2.png'])
     expect(result.skills.canTeach).toEqual({ label: 'Музыка и звук', variant: 'creative' })
-    expect(result.skills.wantsToLearn).toEqual([
-      { label: 'Тайм-менеджмент', variant: 'education' },
-    ])
+    expect(result.skills.wantsToLearn).toEqual([{ label: 'Тайм-менеджмент', variant: 'education' }])
   })
 
   it('использует cityId и title навыка, если город или подкатегория не найдены в справочниках', () => {
@@ -82,9 +94,7 @@ describe('mapUserToSkillPageProps', () => {
     }
     const result = mapUserToSkillPageProps(userWithUnknownLearning, categories, cities)
 
-    expect(result.skills.wantsToLearn).toEqual([
-      { label: 'Тайм-менеджмент', variant: 'education' },
-    ])
+    expect(result.skills.wantsToLearn).toEqual([{ label: 'Тайм-менеджмент', variant: 'education' }])
   })
 
   it('подставляет пустую строку avatar, если avatarUrl — null', () => {
@@ -99,5 +109,26 @@ describe('mapUserToSkillPageProps', () => {
     const result = mapUserToSkillPageProps(userWithoutDescription, categories, cities)
 
     expect(result.userDescription).toBe('')
+  })
+
+  it('использует переданный итоговый список «Хочу научиться»', () => {
+    const result = mapUserToSkillPageProps(user, categories, cities, [
+      'time-management',
+      'photography',
+    ])
+
+    expect(result.skills.wantsToLearn).toEqual([
+      {
+        label: 'Тайм-менеджмент',
+        variant: 'education',
+      },
+      {
+        label: 'Фотография',
+        variant: 'creative',
+      },
+    ])
+
+    // Исходные данные User при вычислении не изменяются.
+    expect(user.learningSubcategoryIds).toEqual(['time-management'])
   })
 })

@@ -145,7 +145,8 @@ export const skillPageMock: SkillPageProps = {
     },
   ],
   onOffer: () => {},
-  isAuth: false,
   isOwnSkill: false,
-  authUser: undefined,
+  isFavorite: false,
+  isFavoriteDisabled: false,
+  onFavoriteClick: () => {},
 }
