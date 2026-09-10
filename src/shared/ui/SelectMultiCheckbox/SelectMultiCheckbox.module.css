@@ -105,6 +105,10 @@
   padding: var(--space-4) 0;
 }
 
+.checkbox > span:last-child {
+  padding-top: 0;
+}
+
 .empty {
   display: block;
   color: var(--color-disabled-text);
