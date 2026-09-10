@@ -11,7 +11,7 @@ import {
   type PersonalData,
 } from '@/widgets/PersonalDataSection'
 import { ProfileSidebar } from '@/widgets/ProfileSidebar'
-
+import { ChangePasswordModal } from '@/widgets/ChangePasswordModal'
 import styles from './ProfilePage.module.css'
 
 export type ProfileTab =
@@ -41,7 +41,7 @@ const PROFILE_DATA: PersonalData = {
   avatar: AVATAR_SRC,
 }
 
-const PLACEHOLDER_TITLES: Record<
+const PLACEHOLDER_TITLES: Record <
   Exclude<ProfileTab, 'personal' | 'favorites'>,
   string
 > = {
@@ -66,6 +66,7 @@ export default function ProfilePage({
   )
 
   const [activeTab, setActiveTab] = useState<ProfileTab>(initialTab)
+  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false)
 
   const handleTabClick = (tabId: string) => {
     if (tabId === 'skills') {
@@ -82,7 +83,12 @@ export default function ProfilePage({
   const renderContent = () => {
     switch (activeTab) {
       case 'personal':
-        return <PersonalDataSection data={PROFILE_DATA} />
+        return (
+          <PersonalDataSection
+            data={PROFILE_DATA}
+            onChangePassword={() => setIsChangePasswordOpen(true)}
+          />
+        )
 
       case 'favorites':
         return (
@@ -118,6 +124,10 @@ export default function ProfilePage({
       <div className={styles.footer}>
         <Footer />
       </div>
+
+      {isChangePasswordOpen && (
+        <ChangePasswordModal onClose={() => setIsChangePasswordOpen(false)} />
+      )}
     </div>
   )
 }
