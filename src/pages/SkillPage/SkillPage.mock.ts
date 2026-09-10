@@ -49,7 +49,7 @@ export const skillPageMock: SkillPageProps = {
   similarOffers: [
     {
       user: {
-        id:'mock-user-0',
+        id: 'mock-user-0',
         name: 'Мария Петрова',
         city: 'Таллин',
         age: 31,
@@ -71,7 +71,7 @@ export const skillPageMock: SkillPageProps = {
     },
     {
       user: {
-        id:'mock-user-1',
+        id: 'mock-user-1',
         name: 'Алексей Смирнов',
         city: 'Таллин',
         age: 27,
@@ -97,7 +97,7 @@ export const skillPageMock: SkillPageProps = {
     },
     {
       user: {
-         id:'mock-user-2',
+        id: 'mock-user-2',
         name: 'Елена Кузнецова',
         city: 'Таллин',
         age: 29,
@@ -119,7 +119,7 @@ export const skillPageMock: SkillPageProps = {
     },
     {
       user: {
-         id:'mock-user-3',
+        id: 'mock-user-3',
         name: 'Дмитрий Волков',
         city: 'Новосибирск',
         age: 34,
@@ -144,6 +144,7 @@ export const skillPageMock: SkillPageProps = {
       onDetailsClick: () => {},
     },
   ],
+  onOffer: () => {},
   isAuth: false,
   authUser: undefined,
 }

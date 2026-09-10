@@ -1,28 +1,33 @@
-import React from 'react';
-import clsx from 'clsx';
-import { Button } from '@/shared/ui/Button';
-import EditIcon from '@/shared/assets/icons/icon-edit.svg?react';
-import styles from './SkillDetailsButtons.module.css';
+import type { FC } from 'react'
+import clsx from 'clsx'
 
-export type SkillDetailsButtonsVariant = 'offer' | 'edit';
+import EditIcon from '@/shared/assets/icons/icon-edit.svg?react'
+import { Button } from '@/shared/ui/Button'
+
+import styles from './SkillDetailsButtons.module.css'
+
+export type SkillDetailsButtonsVariant = 'offer' | 'edit'
 
 export interface SkillDetailsButtonsProps {
-  variant: SkillDetailsButtonsVariant;
-  onOffer?: () => void;
-  onEdit?: () => void;
-  onDone?: () => void;
-  disabled?: boolean;
-  className?: string;
+  variant: SkillDetailsButtonsVariant
+  onOffer?: () => void
+  onEdit?: () => void
+  onDone?: () => void
+  offerText?: string
+  disabled?: boolean
+  className?: string
 }
 
-export const SkillDetailsButtons: React.FC<SkillDetailsButtonsProps> = ({
+export const SkillDetailsButtons: FC<SkillDetailsButtonsProps> = ({
   variant,
   onOffer,
   onEdit,
   onDone,
+  offerText = 'Предложить обмен',
   disabled = false,
   className,
 }) => {
+  // Показывает одну кнопку предложения обмена.
   if (variant === 'offer') {
     return (
       <div className={clsx(styles.container, className)}>
@@ -33,12 +38,13 @@ export const SkillDetailsButtons: React.FC<SkillDetailsButtonsProps> = ({
           disabled={disabled}
           className={styles.button}
         >
-          Предложить обмен
+          {offerText}
         </Button>
       </div>
-    );
+    )
   }
 
+  // Показывает кнопки редактирования навыка.
   return (
     <div className={clsx(styles.container, className)}>
       <Button
@@ -52,6 +58,7 @@ export const SkillDetailsButtons: React.FC<SkillDetailsButtonsProps> = ({
       >
         Редактировать
       </Button>
+
       <Button
         variant="primary"
         size="md"
@@ -62,5 +69,5 @@ export const SkillDetailsButtons: React.FC<SkillDetailsButtonsProps> = ({
         Готово
       </Button>
     </div>
-  );
-};
+  )
+}

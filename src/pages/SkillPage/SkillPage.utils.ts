@@ -71,7 +71,16 @@ export function mapUserToSkillPageProps(
   user: User,
   categories: Category[],
   cities: City[],
-): Omit<SkillPageProps, 'similarOffers' | 'isAuth' | 'authUser'> {
+): Omit<
+  SkillPageProps,
+  | 'similarOffers'
+  | 'isAuth'
+  | 'authUser'
+  | 'onOffer'
+  | 'isOfferDisabled'
+  | 'offerText'
+  | 'requestError'
+> {
   const city = cities.find(({ id }) => id === user.cityId)
   const offeredSubcategory = findSubcategory(categories, user.offeredSkill.subcategoryId)
   const age = calculateAge(user.birthDate)

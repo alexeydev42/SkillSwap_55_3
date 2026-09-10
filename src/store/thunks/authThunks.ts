@@ -5,6 +5,7 @@ import { clearAuthSession } from '@/store/slices/authSlice'
 import { resetCatalogFilters } from '@/store/slices/catalogFiltersSlice'
 import { clearFavorites } from '@/store/slices/favoritesSlice'
 import { resetRegistrationDraft } from '@/store/slices/registrationSlice'
+import { clearRequests } from '@/store/slices/requestsSlice'
 
 // Выполняет полную очистку активного состояния при выходе пользователя.
 export const logout =
@@ -14,6 +15,7 @@ export const logout =
 
     dispatch(clearAuthSession())
     dispatch(clearFavorites())
+    dispatch(clearRequests())
     dispatch(resetRegistrationDraft())
 
     // Одновременно сбрасывает Redux-state и через listener удаляет

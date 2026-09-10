@@ -3,10 +3,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { STORAGE_KEYS } from '@/shared/lib/constants'
 import { storageService } from '@/shared/lib/storageService'
-import type { AuthAccount, AuthSession, User } from '@/shared/types'
+import type { AuthAccount, AuthSession, SwapRequest, User } from '@/shared/types'
 import type { AppDispatch } from '@/store'
 import authReducer from '@/store/slices/authSlice'
 import favoritesReducer from '@/store/slices/favoritesSlice'
+import requestsReducer from '@/store/slices/requestsSlice'
 
 import { login, type LoginCredentials } from './login'
 
@@ -41,6 +42,7 @@ const createTestStore = () =>
     reducer: {
       auth: authReducer,
       favorites: favoritesReducer,
+      requests: requestsReducer,
     },
     preloadedState: {
       auth: {
@@ -51,6 +53,9 @@ const createTestStore = () =>
       },
       favorites: {
         favoriteUserIds: [],
+      },
+      requests: {
+        items: [],
       },
     },
   })
@@ -142,6 +147,28 @@ describe('login', () => {
     expect(testStore.getState().auth.status).toBe('failed')
     expect(testStore.getState().auth.error).toBe('Email или пароль введен неверно.')
     expect(storageService.get(STORAGE_KEYS.AUTH_SESSION)).toBeNull()
+  })
+
+  it('восстанавливает сохранённые Requests после повторного login', () => {
+    const savedRequest: SwapRequest = {
+      id: 'saved-request-id',
+      fromUserId: account.userId,
+      toUserId: 'target-user-id',
+      createdAt: '2026-09-10T12:00:00.000Z',
+    }
+
+    storageService.set(STORAGE_KEYS.AUTH_ACCOUNT, account)
+    storageService.set(STORAGE_KEYS.REQUESTS, [savedRequest])
+
+    const testStore = createTestStore()
+
+    const result = runLogin(testStore, {
+      email: account.email,
+      password: account.password,
+    })
+
+    expect(result).toBe(true)
+    expect(testStore.getState().requests.items).toEqual([savedRequest])
   })
 
   it('не позволяет войти по данным мокового пользователя без локального AuthAccount', () => {
