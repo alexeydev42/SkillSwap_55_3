@@ -4,21 +4,12 @@ import { useNavigate } from 'react-router-dom'
 import { mapUserToCatalogCard } from '@/pages/CatalogPage/CatalogPage.utils'
 import { categories, cities } from '@/shared/config'
 import { ROUTES } from '@/shared/lib/constants'
-import { Spinner } from '@/shared/ui/Spinner'
-import { useAppDispatch, useAppSelector } from '@/store/hooks'
-import { removeFavorite, selectFavoriteUserIds } from '@/store/slices/favoritesSlice'
-import {
-  fetchUsers,
-  selectEffectiveLearningSubcategoryIds,
-  selectEffectiveLikesCount,
-  selectFavoriteUsers,
-  selectUsersStatus,
-} from '@/store/slices/usersSlice'
-import { FavoritesSection } from '@/widgets/FavoritesSection'
-import { Footer } from '@/widgets/Footer'
+import { useAppSelector } from '@/store/hooks'
 import { HeaderContainer } from '@/widgets/Header/HeaderContainer'
-import { PersonalDataSection, type PersonalData } from '@/widgets/PersonalDataSection'
+import { FavoritesSection } from '@/widgets/FavoritesSection'
+import { PersonalDataSectionContainer } from '@/widgets/PersonalDataSection'
 import { ProfileSidebar } from '@/widgets/ProfileSidebar'
+import { Footer } from '@/widgets/Footer'
 
 import styles from './ProfilePage.module.css'
 
@@ -30,19 +21,6 @@ export interface ProfilePageProps {
 }
 
 const DEFAULT_TAB: ProfileTab = 'personal'
-
-const AVATAR_SRC = '/images/users/user-001/avatar.webp'
-
-const PROFILE_DATA: PersonalData = {
-  email: 'Mariia@gmail.com',
-  name: 'Мария',
-  birthDate: new Date(1995, 9, 28),
-  gender: 'female',
-  city: 'moscow',
-  about:
-    'Люблю учиться новому, особенно если это можно делать за чаем и в пижаме. Всегда готова пообщаться и обменяться чем-то интересным!',
-  avatar: AVATAR_SRC,
-}
 
 const PLACEHOLDER_TITLES: Record<Exclude<ProfileTab, 'personal' | 'favorites'>, string> = {
   requests: 'Заявки',
@@ -120,7 +98,6 @@ export default function ProfilePage({ initialTab = DEFAULT_TAB }: ProfilePagePro
       if (currentUserId) {
         navigate(ROUTES.SKILL.replace(':userId', currentUserId))
       }
-
       return
     }
 
@@ -141,8 +118,8 @@ export default function ProfilePage({ initialTab = DEFAULT_TAB }: ProfilePagePro
   const renderContent = () => {
     switch (activeTab) {
       case 'personal':
-        return <PersonalDataSection data={PROFILE_DATA} />
-
+        // Используем Container, который сам заберет данные из Redux
+        return <PersonalDataSectionContainer />
       case 'favorites':
         if (usersStatus === 'idle' || usersStatus === 'loading') {
           return (
@@ -159,7 +136,6 @@ export default function ProfilePage({ initialTab = DEFAULT_TAB }: ProfilePagePro
             onDetailsClick={handleDetailsClick}
           />
         )
-
       case 'requests':
       case 'exchanges':
       case 'skills':
