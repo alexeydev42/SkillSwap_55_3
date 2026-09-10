@@ -4,12 +4,22 @@ import { useNavigate } from 'react-router-dom'
 import { mapUserToCatalogCard } from '@/pages/CatalogPage/CatalogPage.utils'
 import { categories, cities } from '@/shared/config'
 import { ROUTES } from '@/shared/lib/constants'
-import { useAppSelector } from '@/store/hooks'
-import { HeaderContainer } from '@/widgets/Header/HeaderContainer'
+import { Spinner } from '@/shared/ui/Spinner'
+import { useAppDispatch, useAppSelector } from '@/store/hooks'
+import { removeFavorite, selectFavoriteUserIds } from '@/store/slices/favoritesSlice'
+import {
+  fetchUsers,
+  selectEffectiveLearningSubcategoryIds,
+  selectEffectiveLikesCount,
+  selectFavoriteUsers,
+  selectUsersStatus,
+} from '@/store/slices/usersSlice'
+import { ChangePasswordModal } from '@/widgets/ChangePasswordModal'
 import { FavoritesSection } from '@/widgets/FavoritesSection'
+import { Footer } from '@/widgets/Footer'
+import { HeaderContainer } from '@/widgets/Header/HeaderContainer'
 import { PersonalDataSectionContainer } from '@/widgets/PersonalDataSection'
 import { ProfileSidebar } from '@/widgets/ProfileSidebar'
-import { Footer } from '@/widgets/Footer'
 
 import styles from './ProfilePage.module.css'
 
@@ -47,8 +57,9 @@ export default function ProfilePage({ initialTab = DEFAULT_TAB }: ProfilePagePro
   const favoriteUserIds = useAppSelector(selectFavoriteUserIds)
   const usersStatus = useAppSelector(selectUsersStatus)
 
-  // Хранит только выбранную вкладку профиля.
+  // Хранит выбранную вкладку профиля и состояние модального окна.
   const [activeTab, setActiveTab] = useState<ProfileTab>(initialTab)
+  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false)
 
   // Получает актуальный likesCount для каждой карточки.
   const effectiveLikesCountByUserId = useAppSelector((state) =>
@@ -98,6 +109,7 @@ export default function ProfilePage({ initialTab = DEFAULT_TAB }: ProfilePagePro
       if (currentUserId) {
         navigate(ROUTES.SKILL.replace(':userId', currentUserId))
       }
+
       return
     }
 
@@ -118,8 +130,10 @@ export default function ProfilePage({ initialTab = DEFAULT_TAB }: ProfilePagePro
   const renderContent = () => {
     switch (activeTab) {
       case 'personal':
-        // Используем Container, который сам заберет данные из Redux
-        return <PersonalDataSectionContainer />
+        return (
+          <PersonalDataSectionContainer onChangePassword={() => setIsChangePasswordOpen(true)} />
+        )
+
       case 'favorites':
         if (usersStatus === 'idle' || usersStatus === 'loading') {
           return (
@@ -136,6 +150,7 @@ export default function ProfilePage({ initialTab = DEFAULT_TAB }: ProfilePagePro
             onDetailsClick={handleDetailsClick}
           />
         )
+
       case 'requests':
       case 'exchanges':
       case 'skills':
@@ -158,6 +173,10 @@ export default function ProfilePage({ initialTab = DEFAULT_TAB }: ProfilePagePro
       <div className={styles.footer}>
         <Footer />
       </div>
+
+      {isChangePasswordOpen && (
+        <ChangePasswordModal onClose={() => setIsChangePasswordOpen(false)} />
+      )}
     </div>
   )
 }

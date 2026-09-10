@@ -153,6 +153,36 @@ describe('ProfilePage', () => {
     ).toBeInTheDocument()
   })
 
+  it('открывает и закрывает окно изменения пароля', async () => {
+    const user = userEvent.setup()
+
+    renderProfilePage()
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'Изменить пароль',
+      }),
+    )
+
+    expect(
+      screen.getByRole('heading', {
+        name: 'Изменить пароль',
+      }),
+    ).toBeInTheDocument()
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'Отмена',
+      }),
+    )
+
+    expect(
+      screen.queryByRole('heading', {
+        name: 'Изменить пароль',
+      }),
+    ).not.toBeInTheDocument()
+  })
+
   it('показывает избранных пользователей в порядке favoriteUserIds', () => {
     renderProfilePage({
       initialTab: 'favorites',

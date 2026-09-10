@@ -3,9 +3,14 @@ import type { User } from '@/shared/types'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { selectLocalUser } from '@/store/slices/usersSlice'
 import { updatePersonalData } from '@/store/thunks/updatePersonalData'
+
 import { PersonalDataSection, type PersonalData } from './PersonalDataSection'
 
-// Преобразует дату рождения User (строка YYYY-MM-DD) в Date для формы.
+export interface PersonalDataSectionContainerProps {
+  onChangePassword?: () => void
+}
+
+// Преобразует дату рождения User из строки YYYY-MM-DD в Date.
 function parseBirthDate(birthDate: string): Date | null {
   if (!birthDate) {
     return null
@@ -16,7 +21,7 @@ function parseBirthDate(birthDate: string): Date | null {
   return new Date(year, month - 1, day)
 }
 
-// Собирает PersonalData из User (Redux) и email аккаунта для передачи в PersonalDataSection.
+// Собирает данные формы из локального пользователя и AuthAccount.
 function mapUserToPersonalData(user: User, email: string): PersonalData {
   const city = cities.find(({ id }) => id === user.cityId)
 
@@ -31,7 +36,9 @@ function mapUserToPersonalData(user: User, email: string): PersonalData {
   }
 }
 
-export function PersonalDataSectionContainer() {
+export function PersonalDataSectionContainer({
+  onChangePassword,
+}: PersonalDataSectionContainerProps) {
   const dispatch = useAppDispatch()
   const localUser = useAppSelector(selectLocalUser)
   const email = useAppSelector((state) => state.auth.account?.email ?? '')
@@ -46,5 +53,5 @@ export function PersonalDataSectionContainer() {
     dispatch(updatePersonalData(formData))
   }
 
-  return <PersonalDataSection data={data} onSave={handleSave} />
+  return <PersonalDataSection data={data} onSave={handleSave} onChangePassword={onChangePassword} />
 }
