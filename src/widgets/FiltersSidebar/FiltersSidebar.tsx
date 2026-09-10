@@ -66,11 +66,18 @@ export function FiltersSidebar({
   onChange,
   className,
 }: FiltersSidebarProps) {
+  // Хранит идентификаторы раскрытых категорий.
+  const [openCategoryIds, setOpenCategoryIds] = useState<string[]>([])
+
   // Управляет отображением полного списка городов.
   const [showAllCities, setShowAllCities] = useState(false)
 
   // Показывает первые пять городов или весь переданный список.
   const visibleCities = showAllCities ? cities : cities.slice(0, VISIBLE_CITIES_COUNT)
+
+  // Проверяет, раскрыты ли все доступные категории.
+  const areAllCategoriesOpen =
+    categories.length > 0 && categories.every(({ id }) => openCategoryIds.includes(id))
 
   // Обновляет выбранный тип предложения.
   const handleOfferTypeChange = (offerType: CatalogOfferType) => {
@@ -100,6 +107,22 @@ export function FiltersSidebar({
       ...filters,
       subcategoryIds: [...otherSubcategoryIds, ...checkedSubcategoryIds],
     })
+  }
+
+  // Раскрывает или сворачивает отдельную категорию.
+  const handleCategoryOpenChange = (categoryId: string, isOpen: boolean) => {
+    setOpenCategoryIds((currentIds) => {
+      if (isOpen) {
+        return currentIds.includes(categoryId) ? currentIds : [...currentIds, categoryId]
+      }
+
+      return currentIds.filter((id) => id !== categoryId)
+    })
+  }
+
+  // Раскрывает все категории или сворачивает их обратно.
+  const handleToggleAllCategories = () => {
+    setOpenCategoryIds(areAllCategoriesOpen ? [] : categories.map(({ id }) => id))
   }
 
   // Добавляет или удаляет выбранный город.
@@ -136,17 +159,33 @@ export function FiltersSidebar({
               checkedSubcategoryIds={category.subcategories
                 .map(({ id }) => id)
                 .filter((id) => filters.subcategoryIds.includes(id))}
+              isOpen={openCategoryIds.includes(category.id)}
               onChange={(checkedSubcategoryIds) =>
                 handleSubcategoriesChange(category, checkedSubcategoryIds)
               }
+              onOpenChange={(isOpen) => handleCategoryOpenChange(category.id, isOpen)}
             />
           ))}
         </div>
 
-        <button type="button" className={styles.showMore}>
-          Все категории
-          <ChevronDownIcon className={styles.showMoreIcon} aria-hidden="true" />
-        </button>
+        {categories.length > 0 && (
+          <button
+            type="button"
+            className={styles.showMore}
+            onClick={handleToggleAllCategories}
+            aria-expanded={areAllCategoriesOpen}
+          >
+            {areAllCategoriesOpen ? 'Свернуть' : 'Все категории'}
+
+            <ChevronDownIcon
+              className={clsx(
+                styles.showMoreIcon,
+                areAllCategoriesOpen && styles.showMoreIconExpanded,
+              )}
+              aria-hidden="true"
+            />
+          </button>
+        )}
       </section>
 
       <section className={styles.section}>

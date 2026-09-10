@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent } from 'react'
+import type { ChangeEvent } from 'react'
 import clsx from 'clsx'
 
 import type { Subcategory } from '@/shared/types'
@@ -11,17 +11,19 @@ export interface FilterCategoryGroupProps {
   category: string
   subcategories: Subcategory[]
   checkedSubcategoryIds: string[]
+  isOpen: boolean
   onChange: (subcategoryIds: string[]) => void
+  onOpenChange: (isOpen: boolean) => void
 }
 
 export const FilterCategoryGroup = ({
   category,
   subcategories,
   checkedSubcategoryIds,
+  isOpen,
   onChange,
+  onOpenChange,
 }: FilterCategoryGroupProps) => {
-  const [isOpen, setIsOpen] = useState(false)
-
   // Определяет состояние родительского чекбокса.
   const checkedCount = checkedSubcategoryIds.length
   const isAllChecked = subcategories.length > 0 && checkedCount === subcategories.length
@@ -52,7 +54,7 @@ export const FilterCategoryGroup = ({
       <header className={styles['filter-category-group__header']}>
         <div
           className={styles['filter-category-group__header-title']}
-          onClick={() => setIsOpen((previousValue) => !previousValue)}
+          onClick={() => onOpenChange(!isOpen)}
         >
           <div
             className={styles['filter-category-group__header-checkbox']}

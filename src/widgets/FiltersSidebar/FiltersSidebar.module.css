@@ -8,13 +8,12 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-12);
-
 }
 
 .section {
   display: flex;
   flex-direction: column;
-  gap: var(--space-16);
+  gap: var(--space-20);
 }
 
 .heading {
@@ -24,13 +23,13 @@
   font-size: var(--font-size-h3);
   font-weight: var(--font-weight-medium);
   line-height: var(--line-height-h4);
+  letter-spacing: -0.22px;
 }
 
 .categories {
   display: flex;
   flex-direction: column;
   gap: var(--space-12);
-  margin-top: var(--space-2);
 }
 
 .showMore {
@@ -72,7 +71,11 @@
   transform: rotate(180deg);
 }
 
-.cityCheckbox{
+.cityCheckbox {
   gap: var(--space-8);
-  padding-top: 6px;
+  padding-block: var(--space-4);
+}
+
+.cityCheckbox > span:last-child {
+  padding-top: 0;
 }
