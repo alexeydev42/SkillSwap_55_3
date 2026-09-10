@@ -1,6 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+import { mapUserToCatalogCard } from '@/pages/CatalogPage/CatalogPage.utils'
+import { categories, cities } from '@/shared/config'
 import { ROUTES } from '@/shared/lib/constants'
 import { useAppSelector } from '@/store/hooks'
 import { HeaderContainer } from '@/widgets/Header/HeaderContainer'
@@ -11,15 +13,10 @@ import { Footer } from '@/widgets/Footer'
 
 import styles from './ProfilePage.module.css'
 
-export type ProfileTab =
-  | 'requests'
-  | 'exchanges'
-  | 'favorites'
-  | 'skills'
-  | 'personal'
+export type ProfileTab = 'requests' | 'exchanges' | 'favorites' | 'skills' | 'personal'
 
 export interface ProfilePageProps {
-  /** Начальная вкладка (для Storybook и входа на страницу). */
+  /** Начальная вкладка страницы профиля. */
   initialTab?: ProfileTab
 }
 
@@ -38,16 +35,64 @@ const PlaceholderBlock = ({ title }: { title: string }) => (
   </div>
 )
 
-export default function ProfilePage({
-  initialTab = DEFAULT_TAB,
-}: ProfilePageProps) {
+export default function ProfilePage({ initialTab = DEFAULT_TAB }: ProfilePageProps) {
+  const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const currentUserId = useAppSelector(
-    (state) => state.auth.session?.userId ?? null,
-  )
 
+  // Получает id текущего пользователя.
+  const currentUserId = useAppSelector((state) => state.auth.session?.userId ?? null)
+
+  // Получает Favorites и связанных пользователей из Redux.
+  const favoriteUsers = useAppSelector(selectFavoriteUsers)
+  const favoriteUserIds = useAppSelector(selectFavoriteUserIds)
+  const usersStatus = useAppSelector(selectUsersStatus)
+
+  // Хранит только выбранную вкладку профиля.
   const [activeTab, setActiveTab] = useState<ProfileTab>(initialTab)
 
+  // Получает актуальный likesCount для каждой карточки.
+  const effectiveLikesCountByUserId = useAppSelector((state) =>
+    Object.fromEntries(
+      favoriteUsers.map((user) => [user.id, selectEffectiveLikesCount(state, user.id)]),
+    ),
+  )
+
+  // Получает актуальный список изучаемых навыков.
+  const effectiveLearningSubcategoryIdsByUserId = useAppSelector((state) =>
+    Object.fromEntries(
+      favoriteUsers.map((user) => [user.id, selectEffectiveLearningSubcategoryIds(state, user.id)]),
+    ),
+  )
+
+  // Загружает общий список пользователей при открытии Favorites.
+  useEffect(() => {
+    if (activeTab === 'favorites' && usersStatus === 'idle') {
+      dispatch(fetchUsers())
+    }
+  }, [activeTab, dispatch, usersStatus])
+
+  // Преобразует избранных пользователей в данные карточек.
+  const favoriteCards = useMemo(
+    () =>
+      favoriteUsers.map((user) =>
+        mapUserToCatalogCard(
+          user,
+          categories,
+          cities,
+          favoriteUserIds.includes(user.id),
+          effectiveLikesCountByUserId[user.id] ?? user.likesCount,
+          effectiveLearningSubcategoryIdsByUserId[user.id] ?? user.learningSubcategoryIds,
+        ),
+      ),
+    [
+      favoriteUsers,
+      favoriteUserIds,
+      effectiveLikesCountByUserId,
+      effectiveLearningSubcategoryIdsByUserId,
+    ],
+  )
+
+  // Переключает раздел профиля или открывает страницу навыка.
   const handleTabClick = (tabId: string) => {
     if (tabId === 'skills') {
       if (currentUserId) {
@@ -59,17 +104,36 @@ export default function ProfilePage({
     setActiveTab(tabId as ProfileTab)
   }
 
+  // Удаляет пользователя из Favorites.
+  const handleFavoriteClick = (userId: string) => {
+    dispatch(removeFavorite(userId))
+  }
+
+  // Открывает страницу выбранного пользователя.
+  const handleDetailsClick = (userId: string) => {
+    navigate(ROUTES.SKILL.replace(':userId', userId))
+  }
+
+  // Выбирает содержимое активного раздела профиля.
   const renderContent = () => {
     switch (activeTab) {
       case 'personal':
         // Используем Container, который сам заберет данные из Redux
         return <PersonalDataSectionContainer />
       case 'favorites':
+        if (usersStatus === 'idle' || usersStatus === 'loading') {
+          return (
+            <div className={styles.placeholder}>
+              <Spinner />
+            </div>
+          )
+        }
+
         return (
           <FavoritesSection
-            favoriteUsers={[]}
-            onFavoriteClick={() => {}}
-            onDetailsClick={() => {}}
+            favoriteUsers={favoriteCards}
+            onFavoriteClick={handleFavoriteClick}
+            onDetailsClick={handleDetailsClick}
           />
         )
       case 'requests':
@@ -85,10 +149,7 @@ export default function ProfilePage({
 
       <main className={styles.main}>
         <div className={styles.profileGrid}>
-          <ProfileSidebar
-            activeTab={activeTab}
-            onTabClick={handleTabClick}
-          />
+          <ProfileSidebar activeTab={activeTab} onTabClick={handleTabClick} />
 
           <div className={styles.content}>{renderContent()}</div>
         </div>
