@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { validateAndConvertFiles } from './fileValidation'
 
@@ -15,6 +15,10 @@ const createFile = (name: string, type: string, size = 100, content = 'test cont
 
   return file
 }
+
+afterEach(() => {
+  vi.unstubAllGlobals()
+})
 
 describe('validateAndConvertFiles', () => {
   describe('avatar', () => {
@@ -147,6 +151,28 @@ describe('validateAndConvertFiles', () => {
       const result = await validateAndConvertFiles([file], 'avatar')
 
       expect(result.success).toBe(true)
+    })
+
+    it('возвращает ошибку, если не удалось прочитать файл', async () => {
+      class FailingFileReader {
+        onload: (() => void) | null = null
+        onerror: (() => void) | null = null
+
+        readAsDataURL() {
+          queueMicrotask(() => this.onerror?.())
+        }
+      }
+
+      vi.stubGlobal('FileReader', FailingFileReader)
+
+      const file = createFile('broken.jpg', 'image/jpeg')
+
+      const result = await validateAndConvertFiles([file], 'avatar')
+
+      expect(result).toEqual({
+        success: false,
+        error: 'Не удалось обработать изображение',
+      })
     })
   })
 })
