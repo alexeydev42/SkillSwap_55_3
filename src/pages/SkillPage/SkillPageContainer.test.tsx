@@ -23,11 +23,13 @@ vi.mock('./SkillPage', () => ({
   SkillPage: ({
     isOwnSkill,
     isFavorite,
+    isFavoriteDisabled,
     onFavoriteClick,
     skills,
   }: {
     isOwnSkill: boolean
     isFavorite: boolean
+    isFavoriteDisabled: boolean
     onFavoriteClick: () => void
     skills: {
       wantsToLearn: Array<{
@@ -45,7 +47,7 @@ vi.mock('./SkillPage', () => ({
       </output>
 
       {!isOwnSkill && (
-        <button type="button" onClick={onFavoriteClick}>
+        <button type="button" disabled={isFavoriteDisabled} onClick={onFavoriteClick}>
           {isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'}
         </button>
       )}
@@ -237,5 +239,47 @@ describe('SkillPageContainer', () => {
         name: 'Добавить в избранное',
       }),
     ).toBeInTheDocument()
+  })
+
+  it('блокирует Favorites без сессии и включает после её восстановления', async () => {
+    const user = userEvent.setup()
+
+    // Account остаётся сохранённым, но активной сессии нет.
+    store.dispatch(clearAuthSession())
+
+    renderSkillPageContainer(false, favoriteUser.id)
+
+    const favoriteButton = screen.getByRole('button', {
+      name: 'Добавить в избранное',
+    })
+
+    expect(favoriteButton).toBeDisabled()
+
+    await user.click(favoriteButton)
+
+    expect(store.getState().favorites.favoriteUserIds).toEqual([])
+
+    // Восстановление сессии сразу разблокирует действие.
+    act(() => {
+      store.dispatch(
+        setAuthSession({
+          userId: localUser.id,
+        }),
+      )
+    })
+
+    expect(
+      screen.getByRole('button', {
+        name: 'Добавить в избранное',
+      }),
+    ).toBeEnabled()
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'Добавить в избранное',
+      }),
+    )
+
+    expect(store.getState().favorites.favoriteUserIds).toEqual([favoriteUser.id])
   })
 })

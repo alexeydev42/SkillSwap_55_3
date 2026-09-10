@@ -84,9 +84,9 @@ export const SkillPageContainer = () => {
   )
 
   const authSession = useAppSelector((state) => state.auth.session)
-  const authAccount = useAppSelector((state) => state.auth.account)
 
-  const isAuthenticated = Boolean(authSession && authAccount)
+  // Активную авторизацию определяет наличие сессии.
+  const isAuthenticated = Boolean(authSession)
   const isOwnSkill = isAuthenticated && Boolean(userId) && authSession?.userId === userId
 
   // Загружает пользователей при прямом открытии SkillPage.
