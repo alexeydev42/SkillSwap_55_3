@@ -2,10 +2,7 @@ import { useState } from 'react'
 import { HeaderContainer } from '@/widgets/Header/HeaderContainer'
 import { Footer } from '@/widgets/Footer'
 import { ProfileSidebar } from '@/widgets/ProfileSidebar'
-import {
-  PersonalDataSection,
-  type PersonalData,
-} from '@/widgets/PersonalDataSection'
+import { PersonalDataSectionContainer } from '@/widgets/PersonalDataSection'
 import { FavoritesSection } from '@/widgets/FavoritesSection'
 
 import styles from './ProfilePage.module.css'
@@ -23,19 +20,6 @@ export interface ProfilePageProps {
 }
 
 const DEFAULT_TAB: ProfileTab = 'personal'
-
-const AVATAR_SRC = '/images/users/user-001/avatar.webp'
-
-const PROFILE_DATA: PersonalData = {
-  email: 'Mariia@gmail.com',
-  name: 'Мария',
-  birthDate: new Date(1995, 9, 28),
-  gender: 'female',
-  city: 'moscow',
-  about:
-    'Люблю учиться новому, особенно если это можно делать за чаем и в пижаме. Всегда готова пообщаться и обменяться чем-то интересным!',
-  avatar: AVATAR_SRC,
-}
 
 const PLACEHOLDER_TITLES: Record<Exclude<ProfileTab, 'personal' | 'favorites'>, string> = {
   requests: 'Заявки',
@@ -58,7 +42,7 @@ export default function ProfilePage({ initialTab = DEFAULT_TAB }: ProfilePagePro
   const renderContent = () => {
     switch (activeTab) {
       case 'personal':
-        return <PersonalDataSection data={PROFILE_DATA} />
+        return <PersonalDataSectionContainer />
       case 'favorites':
         return (
           <FavoritesSection
