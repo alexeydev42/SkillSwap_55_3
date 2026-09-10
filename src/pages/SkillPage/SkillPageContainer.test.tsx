@@ -1,23 +1,54 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { act, render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { Provider } from 'react-redux'
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom'
-import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ROUTES } from '@/shared/lib/constants'
 import type { User } from '@/shared/types'
 import { store } from '@/store'
 import { clearAuthSession, setAuthAccount, setAuthSession } from '@/store/slices/authSlice'
-import { clearLocalUser, setLocalUser, setUsersStatus } from '@/store/slices/usersSlice'
+import { addFavorite, clearFavorites } from '@/store/slices/favoritesSlice'
 import { clearRequests } from '@/store/slices/requestsSlice'
+import {
+  clearLocalUser,
+  setLocalUser,
+  setMockUsers,
+  setUsersStatus,
+} from '@/store/slices/usersSlice'
 
 import { SkillPageContainer } from './SkillPageContainer'
 
 vi.mock('./SkillPage', () => ({
-  SkillPage: ({ isOwnSkill }: { isOwnSkill: boolean }) => (
+  SkillPage: ({
+    isOwnSkill,
+    isFavorite,
+    onFavoriteClick,
+    skills,
+  }: {
+    isOwnSkill: boolean
+    isFavorite: boolean
+    onFavoriteClick: () => void
+    skills: {
+      wantsToLearn: Array<{
+        label: string
+      }>
+    }
+  }) => (
     <div>
       <span>Страница навыка пользователя</span>
+
       <output data-testid="is-own-skill">{String(isOwnSkill)}</output>
+
+      <output data-testid="learning-skills">
+        {skills.wantsToLearn.map((skill) => skill.label).join(', ')}
+      </output>
+
+      {!isOwnSkill && (
+        <button type="button" onClick={onFavoriteClick}>
+          {isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'}
+        </button>
+      )}
     </div>
   ),
 }))
@@ -42,19 +73,39 @@ const localUser: User = {
   createdAt: '2026-09-09T12:00:00.000Z',
 }
 
+const favoriteUser: User = {
+  id: 'favorite-user-id',
+  name: 'Мария',
+  birthDate: '1995-06-20',
+  gender: 'female',
+  cityId: 'moscow',
+  avatarUrl: null,
+  description: '',
+  offeredSkill: {
+    title: 'Фотография',
+    categoryId: 'creativity-art',
+    subcategoryId: 'photography',
+    description: 'Научу основам фотографии',
+    imageUrls: [],
+  },
+  learningSubcategoryIds: [],
+  likesCount: 10,
+  createdAt: '2026-08-01T12:00:00.000Z',
+}
+
 const LocationStateProbe = () => {
   const location = useLocation()
 
   return <output data-testid="location-state">{JSON.stringify(location.state)}</output>
 }
 
-const renderSkillPageContainer = (registrationCompleted: boolean) =>
+const renderSkillPageContainer = (registrationCompleted: boolean, viewedUserId = localUser.id) =>
   render(
     <Provider store={store}>
       <MemoryRouter
         initialEntries={[
           {
-            pathname: `/skill/${localUser.id}`,
+            pathname: `/skill/${viewedUserId}`,
             state: registrationCompleted ? { registrationCompleted: true } : null,
           },
         ]}
@@ -68,14 +119,19 @@ const renderSkillPageContainer = (registrationCompleted: boolean) =>
     </Provider>,
   )
 
-describe('SkillPageContainer — завершение регистрации', () => {
+describe('SkillPageContainer', () => {
   beforeEach(() => {
+    window.localStorage.clear()
+
     store.dispatch(clearLocalUser())
     store.dispatch(clearAuthSession())
+    store.dispatch(clearFavorites())
     store.dispatch(clearRequests())
+    store.dispatch(setMockUsers([favoriteUser]))
     store.dispatch(setUsersStatus('success'))
 
     store.dispatch(setLocalUser(localUser))
+
     store.dispatch(
       setAuthAccount({
         userId: localUser.id,
@@ -83,6 +139,7 @@ describe('SkillPageContainer — завершение регистрации', (
         password: 'Password1!',
       }),
     )
+
     store.dispatch(
       setAuthSession({
         userId: localUser.id,
@@ -90,7 +147,7 @@ describe('SkillPageContainer — завершение регистрации', (
     )
   })
 
-  it('показывает модалку успешной регистрации и закрывает её, сохраняя страницу навыка', async () => {
+  it('показывает модалку регистрации и закрывает её, сохраняя страницу навыка', async () => {
     const user = userEvent.setup()
 
     renderSkillPageContainer(true)
@@ -128,6 +185,7 @@ describe('SkillPageContainer — завершение регистрации', (
     renderSkillPageContainer(false)
 
     expect(screen.getByText('Страница навыка пользователя')).toBeInTheDocument()
+
     expect(screen.getByTestId('is-own-skill')).toHaveTextContent('true')
 
     expect(
@@ -135,5 +193,49 @@ describe('SkillPageContainer — завершение регистрации', (
         name: 'Ваше предложение создано',
       }),
     ).not.toBeInTheDocument()
+  })
+
+  it('обновляет «Хочу научиться» собственной SkillPage после изменения Favorites', () => {
+    renderSkillPageContainer(false)
+
+    expect(screen.getByTestId('learning-skills')).toHaveTextContent('Английский')
+
+    expect(screen.getByTestId('learning-skills')).not.toHaveTextContent('Фотография')
+
+    act(() => {
+      store.dispatch(addFavorite(favoriteUser.id))
+    })
+
+    expect(store.getState().favorites.favoriteUserIds).toContain(favoriteUser.id)
+
+    expect(screen.getByTestId('learning-skills')).toHaveTextContent('Фотография')
+  })
+
+  it('переключает Favorite чужой SkillPage через общий state', async () => {
+    const user = userEvent.setup()
+
+    renderSkillPageContainer(false, favoriteUser.id)
+
+    const addButton = screen.getByRole('button', {
+      name: 'Добавить в избранное',
+    })
+
+    await user.click(addButton)
+
+    expect(store.getState().favorites.favoriteUserIds).toEqual([favoriteUser.id])
+
+    const removeButton = screen.getByRole('button', {
+      name: 'Убрать из избранного',
+    })
+
+    await user.click(removeButton)
+
+    expect(store.getState().favorites.favoriteUserIds).toEqual([])
+
+    expect(
+      screen.getByRole('button', {
+        name: 'Добавить в избранное',
+      }),
+    ).toBeInTheDocument()
   })
 })

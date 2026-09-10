@@ -20,12 +20,10 @@ export interface SkillPageProps {
   skill: SkillDetailsProps
   gallery: string[]
   similarOffers: UserSkillCardProps[]
-  isAuth: boolean
   isOwnSkill: boolean
-  authUser?: {
-    userName: string
-    avatarSrc: string
-  }
+  isFavorite: boolean
+  isFavoriteDisabled?: boolean
+  onFavoriteClick: () => void
   onOffer: () => void
   isOfferDisabled?: boolean
   offerText?: string
@@ -40,6 +38,9 @@ export const SkillPage = ({
   gallery,
   similarOffers,
   isOwnSkill,
+  isFavorite,
+  isFavoriteDisabled = false,
+  onFavoriteClick,
   onOffer,
   isOfferDisabled = false,
   offerText = 'Предложить обмен',
@@ -57,7 +58,12 @@ export const SkillPage = ({
 
           <div className={styles.skill}>
             <div className={styles.skillActions}>
-              <SkillActions showFavorite={!isOwnSkill} />
+              <SkillActions
+                showFavorite={!isOwnSkill}
+                isFavorite={isFavorite}
+                isFavoriteDisabled={isFavoriteDisabled}
+                onFavoriteClick={onFavoriteClick}
+              />
             </div>
 
             <div className={styles.skillContent}>

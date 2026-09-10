@@ -48,9 +48,17 @@ export const SkillPageContainer = () => {
 
   const user = useAppSelector((state) => (userId ? selectUserById(state, userId) : null))
 
+  // Получает актуальное «Хочу научиться» с учётом Favorites.
+  const effectiveLearningSubcategoryIds = useAppSelector((state) =>
+    userId ? selectEffectiveLearningSubcategoryIds(state, userId) : [],
+  )
+
   const similarUsers = useAppSelector((state) => (userId ? selectSimilarUsers(state, userId) : []))
 
   const favoriteUserIds = useAppSelector(selectFavoriteUserIds)
+
+  // Определяет состояние сердечка открытого пользователя.
+  const isFavorite = userId ? favoriteUserIds.includes(userId) : false
 
   // Проверяет наличие заявки выбранному пользователю.
   const hasExistingRequest = useAppSelector((state) =>
@@ -78,10 +86,6 @@ export const SkillPageContainer = () => {
   const authSession = useAppSelector((state) => state.auth.session)
   const authAccount = useAppSelector((state) => state.auth.account)
 
-  const currentUser = useAppSelector((state) =>
-    authSession ? selectUserById(state, authSession.userId) : null,
-  )
-
   const isAuthenticated = Boolean(authSession && authAccount)
   const isOwnSkill = isAuthenticated && Boolean(userId) && authSession?.userId === userId
 
@@ -102,7 +106,7 @@ export const SkillPageContainer = () => {
     })
   }
 
-  // Переключает Favorite в похожих предложениях.
+  // Переключает Favorite открытого или похожего пользователя.
   const handleFavoriteClick = (similarUserId: string) => {
     if (!isAuthenticated) {
       return
@@ -160,7 +164,12 @@ export const SkillPageContainer = () => {
     return <NotFoundPage />
   }
 
-  const skillPageProps = mapUserToSkillPageProps(user, categories, cities)
+  const skillPageProps = mapUserToSkillPageProps(
+    user,
+    categories,
+    cities,
+    effectiveLearningSubcategoryIds,
+  )
 
   // Подготавливает карточки похожих предложений.
   const similarOffers = similarUsers.map((similarUser) => ({
@@ -182,16 +191,10 @@ export const SkillPageContainer = () => {
       <SkillPage
         {...skillPageProps}
         similarOffers={similarOffers}
-        isAuth={isAuthenticated}
         isOwnSkill={isOwnSkill}
-        authUser={
-          currentUser
-            ? {
-                userName: currentUser.name,
-                avatarSrc: currentUser.avatarUrl ?? '',
-              }
-            : undefined
-        }
+        isFavorite={isFavorite}
+        isFavoriteDisabled={!isAuthenticated}
+        onFavoriteClick={() => handleFavoriteClick(userId)}
         onOffer={handleOffer}
         isOfferDisabled={isOwnSkill || hasExistingRequest}
         offerText={hasExistingRequest ? 'Обмен предложен' : 'Предложить обмен'}

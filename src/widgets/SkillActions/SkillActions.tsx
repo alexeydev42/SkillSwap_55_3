@@ -1,25 +1,41 @@
-import type { MouseEventHandler } from 'react'
-import { IconButton } from '../../shared/ui/IconButton/IconButton'
-import LikeIcon from '../../shared/assets/icons/icon-like.svg?react'
-import ShareIcon from '../../shared/assets/icons/icon-share.svg?react'
-import MoreIcon from '../../shared/assets/icons/icon-more-square.svg?react'
+import LikeFilledIcon from '@/shared/assets/icons/icon-like-filled.svg?react'
+import LikeIcon from '@/shared/assets/icons/icon-like.svg?react'
+import MoreIcon from '@/shared/assets/icons/icon-more-square.svg?react'
+import ShareIcon from '@/shared/assets/icons/icon-share.svg?react'
+import { IconButton } from '@/shared/ui/IconButton'
+
 import styles from './SkillActions.module.css'
 
 export interface SkillActionsProps {
   showFavorite?: boolean
-  onLike?: MouseEventHandler<HTMLButtonElement>
-  onShare?: MouseEventHandler<HTMLButtonElement>
-  onMore?: MouseEventHandler<HTMLButtonElement>
+  isFavorite?: boolean
+  isFavoriteDisabled?: boolean
+  onFavoriteClick?: () => void
+  onShare?: () => void
+  onMore?: () => void
 }
 
-export function SkillActions({ showFavorite = true, onLike, onShare, onMore }: SkillActionsProps) {
-  return (
-    <div className={styles.actions}>
-      {showFavorite && (
-        <IconButton icon={<LikeIcon />} onClick={onLike} aria-label="Добавить в избранное" />
-      )}
-      <IconButton icon={<ShareIcon />} onClick={onShare} aria-label="Поделиться" />
-      <IconButton icon={<MoreIcon />} onClick={onMore} aria-label="Больше действий" />
-    </div>
-  )
-}
+export const SkillActions = ({
+  showFavorite = true,
+  isFavorite = false,
+  isFavoriteDisabled = false,
+  onFavoriteClick,
+  onShare,
+  onMore,
+}: SkillActionsProps) => (
+  <div className={styles.actions}>
+    {showFavorite && (
+      <IconButton
+        icon={isFavorite ? <LikeFilledIcon /> : <LikeIcon />}
+        className={isFavorite ? styles.favoriteButtonActive : undefined}
+        aria-label={isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'}
+        disabled={isFavoriteDisabled}
+        onClick={onFavoriteClick}
+      />
+    )}
+
+    <IconButton icon={<ShareIcon />} onClick={onShare} aria-label="Поделиться" />
+
+    <IconButton icon={<MoreIcon />} onClick={onMore} aria-label="Больше действий" />
+  </div>
+)

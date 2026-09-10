@@ -71,12 +71,14 @@ export function mapUserToSkillPageProps(
   user: User,
   categories: Category[],
   cities: City[],
+  learningSubcategoryIds: string[] = user.learningSubcategoryIds,
 ): Omit<
   SkillPageProps,
   | 'similarOffers'
-  | 'isAuth'
   | 'isOwnSkill'
-  | 'authUser'
+  | 'isFavorite'
+  | 'isFavoriteDisabled'
+  | 'onFavoriteClick'
   | 'onOffer'
   | 'isOfferDisabled'
   | 'offerText'
@@ -86,7 +88,7 @@ export function mapUserToSkillPageProps(
   const offeredSubcategory = findSubcategory(categories, user.offeredSkill.subcategoryId)
   const age = calculateAge(user.birthDate)
 
-  const wantsToLearn = user.learningSubcategoryIds.flatMap((subcategoryId) => {
+  const wantsToLearn = learningSubcategoryIds.flatMap((subcategoryId) => {
     const subcategoryData = findSubcategory(categories, subcategoryId)
 
     if (!subcategoryData) {
