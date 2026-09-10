@@ -10,7 +10,7 @@ interface ProfileMenuDropdownProps {
 export const ProfileMenuDropdown = ({ onLogout }: ProfileMenuDropdownProps) => {
   return (
     <DropdownContainer className={styles.dropdown}>
-      <span>Личный кабинет</span>
+      <span> Личный кабинет</span>
       <Button
         variant="tertiary"
         size="sm"
@@ -19,8 +19,7 @@ export const ProfileMenuDropdown = ({ onLogout }: ProfileMenuDropdownProps) => {
         icon={<LogoutIcon />}
         iconPosition="right"
       >
-        <span>Выйти из аккаунта</span>
-        <LogoutIcon />
+        Выйти из аккаунта
       </Button>
     </DropdownContainer>
   )
