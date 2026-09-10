@@ -146,5 +146,6 @@ export const skillPageMock: SkillPageProps = {
   ],
   onOffer: () => {},
   isAuth: false,
+  isOwnSkill: false,
   authUser: undefined,
 }

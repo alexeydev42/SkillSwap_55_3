@@ -6,22 +6,20 @@ import MoreIcon from '../../shared/assets/icons/icon-more-square.svg?react'
 import styles from './SkillActions.module.css'
 
 export interface SkillActionsProps {
+  showFavorite?: boolean
   onLike?: MouseEventHandler<HTMLButtonElement>
   onShare?: MouseEventHandler<HTMLButtonElement>
   onMore?: MouseEventHandler<HTMLButtonElement>
 }
 
-export function SkillActions({
-  onLike,
-  onShare,
-  onMore,
-}: SkillActionsProps) {
+export function SkillActions({ showFavorite = true, onLike, onShare, onMore }: SkillActionsProps) {
   return (
     <div className={styles.actions}>
-      <IconButton icon={<LikeIcon />} onClick={onLike} aria-label="Добавить в избранное"/>
-      <IconButton icon={<ShareIcon />} onClick={onShare} aria-label="Поделиться"/>
-      <IconButton icon={<MoreIcon/>} onClick={onMore} aria-label="Больше действий"/>
+      {showFavorite && (
+        <IconButton icon={<LikeIcon />} onClick={onLike} aria-label="Добавить в избранное" />
+      )}
+      <IconButton icon={<ShareIcon />} onClick={onShare} aria-label="Поделиться" />
+      <IconButton icon={<MoreIcon />} onClick={onMore} aria-label="Больше действий" />
     </div>
   )
 }
-

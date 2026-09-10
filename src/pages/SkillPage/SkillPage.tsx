@@ -21,6 +21,7 @@ export interface SkillPageProps {
   gallery: string[]
   similarOffers: UserSkillCardProps[]
   isAuth: boolean
+  isOwnSkill: boolean
   authUser?: {
     userName: string
     avatarSrc: string
@@ -38,6 +39,7 @@ export const SkillPage = ({
   skill,
   gallery,
   similarOffers,
+  isOwnSkill,
   onOffer,
   isOfferDisabled = false,
   offerText = 'Предложить обмен',
@@ -55,27 +57,29 @@ export const SkillPage = ({
 
           <div className={styles.skill}>
             <div className={styles.skillActions}>
-              <SkillActions />
+              <SkillActions showFavorite={!isOwnSkill} />
             </div>
 
             <div className={styles.skillContent}>
               <div className={styles.skillInfo}>
                 <SkillDetails {...skill} />
 
-                <div className={styles.offerControls}>
-                  <SkillDetailsButtons
-                    variant="offer"
-                    onOffer={onOffer}
-                    disabled={isOfferDisabled}
-                    offerText={offerText}
-                  />
+                {!isOwnSkill && (
+                  <div className={styles.offerControls}>
+                    <SkillDetailsButtons
+                      variant="offer"
+                      onOffer={onOffer}
+                      disabled={isOfferDisabled}
+                      offerText={offerText}
+                    />
 
-                  {requestError && (
-                    <p className={styles.requestError} role="alert">
-                      {requestError}
-                    </p>
-                  )}
-                </div>
+                    {requestError && (
+                      <p className={styles.requestError} role="alert">
+                        {requestError}
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className={styles.skillGallery}>

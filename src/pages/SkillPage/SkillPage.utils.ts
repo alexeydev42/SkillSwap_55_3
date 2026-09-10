@@ -75,6 +75,7 @@ export function mapUserToSkillPageProps(
   SkillPageProps,
   | 'similarOffers'
   | 'isAuth'
+  | 'isOwnSkill'
   | 'authUser'
   | 'onOffer'
   | 'isOfferDisabled'

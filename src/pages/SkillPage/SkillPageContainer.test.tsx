@@ -14,7 +14,12 @@ import { clearRequests } from '@/store/slices/requestsSlice'
 import { SkillPageContainer } from './SkillPageContainer'
 
 vi.mock('./SkillPage', () => ({
-  SkillPage: () => <div>Страница навыка пользователя</div>,
+  SkillPage: ({ isOwnSkill }: { isOwnSkill: boolean }) => (
+    <div>
+      <span>Страница навыка пользователя</span>
+      <output data-testid="is-own-skill">{String(isOwnSkill)}</output>
+    </div>
+  ),
 }))
 
 const localUser: User = {
@@ -123,6 +128,7 @@ describe('SkillPageContainer — завершение регистрации', (
     renderSkillPageContainer(false)
 
     expect(screen.getByText('Страница навыка пользователя')).toBeInTheDocument()
+    expect(screen.getByTestId('is-own-skill')).toHaveTextContent('true')
 
     expect(
       screen.queryByRole('heading', {
