@@ -16,6 +16,11 @@
   color: var(--color-text);
 }
 
+.profileLink {
+  color: inherit;
+  text-decoration: none;
+}
+
 .logoutItem {
   display: flex;
   align-items: flex-start;

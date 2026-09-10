@@ -1,37 +1,49 @@
 import { useState, type FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { Button } from '../../shared/ui/Button'
-import { Input } from '../../shared/ui/Input'
-import GoogleIcon from '../../shared/assets/icons/icon-google.svg?react'
-import AppleIcon from '../../shared/assets/icons/icon-apple.svg?react'
-import EyeIcon from '../../shared/assets/icons/icon-eye.svg?react'
-import EyeOffIcon from '../../shared/assets/icons/icon-eye-slash.svg?react'
-import LightBulb from '../../shared/assets/illustrations/illustration-light-bulb.svg?react'
-import { AuthLayout } from '@/widgets/AuthLayout'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+
+import AppleIcon from '@/shared/assets/icons/icon-apple.svg?react'
+import EyeIcon from '@/shared/assets/icons/icon-eye.svg?react'
+import EyeOffIcon from '@/shared/assets/icons/icon-eye-slash.svg?react'
+import GoogleIcon from '@/shared/assets/icons/icon-google.svg?react'
+import LightBulb from '@/shared/assets/illustrations/illustration-light-bulb.svg?react'
 import { ROUTES } from '@/shared/lib/constants'
+import { Button } from '@/shared/ui/Button'
+import { Input } from '@/shared/ui/Input'
 import { useAppDispatch } from '@/store/hooks'
 import { login } from '@/store/thunks/login'
+import { AuthLayout } from '@/widgets/AuthLayout'
+
 import styles from './LoginPage.module.css'
 
 interface LoginPageProps {
   hasError?: boolean
 }
 
+interface LoginLocationState {
+  destination?: string
+}
+
 export default function LoginPage({ hasError = false }: LoginPageProps) {
-  const navigate = useNavigate()
   const dispatch = useAppDispatch()
+  const location = useLocation()
+  const navigate = useNavigate()
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loginError, setLoginError] = useState(false)
 
+  const locationState = location.state as LoginLocationState | null
+  const destination = locationState?.destination ?? ROUTES.HOME
+
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+
     const isLoggedIn = dispatch(login({ email, password }))
 
     setLoginError(!isLoggedIn)
 
     if (isLoggedIn) {
-      navigate(ROUTES.HOME)
+      navigate(destination, { replace: true })
     }
   }
 
@@ -51,13 +63,16 @@ export default function LoginPage({ hasError = false }: LoginPageProps) {
           <Button variant="secondary" icon={<GoogleIcon />} className={styles.socialButton}>
             Продолжить с Google
           </Button>
+
           <Button variant="secondary" icon={<AppleIcon />} className={styles.socialButton}>
             Продолжить с Apple
           </Button>
         </div>
+
         <div className={styles.divider}>
           <span>или</span>
         </div>
+
         <form className={styles.form} onSubmit={handleSubmit} noValidate>
           <Input
             className={styles.input}
@@ -71,6 +86,7 @@ export default function LoginPage({ hasError = false }: LoginPageProps) {
             }}
             error={showError ? ' ' : undefined}
           />
+
           <Input
             className={styles.input}
             label="Пароль"
@@ -85,9 +101,11 @@ export default function LoginPage({ hasError = false }: LoginPageProps) {
             showPasswordIcon={<EyeIcon />}
             hidePasswordIcon={<EyeOffIcon />}
           />
+
           <Button className={styles.submitButton} type="submit">
             Войти
           </Button>
+
           <Link to={ROUTES.REGISTER} className={styles.registerLink}>
             Зарегистрироваться
           </Link>
