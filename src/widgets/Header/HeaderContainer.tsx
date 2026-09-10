@@ -3,17 +3,33 @@ import { useNavigate } from 'react-router-dom'
 
 import { ROUTES } from '@/shared/lib/constants'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
+import {
+  clearReadNotifications,
+  markAllAsRead,
+  selectVisibleNotifications,
+} from '@/store/slices/notificationsSlice'
 import { selectCurrentUser } from '@/store/slices/usersSlice'
 import { logout } from '@/store/thunks/authThunks'
 
 import Header, { type HeaderProps } from './Header'
 
-type HeaderContainerProps = Omit<HeaderProps, 'isAuthenticated' | 'user'>
+type HeaderContainerProps = Omit<
+  HeaderProps,
+  | 'isAuthenticated'
+  | 'user'
+  | 'notifications'
+  | 'hasUnreadNotifications'
+  | 'onMarkAllNotificationsAsRead'
+  | 'onClearReadNotifications'
+>
 
 export const HeaderContainer = ({
   isProfileMenuOpen,
+  isNotificationsMenuOpen,
   onProfileClick,
   onProfileMenuClose,
+  onNotificationsClick,
+  onNotificationsMenuClose,
   onFavoritesClick,
   onLogout,
   ...headerProps
@@ -22,21 +38,42 @@ export const HeaderContainer = ({
   const navigate = useNavigate()
 
   const session = useAppSelector((state) => state.auth.session)
+
   const currentUser = useAppSelector(selectCurrentUser)
 
+  // Получает только итоговую валидную выдачу уведомлений.
+  const notifications = useAppSelector(selectVisibleNotifications)
+
+  // Индикатор зависит от наличия непрочитанных уведомлений.
+  const hasUnreadNotifications = notifications.some((notification) => !notification.isRead)
+
+  // Хранит локальное состояние меню профиля.
   const [internalIsProfileMenuOpen, setInternalIsProfileMenuOpen] = useState(false)
 
+  // Хранит локальное состояние dropdown уведомлений.
+  const [internalIsNotificationsMenuOpen, setInternalIsNotificationsMenuOpen] = useState(false)
+
   const isProfileMenuControlled = isProfileMenuOpen !== undefined
+
+  const isNotificationsMenuControlled = isNotificationsMenuOpen !== undefined
 
   const resolvedIsProfileMenuOpen = isProfileMenuControlled
     ? isProfileMenuOpen
     : internalIsProfileMenuOpen
+
+  const resolvedIsNotificationsMenuOpen = isNotificationsMenuControlled
+    ? isNotificationsMenuOpen
+    : internalIsNotificationsMenuOpen
 
   const handleProfileClick: MouseEventHandler<HTMLButtonElement> = (event) => {
     onProfileClick?.(event)
 
     if (!isProfileMenuControlled) {
       setInternalIsProfileMenuOpen((currentValue) => !currentValue)
+
+      if (!isNotificationsMenuControlled) {
+        setInternalIsNotificationsMenuOpen(false)
+      }
     }
   }
 
@@ -46,6 +83,36 @@ export const HeaderContainer = ({
     if (!isProfileMenuControlled) {
       setInternalIsProfileMenuOpen(false)
     }
+  }
+
+  const handleNotificationsClick: MouseEventHandler<HTMLButtonElement> = (event) => {
+    onNotificationsClick?.(event)
+
+    if (!isNotificationsMenuControlled) {
+      setInternalIsNotificationsMenuOpen((currentValue) => !currentValue)
+
+      if (!isProfileMenuControlled) {
+        setInternalIsProfileMenuOpen(false)
+      }
+    }
+  }
+
+  const handleNotificationsMenuClose = () => {
+    onNotificationsMenuClose?.()
+
+    if (!isNotificationsMenuControlled) {
+      setInternalIsNotificationsMenuOpen(false)
+    }
+  }
+
+  // Переводит все уведомления в просмотренные.
+  const handleMarkAllNotificationsAsRead = () => {
+    dispatch(markAllAsRead())
+  }
+
+  // Удаляет только просмотренные уведомления.
+  const handleClearReadNotifications = () => {
+    dispatch(clearReadNotifications())
   }
 
   const handleFavoritesClick = () => {
@@ -69,9 +136,16 @@ export const HeaderContainer = ({
         userName: currentUser.name,
         avatarSrc: currentUser.avatarUrl ?? '',
       }}
+      notifications={notifications}
+      hasUnreadNotifications={hasUnreadNotifications}
       isProfileMenuOpen={resolvedIsProfileMenuOpen}
+      isNotificationsMenuOpen={resolvedIsNotificationsMenuOpen}
       onProfileClick={handleProfileClick}
       onProfileMenuClose={handleProfileMenuClose}
+      onNotificationsClick={handleNotificationsClick}
+      onNotificationsMenuClose={handleNotificationsMenuClose}
+      onMarkAllNotificationsAsRead={handleMarkAllNotificationsAsRead}
+      onClearReadNotifications={handleClearReadNotifications}
       onFavoritesClick={onFavoritesClick ?? handleFavoritesClick}
       onLogout={handleLogout}
     />

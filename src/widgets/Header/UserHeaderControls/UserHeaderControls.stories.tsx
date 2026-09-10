@@ -1,15 +1,31 @@
-import { UserHeaderControls } from "./UserHeaderControls";
+import type { Meta, StoryObj } from '@storybook/react-vite'
 
-export default {
+import { UserHeaderControls } from './UserHeaderControls'
+
+const meta = {
   title: 'Header/UserHeaderControls',
   component: UserHeaderControls,
-}
-
-export const Default = {
   args: {
     userName: 'Мария',
-    avatarSrc: 'https://avatars.mds.yandex.net/i?id=0b51d8036427c1491e93df2c38ab5c05_l-4271045-images-thumbs&n=13',
-    onNotificationsClick: () => console.log('notifications clicked'),
-    onFavoritesClick: () => console.log('favorites clicked'),
+    avatarSrc: 'https://i.pravatar.cc/48?img=1',
+    notifications: [],
+    hasUnreadNotifications: false,
+    onNotificationsClick: () => {},
+    onNotificationsMenuClose: () => {},
+    onMarkAllNotificationsAsRead: () => {},
+    onClearReadNotifications: () => {},
+    onFavoritesClick: () => {},
+  },
+} satisfies Meta<typeof UserHeaderControls>
+
+export default meta
+
+type Story = StoryObj<typeof meta>
+
+export const Default: Story = {}
+
+export const WithUnreadNotification: Story = {
+  args: {
+    hasUnreadNotifications: true,
   },
 }

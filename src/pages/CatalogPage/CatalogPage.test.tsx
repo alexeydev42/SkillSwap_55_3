@@ -4,6 +4,8 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import authReduser from '@/store/slices/authSlice'
+import notificationsReducer from '@/store/slices/notificationsSlice'
+import requestsReducer from '@/store/slices/requestsSlice'
 import { MemoryRouter } from 'react-router-dom'
 
 import catalogFiltersReducer, {
@@ -18,22 +20,6 @@ import type { UserSkillsSectionProps } from '@/widgets/UserSkillsSection'
 
 import { CatalogPage } from './CatalogPage'
 
-/**vi.mock('@/widgets/Header', () => ({
-  HeaderContainer: ({
-    searchQuery = '',
-    onSearchChange,
-  }: {
-    searchQuery?: string
-    onSearchChange?: (value: string) => void
-  }) => (
-    <input
-      type="search"
-      aria-label="Поиск по навыкам"
-      value={searchQuery}
-      onChange={(event) => onSearchChange?.(event.target.value)}
-    />
-  ),
-}))**/
 vi.mock('@/widgets/Footer', () => ({ Footer: () => null }))
 vi.mock('@/widgets/FiltersSidebar', () => ({ FiltersSidebar: () => null }))
 vi.mock('@/widgets/RecommendedSection', () => ({
@@ -136,6 +122,8 @@ function renderCatalogPage(
       auth: authReduser,
       catalogFilters: catalogFiltersReducer,
       favorites: favoritesReducer,
+      requests: requestsReducer,
+      notifications: notificationsReducer,
     },
     preloadedState: {
       users: {
@@ -198,6 +186,8 @@ function renderCatalogState({
       auth: authReduser,
       catalogFilters: catalogFiltersReducer,
       favorites: favoritesReducer,
+      requests: requestsReducer,
+      notifications: notificationsReducer,
     },
     preloadedState: {
       users: {
@@ -218,19 +208,19 @@ function renderCatalogState({
 
   render(
     <MemoryRouter>
-    <Provider store={testStore}>
-      <CatalogPage
-        users={users}
-        categories={categories}
-        cities={cities}
-        usersStatus={status}
-        usersError={error}
-        hasMockUsers={mockUsers.length > 0}
-        onRetry={onRetry}
-        onFavoriteClick={vi.fn()}
-        onDetailsClick={vi.fn()}
-      />
-    </Provider>
+      <Provider store={testStore}>
+        <CatalogPage
+          users={users}
+          categories={categories}
+          cities={cities}
+          usersStatus={status}
+          usersError={error}
+          hasMockUsers={mockUsers.length > 0}
+          onRetry={onRetry}
+          onFavoriteClick={vi.fn()}
+          onDetailsClick={vi.fn()}
+        />
+      </Provider>
     </MemoryRouter>,
   )
 

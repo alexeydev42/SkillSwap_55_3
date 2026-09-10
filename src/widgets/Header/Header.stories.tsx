@@ -1,4 +1,5 @@
-import { Meta, StoryObj } from '@storybook/react-vite'
+import type { Meta, StoryObj } from '@storybook/react-vite'
+
 import { Header } from './Header'
 
 const meta = {
@@ -8,7 +9,8 @@ const meta = {
 } satisfies Meta<typeof Header>
 
 export default meta
-type Story = StoryObj<typeof Header>
+
+type Story = StoryObj<typeof meta>
 
 const MOCK_USER = {
   userName: 'Мария',
@@ -30,8 +32,29 @@ export const Authenticated: Story = {
   args: {
     isAuthenticated: true,
     user: MOCK_USER,
+    notifications: [],
+    hasUnreadNotifications: false,
     onToggleTheme: () => {},
     onNotificationsClick: () => {},
+    onNotificationsMenuClose: () => {},
+    onMarkAllNotificationsAsRead: () => {},
+    onClearReadNotifications: () => {},
+    onFavoritesClick: () => {},
+  },
+}
+
+export const AuthenticatedWithUnreadNotification: Story = {
+  name: 'С новым уведомлением',
+  args: {
+    isAuthenticated: true,
+    user: MOCK_USER,
+    notifications: [],
+    hasUnreadNotifications: true,
+    onToggleTheme: () => {},
+    onNotificationsClick: () => {},
+    onNotificationsMenuClose: () => {},
+    onMarkAllNotificationsAsRead: () => {},
+    onClearReadNotifications: () => {},
     onFavoritesClick: () => {},
   },
 }

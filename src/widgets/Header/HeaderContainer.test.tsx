@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { render, screen } from '@testing-library/react'
+import { act, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Provider } from 'react-redux'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
@@ -7,9 +7,15 @@ import { beforeEach, describe, expect, it } from 'vitest'
 
 import { ROUTES, STORAGE_KEYS } from '@/shared/lib/constants'
 import { storageService } from '@/shared/lib/storageService'
-import type { User } from '@/shared/types'
+import type { SwapRequest, User } from '@/shared/types'
 import authReducer from '@/store/slices/authSlice'
+import notificationsReducer from '@/store/slices/notificationsSlice'
+import requestsReducer from '@/store/slices/requestsSlice'
 import usersReducer from '@/store/slices/usersSlice'
+import catalogFiltersReducer from '@/store/slices/catalogFiltersSlice'
+import favoritesReducer from '@/store/slices/favoritesSlice'
+import registrationReducer from '@/store/slices/registrationSlice'
+import { sendSwapRequest } from '@/store/thunks/sendSwapRequest'
 
 import { HeaderContainer } from './HeaderContainer'
 
@@ -33,11 +39,43 @@ const localUser: User = {
   createdAt: '2026-09-10T00:00:00.000Z',
 }
 
-const createTestStore = () =>
+const recipient: User = {
+  id: 'recipient-id',
+  name: 'Николай',
+  birthDate: '1990-01-01',
+  gender: 'male',
+  cityId: 'moscow',
+  avatarUrl: null,
+  description: '',
+  offeredSkill: {
+    title: 'Игра на гитаре',
+    categoryId: 'creativity-art',
+    subcategoryId: 'music',
+    description: '',
+    imageUrls: [],
+  },
+  learningSubcategoryIds: [],
+  likesCount: 0,
+  createdAt: '2026-09-01T00:00:00.000Z',
+}
+
+const existingRequest: SwapRequest = {
+  id: 'existing-request-id',
+  fromUserId: localUser.id,
+  toUserId: recipient.id,
+  createdAt: '2026-09-10T12:00:00.000Z',
+}
+
+const createTestStore = (withUnreadNotification = false) =>
   configureStore({
     reducer: {
-      auth: authReducer,
       users: usersReducer,
+      auth: authReducer,
+      registration: registrationReducer,
+      favorites: favoritesReducer,
+      requests: requestsReducer,
+      notifications: notificationsReducer,
+      catalogFilters: catalogFiltersReducer,
     },
     preloadedState: {
       auth: {
@@ -47,16 +85,30 @@ const createTestStore = () =>
         error: null,
       },
       users: {
-        mockUsers: [],
+        mockUsers: [recipient],
         localUser,
         status: 'success' as const,
+        error: null,
+      },
+      requests: {
+        items: withUnreadNotification ? [existingRequest] : [],
+      },
+      notifications: {
+        items: withUnreadNotification
+          ? [
+              {
+                requestId: existingRequest.id,
+                isRead: false,
+              },
+            ]
+          : [],
         error: null,
       },
     },
   })
 
-const renderHeader = () => {
-  const testStore = createTestStore()
+const renderHeader = (withUnreadNotification = false) => {
+  const testStore = createTestStore(withUnreadNotification)
 
   storageService.set(STORAGE_KEYS.AUTH_SESSION, {
     userId: localUser.id,
@@ -67,14 +119,10 @@ const renderHeader = () => {
       <MemoryRouter initialEntries={[ROUTES.HOME]}>
         <Routes>
           <Route path={ROUTES.HOME} element={<HeaderContainer />} />
-          <Route
-            path={ROUTES.PROFILE}
-            element={<h1>Личный кабинет открыт</h1>}
-          />
-          <Route
-            path={ROUTES.FAVORITES}
-            element={<h1>Избранное открыто</h1>}
-          />
+
+          <Route path={ROUTES.PROFILE} element={<h1>Личный кабинет открыт</h1>} />
+
+          <Route path={ROUTES.FAVORITES} element={<h1>Избранное открыто</h1>} />
         </Routes>
       </MemoryRouter>
     </Provider>,
@@ -86,31 +134,44 @@ const renderHeader = () => {
   }
 }
 
-const openProfileMenu = async (
-  user: ReturnType<typeof userEvent.setup>,
-) => {
+const openProfileMenu = async (user: ReturnType<typeof userEvent.setup>) => {
   await user.click(
-    screen.getByRole('button', { name: new RegExp(localUser.name) }),
+    screen.getByRole('button', {
+      name: new RegExp(localUser.name),
+    }),
+  )
+}
+
+const openNotifications = async (user: ReturnType<typeof userEvent.setup>) => {
+  await user.click(
+    screen.getByRole('button', {
+      name: 'Кнопка уведомлений',
+    }),
   )
 }
 
 describe('HeaderContainer', () => {
   beforeEach(() => {
     window.localStorage.clear()
+    window.sessionStorage.clear()
   })
 
-  it('открывает меню пользователя по нажатию на имя и аватар', async () => {
+  it('открывает меню пользователя по имени и аватару', async () => {
     const user = userEvent.setup()
 
     renderHeader()
     await openProfileMenu(user)
 
     expect(
-      screen.getByRole('link', { name: 'Личный кабинет' }),
+      screen.getByRole('link', {
+        name: 'Личный кабинет',
+      }),
     ).toBeInTheDocument()
 
     expect(
-      screen.getByRole('button', { name: 'Выйти из аккаунта' }),
+      screen.getByRole('button', {
+        name: 'Выйти из аккаунта',
+      }),
     ).toBeInTheDocument()
   })
 
@@ -121,14 +182,19 @@ describe('HeaderContainer', () => {
     await openProfileMenu(user)
 
     await user.click(
-      screen.getByRole('button', { name: 'Выйти из аккаунта' }),
+      screen.getByRole('button', {
+        name: 'Выйти из аккаунта',
+      }),
     )
 
     expect(testStore.getState().auth.session).toBeNull()
+
     expect(storageService.get(STORAGE_KEYS.AUTH_SESSION)).toBeNull()
 
     expect(
-      screen.getByRole('button', { name: 'Войти' }),
+      screen.getByRole('button', {
+        name: 'Войти',
+      }),
     ).toBeInTheDocument()
   })
 
@@ -138,11 +204,15 @@ describe('HeaderContainer', () => {
     renderHeader()
 
     await user.click(
-      screen.getByRole('button', { name: 'Кнопка избранного' }),
+      screen.getByRole('button', {
+        name: 'Кнопка избранного',
+      }),
     )
 
     expect(
-      screen.getByRole('heading', { name: 'Избранное открыто' }),
+      screen.getByRole('heading', {
+        name: 'Избранное открыто',
+      }),
     ).toBeInTheDocument()
   })
 
@@ -153,11 +223,104 @@ describe('HeaderContainer', () => {
     await openProfileMenu(user)
 
     await user.click(
-      screen.getByRole('link', { name: 'Личный кабинет' }),
+      screen.getByRole('link', {
+        name: 'Личный кабинет',
+      }),
     )
 
     expect(
-      screen.getByRole('heading', { name: 'Личный кабинет открыт' }),
+      screen.getByRole('heading', {
+        name: 'Личный кабинет открыт',
+      }),
     ).toBeInTheDocument()
+  })
+
+  it('показывает пустое состояние уведомлений', async () => {
+    const user = userEvent.setup()
+
+    renderHeader()
+    await openNotifications(user)
+
+    expect(screen.getByText('Уведомлений нет')).toBeInTheDocument()
+
+    expect(
+      screen.queryByRole('heading', {
+        name: 'Новые уведомления',
+      }),
+    ).not.toBeInTheDocument()
+
+    expect(
+      screen.queryByRole('heading', {
+        name: 'Просмотренные',
+      }),
+    ).not.toBeInTheDocument()
+  })
+
+  it('читает и очищает уведомления, не закрывая dropdown', async () => {
+    const user = userEvent.setup()
+
+    renderHeader(true)
+
+    expect(screen.getByLabelText('Есть новые уведомления')).toBeInTheDocument()
+
+    await openNotifications(user)
+
+    expect(
+      screen.getByRole('heading', {
+        name: 'Новые уведомления',
+      }),
+    ).toBeInTheDocument()
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'Прочитать всё',
+      }),
+    )
+
+    expect(
+      screen.queryByRole('heading', {
+        name: 'Новые уведомления',
+      }),
+    ).not.toBeInTheDocument()
+
+    expect(
+      screen.getByRole('heading', {
+        name: 'Просмотренные',
+      }),
+    ).toBeInTheDocument()
+
+    expect(screen.queryByLabelText('Есть новые уведомления')).not.toBeInTheDocument()
+
+    expect(
+      screen.getByRole('button', {
+        name: 'Кнопка уведомлений',
+      }),
+    ).toHaveAttribute('aria-expanded', 'true')
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'Очистить',
+      }),
+    )
+
+    expect(screen.getByText('Уведомлений нет')).toBeInTheDocument()
+
+    expect(
+      screen.getByRole('button', {
+        name: 'Кнопка уведомлений',
+      }),
+    ).toHaveAttribute('aria-expanded', 'true')
+  })
+
+  it('сразу показывает индикатор после создания заявки', () => {
+    const { testStore } = renderHeader()
+
+    expect(screen.queryByLabelText('Есть новые уведомления')).not.toBeInTheDocument()
+
+    act(() => {
+      testStore.dispatch(sendSwapRequest(recipient.id))
+    })
+
+    expect(screen.getByLabelText('Есть новые уведомления')).toBeInTheDocument()
   })
 })

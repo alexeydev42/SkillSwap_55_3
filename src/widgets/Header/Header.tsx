@@ -1,16 +1,19 @@
-import { useCallback, useState, useRef, useEffect, type FC, type MouseEventHandler } from 'react'
+import { useCallback, useEffect, useRef, useState, type FC, type MouseEventHandler } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+
+import ChevronIcon from '@/shared/assets/icons/icon-chevron-down.svg?react'
+import MoonIcon from '@/shared/assets/icons/icon-moon.svg?react'
+import SunIcon from '@/shared/assets/icons/icon-sun.svg?react'
 import { ROUTES } from '@/shared/lib/constants'
+import { IconButton } from '@/shared/ui/IconButton'
 import { Logo } from '@/shared/ui/Logo'
 import { SearchInput } from '@/shared/ui/SearchInput'
-import { UserHeaderControls } from './UserHeaderControls'
-import { AllSkillsDropdown } from '../AllSkillsDropdown'
-import { IconButton } from '@/shared/ui/IconButton'
-import ChevronIcon from '../../shared/assets/icons/icon-chevron-down.svg?react'
-import MoonIcon from '../../shared/assets/icons/icon-moon.svg?react'
-import SunIcon from '../../shared/assets/icons/icon-sun.svg?react'
-import styles from './Header.module.css'
+import type { NotificationView } from '@/store/slices/notificationsSlice'
 
+import { AllSkillsDropdown } from '../AllSkillsDropdown'
+import { UserHeaderControls } from './UserHeaderControls'
+
+import styles from './Header.module.css'
 
 interface HeaderBaseProps {
   isDark?: boolean
@@ -37,17 +40,26 @@ interface AuthenticatedHeaderProps extends HeaderBaseProps {
     userName: string
     avatarSrc: string
   }
+  notifications: NotificationView[]
+  hasUnreadNotifications: boolean
+  onMarkAllNotificationsAsRead: () => void
+  onClearReadNotifications: () => void
 }
 
 interface GuestHeaderProps extends HeaderBaseProps {
   isAuthenticated: false
   user?: never
+  notifications?: never
+  hasUnreadNotifications?: never
+  onMarkAllNotificationsAsRead?: never
+  onClearReadNotifications?: never
 }
 
 export type HeaderProps = AuthenticatedHeaderProps | GuestHeaderProps
 
 export const Header: FC<HeaderProps> = (props) => {
   const navigate = useNavigate()
+
   const {
     isAuthenticated,
     user,
@@ -74,6 +86,7 @@ export const Header: FC<HeaderProps> = (props) => {
       onRegister()
       return
     }
+
     navigate(ROUTES.REGISTER)
   }
 
@@ -82,17 +95,18 @@ export const Header: FC<HeaderProps> = (props) => {
       onLogin()
       return
     }
+
     navigate(ROUTES.LOGIN)
   }
 
-  // Хранит состояние меню, когда Header управляет им самостоятельно.
+  // Хранит состояние меню навыков при отсутствии внешнего управления.
   const [internalIsSkillsMenuOpen, setInternalIsSkillsMenuOpen] = useState(false)
+
   const skillsRef = useRef<HTMLDivElement>(null)
 
-  // Использует внешнее состояние страницы или внутреннее состояние Header.
+  // Использует внешнее или внутреннее состояние меню навыков.
   const isSkillsMenuOpen = isAllSkillsMenuOpen ?? internalIsSkillsMenuOpen
 
-  // Обновляет состояние в родительском компоненте или непосредственно в Header.
   const setIsSkillsMenuOpen = useCallback(
     (isOpen: boolean) => {
       if (isAllSkillsMenuOpen !== undefined) {
@@ -105,7 +119,7 @@ export const Header: FC<HeaderProps> = (props) => {
     [isAllSkillsMenuOpen, onAllSkillsMenuOpenChange],
   )
 
-  // Закрывает меню при нажатии за пределами его области.
+  // Закрывает меню навыков при нажатии снаружи.
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (skillsRef.current && !skillsRef.current.contains(event.target as Node)) {
@@ -165,12 +179,16 @@ export const Header: FC<HeaderProps> = (props) => {
           <UserHeaderControls
             userName={user.userName}
             avatarSrc={user.avatarSrc}
+            notifications={props.notifications}
+            hasUnreadNotifications={props.hasUnreadNotifications}
             isProfileMenuOpen={isProfileMenuOpen}
             isNotificationsMenuOpen={isNotificationsMenuOpen}
             onProfileClick={onProfileClick}
             onProfileMenuClose={onProfileMenuClose}
             onNotificationsClick={onNotificationsClick}
             onNotificationsMenuClose={onNotificationsMenuClose}
+            onMarkAllNotificationsAsRead={props.onMarkAllNotificationsAsRead}
+            onClearReadNotifications={props.onClearReadNotifications}
             onFavoritesClick={onFavoritesClick}
             onLogout={onLogout}
           />
@@ -179,6 +197,7 @@ export const Header: FC<HeaderProps> = (props) => {
             <button type="button" className={styles.loginBtn} onClick={handleLogin}>
               Войти
             </button>
+
             <button type="button" className={styles.registerBtn} onClick={handleRegister}>
               Зарегистрироваться
             </button>

@@ -1,57 +1,62 @@
 import NotificationIcon from '@/shared/assets/icons/icon-idea.svg?react'
-import { Button } from '@/shared/ui/Button'
 import { DropdownContainer } from '@/shared/ui/DropdownContainer'
+import type { NotificationView } from '@/store/slices/notificationsSlice'
 
 import styles from './NotificationsDropdown.module.css'
 
-// Описывает данные одного уведомления.
-interface Notification {
-  id: number
-  title: string
-  description: string
-  date: string
-  action?: string
+export interface NotificationsDropdownProps {
+  notifications: NotificationView[]
+  onMarkAllAsRead: () => void
+  onClearReadNotifications: () => void
 }
-
-// Уведомления, которые пользователь ещё не просмотрел.
-const NEW_NOTIFICATIONS: Notification[] = [
-  {
-    id: 1,
-    title: 'Николай принял ваш обмен',
-    description: 'Перейдите в профиль, чтобы обсудить детали',
-    date: 'сегодня',
-    action: 'Перейти',
-  },
-  {
-    id: 2,
-    title: 'Татьяна предлагает вам обмен',
-    description: 'Примите обмен, чтобы обсудить детали',
-    date: 'сегодня',
-    action: 'Перейти',
-  },
-]
-
-// Уведомления, которые пользователь уже просмотрел.
-const READ_NOTIFICATIONS: Notification[] = [
-  {
-    id: 3,
-    title: 'Олег предлагает вам обмен',
-    description: 'Примите обмен, чтобы обсудить детали',
-    date: 'вчера',
-  },
-  {
-    id: 4,
-    title: 'Игорь принял ваш обмен',
-    description: 'Перейдите в профиль, чтобы обсудить детали',
-    date: '23 мая',
-  },
-]
 
 interface NotificationItemProps {
-  notification: Notification
+  notification: NotificationView
 }
 
-// Отрисовывает одно уведомление и при необходимости добавляет кнопку действия.
+const MILLISECONDS_IN_DAY = 24 * 60 * 60 * 1000
+
+// Преобразует дату уведомления в подпись для интерфейса.
+const formatNotificationDate = (createdAt: string) => {
+  const notificationDate = new Date(createdAt)
+
+  if (Number.isNaN(notificationDate.getTime())) {
+    return ''
+  }
+
+  const currentDate = new Date()
+
+  const currentDay = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    currentDate.getDate(),
+  )
+
+  const notificationDay = new Date(
+    notificationDate.getFullYear(),
+    notificationDate.getMonth(),
+    notificationDate.getDate(),
+  )
+
+  const differenceInDays = Math.round(
+    (currentDay.getTime() - notificationDay.getTime()) / MILLISECONDS_IN_DAY,
+  )
+
+  if (differenceInDays === 0) {
+    return 'сегодня'
+  }
+
+  if (differenceInDays === 1) {
+    return 'вчера'
+  }
+
+  return notificationDate.toLocaleDateString('ru-RU', {
+    day: 'numeric',
+    month: 'long',
+  })
+}
+
+// Отображает одно уведомление без переходов и дополнительных действий.
 const NotificationItem = ({ notification }: NotificationItemProps) => (
   <li className={styles.item}>
     <div className={styles.itemContent}>
@@ -59,52 +64,72 @@ const NotificationItem = ({ notification }: NotificationItemProps) => (
         <NotificationIcon className={styles.icon} aria-hidden="true" />
 
         <div className={styles.textBlock}>
-          <p className={styles.title}>{notification.title}</p>
-          <p className={styles.description}>{notification.description}</p>
+          <p className={styles.title}>
+            Вы предложили обмен пользователю {notification.toUser.name}
+          </p>
+
+          <p className={styles.description}>Навык: {notification.toUser.offeredSkill.title}</p>
         </div>
       </div>
 
-      <span className={styles.date}>{notification.date}</span>
+      <span className={styles.date}>{formatNotificationDate(notification.createdAt)}</span>
     </div>
-
-    {notification.action && <Button size="md">{notification.action}</Button>}
   </li>
 )
 
-export const NotificationsDropdown = () => (
-  <DropdownContainer className={styles.container}>
-    {/* Новые уведомления с доступными действиями. */}
-    <section className={styles.section}>
-      <div className={styles.sectionHeader}>
-        <h2 className={styles.sectionTitle}>Новые уведомления</h2>
+export const NotificationsDropdown = ({
+  notifications,
+  onMarkAllAsRead,
+  onClearReadNotifications,
+}: NotificationsDropdownProps) => {
+  // Разделяет итоговую выдачу по признаку прочтения.
+  const unreadNotifications = notifications.filter((notification) => !notification.isRead)
 
-        <button type="button" className={styles.sectionAction}>
-          Прочитать все
-        </button>
-      </div>
+  const readNotifications = notifications.filter((notification) => notification.isRead)
 
-      <ul className={styles.list}>
-        {NEW_NOTIFICATIONS.map((notification) => (
-          <NotificationItem key={notification.id} notification={notification} />
-        ))}
-      </ul>
-    </section>
+  return (
+    <DropdownContainer className={styles.container}>
+      {notifications.length === 0 && <p className={styles.empty}>Уведомлений нет</p>}
 
-    {/* Уведомления, которые пользователь уже просмотрел. */}
-    <section className={styles.section}>
-      <div className={styles.sectionHeader}>
-        <h2 className={styles.sectionTitle}>Просмотренные</h2>
+      {unreadNotifications.length > 0 && (
+        <section className={styles.section}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Новые уведомления</h2>
 
-        <button type="button" className={styles.sectionAction}>
-          Очистить
-        </button>
-      </div>
+            <button type="button" className={styles.sectionAction} onClick={onMarkAllAsRead}>
+              Прочитать всё
+            </button>
+          </div>
 
-      <ul className={styles.list}>
-        {READ_NOTIFICATIONS.map((notification) => (
-          <NotificationItem key={notification.id} notification={notification} />
-        ))}
-      </ul>
-    </section>
-  </DropdownContainer>
-)
+          <ul className={styles.list}>
+            {unreadNotifications.map((notification) => (
+              <NotificationItem key={notification.requestId} notification={notification} />
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {readNotifications.length > 0 && (
+        <section className={styles.section}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Просмотренные</h2>
+
+            <button
+              type="button"
+              className={styles.sectionAction}
+              onClick={onClearReadNotifications}
+            >
+              Очистить
+            </button>
+          </div>
+
+          <ul className={styles.list}>
+            {readNotifications.map((notification) => (
+              <NotificationItem key={notification.requestId} notification={notification} />
+            ))}
+          </ul>
+        </section>
+      )}
+    </DropdownContainer>
+  )
+}
