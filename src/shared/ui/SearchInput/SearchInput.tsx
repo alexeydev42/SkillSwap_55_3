@@ -45,7 +45,8 @@ export function SearchInput({
   return (
     <Input
       {...rest}
-      type="text"
+      type="search"
+      aria-label="Поиск по навыкам"
       placeholder={placeholder}
       value={currentValue}
       onChange={(event) => handleValueChange(event.target.value)}

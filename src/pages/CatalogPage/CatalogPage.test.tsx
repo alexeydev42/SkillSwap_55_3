@@ -3,6 +3,8 @@ import { Provider } from 'react-redux'
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
+import authReduser from '@/store/slices/authSlice'
+import { MemoryRouter } from 'react-router-dom'
 
 import catalogFiltersReducer, {
   defaultFilters,
@@ -16,8 +18,8 @@ import type { UserSkillsSectionProps } from '@/widgets/UserSkillsSection'
 
 import { CatalogPage } from './CatalogPage'
 
-vi.mock('@/widgets/Header', () => ({
-  Header: ({
+/**vi.mock('@/widgets/Header', () => ({
+  HeaderContainer: ({
     searchQuery = '',
     onSearchChange,
   }: {
@@ -31,7 +33,7 @@ vi.mock('@/widgets/Header', () => ({
       onChange={(event) => onSearchChange?.(event.target.value)}
     />
   ),
-}))
+}))**/
 vi.mock('@/widgets/Footer', () => ({ Footer: () => null }))
 vi.mock('@/widgets/FiltersSidebar', () => ({ FiltersSidebar: () => null }))
 vi.mock('@/widgets/RecommendedSection', () => ({
@@ -131,6 +133,7 @@ function renderCatalogPage(
   const testStore = configureStore({
     reducer: {
       users: usersReducer,
+      auth: authReduser,
       catalogFilters: catalogFiltersReducer,
       favorites: favoritesReducer,
     },
@@ -149,19 +152,21 @@ function renderCatalogPage(
   })
 
   const renderResult = render(
-    <Provider store={testStore}>
-      <CatalogPage
-        users={users}
-        categories={categories}
-        cities={cities}
-        usersStatus="success"
-        usersError={null}
-        hasMockUsers={mockUsers.length > 0}
-        onRetry={vi.fn()}
-        onFavoriteClick={vi.fn()}
-        onDetailsClick={vi.fn()}
-      />
-    </Provider>,
+    <MemoryRouter>
+      <Provider store={testStore}>
+        <CatalogPage
+          users={users}
+          categories={categories}
+          cities={cities}
+          usersStatus="success"
+          usersError={null}
+          hasMockUsers={mockUsers.length > 0}
+          onRetry={vi.fn()}
+          onFavoriteClick={vi.fn()}
+          onDetailsClick={vi.fn()}
+        />
+      </Provider>
+    </MemoryRouter>,
   )
 
   return {
@@ -190,6 +195,7 @@ function renderCatalogState({
   const testStore = configureStore({
     reducer: {
       users: usersReducer,
+      auth: authReduser,
       catalogFilters: catalogFiltersReducer,
       favorites: favoritesReducer,
     },
@@ -211,6 +217,7 @@ function renderCatalogState({
   })
 
   render(
+    <MemoryRouter>
     <Provider store={testStore}>
       <CatalogPage
         users={users}
@@ -223,7 +230,8 @@ function renderCatalogState({
         onFavoriteClick={vi.fn()}
         onDetailsClick={vi.fn()}
       />
-    </Provider>,
+    </Provider>
+    </MemoryRouter>,
   )
 
   return { testStore }

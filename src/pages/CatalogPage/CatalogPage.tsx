@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import type { Category, City, User } from '@/shared/types'
 import { Footer } from '@/widgets/Footer'
-import { Header, type HeaderProps } from '@/widgets/Header'
+import { HeaderContainer } from '@/widgets/Header/HeaderContainer'
 import { FiltersSidebar } from '@/widgets/FiltersSidebar'
 import { RecommendedSection } from '@/widgets/RecommendedSection'
 import { UserSkillsSection } from '@/widgets/UserSkillsSection'
@@ -37,11 +37,6 @@ import { Button } from '@/shared/ui/Button'
 
 import type { UsersState } from '@/store/slices/usersSlice'
 
-export interface CatalogPageHeaderUser {
-  userName: string
-  avatarSrc: string
-}
-
 type HeaderMenu = 'allSkills' | 'notifications' | 'profile'
 
 export interface CatalogPageProps {
@@ -51,7 +46,6 @@ export interface CatalogPageProps {
   usersStatus: UsersState['status']
   usersError: string | null
   hasMockUsers: boolean
-  headerUser?: CatalogPageHeaderUser
   isFavoriteDisabled?: boolean
   isProfileMenuInitiallyOpen?: boolean
   isNotificationsMenuInitiallyOpen?: boolean
@@ -89,7 +83,6 @@ export const CatalogPage = ({
   users,
   categories,
   cities,
-  headerUser,
   isFavoriteDisabled = false,
   usersStatus,
   usersError,
@@ -293,25 +286,15 @@ export const CatalogPage = ({
   const isInitialLoading = !hasMockUsers && (usersStatus === 'idle' || usersStatus === 'loading')
   const isError = usersStatus === 'error'
 
-  // Подготавливает Header для гостя или авторизованного пользователя.
-  const headerProps: HeaderProps = headerUser
-    ? {
-        isAuthenticated: true,
-        user: headerUser,
-        isProfileMenuOpen: openHeaderMenu === 'profile',
-        isNotificationsMenuOpen: openHeaderMenu === 'notifications',
-        onProfileClick: () => toggleHeaderMenu('profile'),
-        onProfileMenuClose: () => setHeaderMenuOpen('profile', false),
-        onNotificationsClick: () => toggleHeaderMenu('notifications'),
-        onNotificationsMenuClose: () => setHeaderMenuOpen('notifications', false),
-      }
-    : {
-        isAuthenticated: false,
-      }
   return (
     <div className={styles.page}>
-      <Header
-        {...headerProps}
+      <HeaderContainer
+        isProfileMenuOpen={openHeaderMenu === 'profile'}
+        isNotificationsMenuOpen={openHeaderMenu === 'notifications'}
+        onProfileClick={() => toggleHeaderMenu('profile')}
+        onProfileMenuClose={() => setHeaderMenuOpen('profile', false)}
+        onNotificationsClick={() => toggleHeaderMenu('notifications')}
+        onNotificationsMenuClose={() => setHeaderMenuOpen('notifications', false)}
         isAllSkillsMenuOpen={openHeaderMenu === 'allSkills'}
         onAllSkillsMenuOpenChange={(isOpen) => setHeaderMenuOpen('allSkills', isOpen)}
         searchQuery={searchQuery}

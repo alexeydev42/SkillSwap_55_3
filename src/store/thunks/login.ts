@@ -8,6 +8,7 @@ import {
   setAuthSession,
   setAuthStatus,
 } from '@/store/slices/authSlice'
+import { restoreFavorites } from '../slices/favoritesSlice'
 
 export interface LoginCredentials {
   email: string
@@ -36,6 +37,7 @@ export const login =
 
     dispatch(setAuthAccount(account))
     dispatch(setAuthSession(session))
+    dispatch(restoreFavorites())
     dispatch(setAuthStatus('succeeded'))
     dispatch(setAuthError(null))
 

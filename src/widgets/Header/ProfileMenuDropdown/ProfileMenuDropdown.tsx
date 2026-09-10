@@ -1,15 +1,26 @@
-import { DropdownContainer } from "@/shared/ui/DropdownContainer";
-import LogoutIcon from '../../../shared/assets/icons/icon-logout.svg?react';
-import styles from './ProfileMenuDropdown.module.css';
+import { DropdownContainer } from '@/shared/ui/DropdownContainer'
+import LogoutIcon from '../../../shared/assets/icons/icon-logout.svg?react'
+import styles from './ProfileMenuDropdown.module.css'
+import { Button } from '@/shared/ui/Button'
 
-export const ProfileMenuDropdown = () => {
+interface ProfileMenuDropdownProps {
+  onLogout?: () => void
+}
+
+export const ProfileMenuDropdown = ({ onLogout }: ProfileMenuDropdownProps) => {
   return (
-    <DropdownContainer className={styles['dropdown']}>
-      <span>Личный кабинет</span>
-      <div className={styles['logoutItem']}>
-        <span>Выйти из аккаунта</span>
-        <LogoutIcon/>
-      </div>
+    <DropdownContainer className={styles.dropdown}>
+      <span> Личный кабинет</span>
+      <Button
+        variant="tertiary"
+        size="sm"
+        className={styles.logoutItem}
+        onClick={onLogout}
+        icon={<LogoutIcon />}
+        iconPosition="right"
+      >
+        Выйти из аккаунта
+      </Button>
     </DropdownContainer>
   )
 }

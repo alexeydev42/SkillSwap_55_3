@@ -1,6 +1,5 @@
 import { useState } from 'react'
-
-import { Header } from '@/widgets/Header'
+import { HeaderContainer } from '@/widgets/Header/HeaderContainer'
 import { Footer } from '@/widgets/Footer'
 import { ProfileSidebar } from '@/widgets/ProfileSidebar'
 import {
@@ -77,10 +76,7 @@ export default function ProfilePage({ initialTab = DEFAULT_TAB }: ProfilePagePro
 
   return (
     <div className={styles.page}>
-      <Header
-        isAuthenticated
-        user={{ userName: 'Мария', avatarSrc: AVATAR_SRC }}
-      />
+      <HeaderContainer/>
 
       <main className={styles.main}>
         <div className={styles.profileGrid}>

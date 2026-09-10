@@ -1,4 +1,4 @@
-import { Header } from '@/widgets/Header'
+
 import { Footer } from '@/widgets/Footer'
 import { UserProfileCard, type UserProfileCardProps } from '@/widgets/UserProfileCard'
 import { SkillActions } from '@/widgets/SkillActions'
@@ -8,7 +8,7 @@ import { SkillDetailsButtons } from '@/widgets/SkillDetailsButtons'
 import { SimilarOffersSection } from '@/widgets/SimilarOffersSection'
 import type { SkillTagsBlockProps } from '@/entities/skill/ui/SkillTagsBlock'
 import type { UserSkillCardProps } from '../../widgets/UserSkillCard/UserSkillCard'
-
+import { HeaderContainer } from '@/widgets/Header/HeaderContainer'
 import styles from './SkillPage.module.css'
 
 export interface SkillPageProps {
@@ -29,17 +29,10 @@ export function SkillPage({
   skill,
   gallery,
   similarOffers,
-  isAuth, // <--- добавлено
-  authUser,
 }: SkillPageProps) {
   return (
     <div className={styles.page}>
-      {isAuth && authUser ? (
-        <Header isAuthenticated={true} user={authUser} />
-      ) : (
-        <Header isAuthenticated={false} />
-      )}
-
+        <HeaderContainer />
       <main className={styles.main}>
         <div className={styles.content}>
           <aside className={styles.userProfileCard}>

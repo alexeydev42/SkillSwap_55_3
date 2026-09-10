@@ -11,6 +11,7 @@ import MoonIcon from '../../shared/assets/icons/icon-moon.svg?react'
 import SunIcon from '../../shared/assets/icons/icon-sun.svg?react'
 import styles from './Header.module.css'
 
+
 interface HeaderBaseProps {
   isDark?: boolean
   isProfileMenuOpen?: boolean
@@ -20,10 +21,11 @@ interface HeaderBaseProps {
   onProfileClick?: MouseEventHandler<HTMLButtonElement>
   onProfileMenuClose?: () => void
   onAllSkillsMenuOpenChange?: (isOpen: boolean) => void
-  onNotificationsClick?: () => void
+  onNotificationsClick?: MouseEventHandler<HTMLButtonElement>
   onNotificationsMenuClose?: () => void
-  onFavoritesClick?: () => void
+  onFavoritesClick?: MouseEventHandler<HTMLButtonElement>
   onLogin?: () => void
+  onLogout?: () => void
   onRegister?: () => void
   onSearchChange?: (value: string) => void
   searchQuery?: string
@@ -64,6 +66,7 @@ export const Header: FC<HeaderProps> = (props) => {
     onRegister,
     searchQuery,
     onSearchChange,
+    onLogout,
   } = props
 
   const handleRegister = () => {
@@ -169,6 +172,7 @@ export const Header: FC<HeaderProps> = (props) => {
             onNotificationsClick={onNotificationsClick}
             onNotificationsMenuClose={onNotificationsMenuClose}
             onFavoritesClick={onFavoritesClick}
+            onLogout={onLogout}
           />
         ) : (
           <div className={styles.authButtons}>

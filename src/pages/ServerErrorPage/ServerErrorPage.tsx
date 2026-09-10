@@ -1,25 +1,16 @@
-import { Header } from '@/widgets/Header'
+
 import ErrorImage from '../../shared/assets/illustrations/illustration-error-500.svg'
 import { Button } from '@/shared/ui/Button'
 import { Footer } from '@/widgets/Footer'
-import type { UserProfileCardProps } from '@/widgets/UserProfileCard'
 
 import styles from './ServerErrorPage.module.css'
+import { HeaderContainer } from '@/widgets/Header/HeaderContainer'
 
-export interface ServerErrorPageProps {
-  user: UserProfileCardProps['user']
-}
 
-export function ServerErrorPage({ user }: ServerErrorPageProps) {
+export function ServerErrorPage() {
   return (
     <div className={styles.page}>
-      <Header
-        isAuthenticated
-        user={{
-          userName: user.name,
-          avatarSrc: user.avatar,
-        }}
-      />
+      <HeaderContainer/>
 
       <main className={styles.main}>
         <div className={styles.error}>

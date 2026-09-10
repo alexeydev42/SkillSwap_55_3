@@ -2,6 +2,7 @@ import { forwardRef, InputHTMLAttributes, ReactNode, useId, useState } from 'rea
 import styles from './Input.module.css'
 import clsx from 'clsx'
 
+
 type HelperTextTone = 'default' | 'success'
 
 type BaseInputProps = Omit<
@@ -9,7 +10,7 @@ type BaseInputProps = Omit<
   'type' | 'className' | 'value' | 'defaultValue'
 > & {
   label?: string
-  type?: 'text' | 'email' | 'password'
+  type?: InputHTMLAttributes<HTMLInputElement>['type']
   error?: string
   helperText?: string
   helperTextTone?: HelperTextTone

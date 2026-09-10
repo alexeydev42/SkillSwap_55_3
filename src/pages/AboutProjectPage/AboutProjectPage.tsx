@@ -1,7 +1,7 @@
 import { Footer } from '@/widgets/Footer'
-import { Header, type HeaderProps } from '@/widgets/Header'
 
 import styles from './AboutProjectPage.module.css'
+import { HeaderContainer } from '@/widgets/Header/HeaderContainer'
 
 interface Developer {
   firstName: string
@@ -9,14 +9,6 @@ interface Developer {
   githubUrl: string
 }
 
-export interface AboutProjectPageHeaderUser {
-  userName: string
-  avatarSrc: string
-}
-
-export interface AboutProjectPageProps {
-  headerUser?: AboutProjectPageHeaderUser
-}
 
 // Содержит данные участников команды для вывода на странице.
 const DEVELOPERS: Developer[] = [
@@ -77,20 +69,13 @@ const DEVELOPERS: Developer[] = [
   },
 ]
 
-export const AboutProjectPage = ({ headerUser }: AboutProjectPageProps) => {
+export const AboutProjectPage = () => {
   // Подготавливает Header для гостя или авторизованного пользователя.
-  const headerProps: HeaderProps = headerUser
-    ? {
-        isAuthenticated: true,
-        user: headerUser,
-      }
-    : {
-        isAuthenticated: false,
-      }
+
 
   return (
     <div className={styles.page}>
-      <Header {...headerProps} />
+      <HeaderContainer />
 
       <main className={styles.main}>
         <section className={styles.team} aria-labelledby="team-title">
