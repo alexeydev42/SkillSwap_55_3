@@ -25,12 +25,24 @@ describe('PersonalDataSection', () => {
     const handleSave = vi.fn()
     render(<PersonalDataSection data={testData} onSave={handleSave} />)
 
-    fireEvent.change(screen.getByDisplayValue('Мария'), { target: { value: 'Мария Иванова' } })
-    fireEvent.click(screen.getByRole('button', { name: 'Сохранить' }))
+    const saveButton = screen.getByRole('button', { name: 'Сохранить' })
+
+    expect(saveButton).toBeDisabled()
+
+    fireEvent.change(screen.getByDisplayValue('Мария'), {
+      target: { value: 'Мария Иванова' },
+    })
+
+    expect(saveButton).toBeEnabled()
+
+    fireEvent.click(saveButton)
 
     expect(handleSave).toHaveBeenCalledTimes(1)
     expect(handleSave).toHaveBeenCalledWith(
-      expect.objectContaining({ name: 'Мария Иванова', email: testData.email }),
+      expect.objectContaining({
+        name: 'Мария Иванова',
+        email: testData.email,
+      }),
     )
   })
 
@@ -54,12 +66,19 @@ describe('PersonalDataSection', () => {
     expect(handleChangePassword).toHaveBeenCalledTimes(1)
   })
 
-  it('не отправляет email — поле остаётся тем же, что и в исходных данных', () => {
+  it('блокирует сохранение, пока данные не изменены', () => {
     const handleSave = vi.fn()
+
     render(<PersonalDataSection data={testData} onSave={handleSave} />)
 
-    fireEvent.click(screen.getByRole('button', { name: 'Сохранить' }))
+    const emailInput = screen.getByDisplayValue('user@example.com')
+    const saveButton = screen.getByRole('button', { name: 'Сохранить' })
 
-    expect(handleSave).toHaveBeenCalledWith(expect.objectContaining({ email: 'user@example.com' }))
+    expect(emailInput).toBeDisabled()
+    expect(saveButton).toBeDisabled()
+
+    fireEvent.click(saveButton)
+
+    expect(handleSave).not.toHaveBeenCalled()
   })
 })
