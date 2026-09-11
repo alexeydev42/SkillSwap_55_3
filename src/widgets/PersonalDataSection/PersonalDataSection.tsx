@@ -125,16 +125,6 @@ export function PersonalDataSection({
 
   return (
     <form className={styles.container} onSubmit={handleSubmit}>
-      <div className={styles.avatarWrapper}>
-        <AvatarUpload
-          image={avatar}
-          size="large"
-          error={avatarError}
-          onImageChange={handleAvatarChange}
-          onError={setAvatarError}
-        />
-      </div>
-
       <div className={styles.form}>
         <div className={styles.fieldWithLink}>
           <Input label="Почта" type="email" value={data.email} disabled />
@@ -191,6 +181,16 @@ export function PersonalDataSection({
         <Button type="submit" className={styles.saveButton} disabled={disabled}>
           Сохранить
         </Button>
+      </div>
+
+      <div className={styles.avatarWrapper}>
+        <AvatarUpload
+          image={avatar}
+          size="large"
+          error={avatarError}
+          onImageChange={handleAvatarChange}
+          onError={setAvatarError}
+        />
       </div>
     </form>
   )
