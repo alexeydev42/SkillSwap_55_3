@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { fn } from 'storybook/test'
 
-import type { UserSkillsSectionItem } from '@/widgets/UserSkillsSection'
+import type { UserSkillCardData } from '@/widgets/UserSkillCard'
 
 import { RecommendedSection } from './RecommendedSection'
 
-const baseItems: UserSkillsSectionItem[] = [
+const baseItems: UserSkillCardData[] = [
   {
     id: 'base-1',
     name: 'Виктория',
@@ -142,7 +142,7 @@ const baseItems: UserSkillsSectionItem[] = [
 
 // Создаёт 18 карточек с уникальными id.
 // Этого достаточно для первой порции и двух последовательных догрузок.
-const items: UserSkillsSectionItem[] = Array.from({ length: 18 }, (_, index) => {
+const items: UserSkillCardData[] = Array.from({ length: 18 }, (_, index) => {
   const baseItem = baseItems[index % baseItems.length]
   const groupNumber = Math.floor(index / baseItems.length) + 1
 

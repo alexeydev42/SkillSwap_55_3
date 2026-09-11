@@ -2,12 +2,8 @@ import { UserSkillCard, type UserSkillCardData } from '@/widgets/UserSkillCard'
 import styles from './FavoritesSection.module.css'
 import illustrationUserInfo from '../../shared/assets/illustrations/illustration-user-info.svg'
 
-export interface FavoriteUser extends UserSkillCardData {
-  id: string
-}
-
 export interface FavoritesSectionProps {
-  favoriteUsers: FavoriteUser[]
+  favoriteUsers: UserSkillCardData[]
   onFavoriteClick: (id: string) => void
   onDetailsClick: (id: string) => void
 }

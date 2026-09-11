@@ -1,49 +1,8 @@
-import type { Category, City, Subcategory, User } from '@/shared/types'
-import type { SkillTagVariant } from '@/shared/ui/SkillTag/SkillTag'
+import { findSubcategory, getCategoryVariant } from '@/shared/lib/categoryHelpers'
 import { calculateAge } from '@/shared/lib/helpers'
+import type { Category, City, User } from '@/shared/types'
 
 import type { SkillPageProps } from './SkillPage'
-
-// Соответствие категории навыка и оформления тега. Дублирует такое же
-// соответствие в CatalogPage.utils.ts — файлы разных страниц, общий
-// экспорт между страницами в проекте не заведён.
-const CATEGORY_VARIANTS: Record<string, SkillTagVariant> = {
-  'business-career': 'business',
-  'foreign-languages': 'languages',
-  'home-comfort': 'home',
-  'creativity-art': 'creative',
-  'education-development': 'education',
-  'health-lifestyle': 'health',
-}
-
-interface SubcategoryData {
-  category: Category
-  subcategory: Subcategory
-}
-
-// Находит подкатегорию и её родительскую категорию по идентификатору.
-function findSubcategory(
-  categories: Category[],
-  subcategoryId: string,
-): SubcategoryData | undefined {
-  for (const category of categories) {
-    const subcategory = category.subcategories.find(({ id }) => id === subcategoryId)
-
-    if (subcategory) {
-      return {
-        category,
-        subcategory,
-      }
-    }
-  }
-
-  return undefined
-}
-
-// Возвращает оформление тега, соответствующее категории навыка.
-function getCategoryVariant(categoryId: string): SkillTagVariant {
-  return CATEGORY_VARIANTS[categoryId] ?? 'more'
-}
 
 // Возвращает правильное склонение слова "год" для числового возраста.
 function getAgeLabel(age: number): string {

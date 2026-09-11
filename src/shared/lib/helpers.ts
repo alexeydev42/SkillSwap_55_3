@@ -1,6 +1,4 @@
-
-
-/** Форматирует дату в читаемый вид */
+// Форматирует дату в читаемый вид.
 export function formatDate(dateString: string): string {
   return new Intl.DateTimeFormat('ru-RU', {
     day: 'numeric',
@@ -9,18 +7,7 @@ export function formatDate(dateString: string): string {
   }).format(new Date(dateString))
 }
 
-/** Обрезает строку до maxLength символов */
-export function truncate(str: string, maxLength: number): string {
-  if (str.length <= maxLength) return str
-  return str.slice(0, maxLength).trimEnd() + '...'
-}
-
-/** Генерирует уникальный id */
-export function generateId(): string {
-  return crypto.randomUUID()
-}
-
-/** Вычисляет полный возраст по дате рождения. */
+// Вычисляет полный возраст по дате рождения.
 export function calculateAge(birthDate: string): number {
   const today = new Date()
   const dateOfBirth = new Date(`${birthDate}T00:00:00`)
@@ -29,8 +16,7 @@ export function calculateAge(birthDate: string): number {
 
   const hasBirthdayPassed =
     today.getMonth() > dateOfBirth.getMonth() ||
-    (today.getMonth() === dateOfBirth.getMonth() &&
-      today.getDate() >= dateOfBirth.getDate())
+    (today.getMonth() === dateOfBirth.getMonth() && today.getDate() >= dateOfBirth.getDate())
 
   if (!hasBirthdayPassed) {
     age -= 1

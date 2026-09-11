@@ -1,18 +1,9 @@
-import type { Category, City, Subcategory, User } from '@/shared/types'
-import type { SkillTagVariant } from '@/shared/ui/SkillTag/SkillTag'
+import { calculateAge } from '@/shared/lib/helpers'
+import { findSubcategory, getCategoryVariant } from '@/shared/lib/categoryHelpers'
+import type { Category, City, User } from '@/shared/types'
 import type { Filter } from '@/widgets/AppliedFiltersBar'
 import type { CatalogFilters, CatalogGender, CatalogOfferType } from '@/widgets/FiltersSidebar'
-import type { UserSkillsSectionItem } from '@/widgets/UserSkillsSection'
-import { calculateAge } from '@/shared/lib/helpers'
-
-const CATEGORY_VARIANTS: Record<string, SkillTagVariant> = {
-  'business-career': 'business',
-  'foreign-languages': 'languages',
-  'home-comfort': 'home',
-  'creativity-art': 'creative',
-  'education-development': 'education',
-  'health-lifestyle': 'health',
-}
+import type { UserSkillCardData } from '@/widgets/UserSkillCard'
 
 const OFFER_TYPE_LABELS: Record<CatalogOfferType, string> = {
   all: 'Всё',
@@ -26,35 +17,6 @@ const GENDER_LABELS: Record<CatalogGender, string> = {
   female: 'Женский',
 }
 
-interface SubcategoryData {
-  category: Category
-  subcategory: Subcategory
-}
-
-// Находит подкатегорию и её родительскую категорию по идентификатору.
-function findSubcategory(
-  categories: Category[],
-  subcategoryId: string,
-): SubcategoryData | undefined {
-  for (const category of categories) {
-    const subcategory = category.subcategories.find(({ id }) => id === subcategoryId)
-
-    if (subcategory) {
-      return {
-        category,
-        subcategory,
-      }
-    }
-  }
-
-  return undefined
-}
-
-// Возвращает оформление тега, соответствующее категории навыка.
-function getCategoryVariant(categoryId: string): SkillTagVariant {
-  return CATEGORY_VARIANTS[categoryId] ?? 'more'
-}
-
 // Преобразует данные пользователя в props карточки каталога.
 export function mapUserToCatalogCard(
   user: User,
@@ -63,7 +25,7 @@ export function mapUserToCatalogCard(
   isFavorite: boolean,
   effectiveLikesCount: number,
   effectiveLearningSubcategoryIds: string[],
-): UserSkillsSectionItem {
+): UserSkillCardData {
   const city = cities.find(({ id }) => id === user.cityId)
 
   const offeredSubcategory = findSubcategory(categories, user.offeredSkill.subcategoryId)
@@ -200,19 +162,4 @@ export function removeCatalogFilter(filters: CatalogFilters, filterId: string): 
   }
 
   return filters
-}
-
-// Сортирует пользователей по количеству добавлений в избранное.
-export function getPopularCatalogUsers(
-  users: User[],
-  limit: number,
-  effectiveLikesCountByUserId: Record<string, number>,
-): User[] {
-  return [...users]
-    .sort(
-      (firstUser, secondUser) =>
-        (effectiveLikesCountByUserId[secondUser.id] ?? secondUser.likesCount) -
-        (effectiveLikesCountByUserId[firstUser.id] ?? firstUser.likesCount),
-    )
-    .slice(0, limit)
 }

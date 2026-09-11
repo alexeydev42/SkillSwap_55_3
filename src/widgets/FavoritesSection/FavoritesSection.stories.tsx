@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { fn } from 'storybook/test'
-import { FavoritesSection, type FavoriteUser } from './FavoritesSection'
+import type { UserSkillCardData } from '@/widgets/UserSkillCard'
+
+import { FavoritesSection } from './FavoritesSection'
 
 const meta: Meta<typeof FavoritesSection> = {
   title: 'Widgets/FavoritesSection',
@@ -36,7 +38,7 @@ export const Empty: Story = {
   },
 }
 
-const users: FavoriteUser[] = [
+const users: UserSkillCardData[] = [
   {
     id: 'user-001',
     name: 'Анна',

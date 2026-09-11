@@ -1,12 +1,12 @@
 import { act, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { UserSkillsSectionItem } from '@/widgets/UserSkillsSection'
+import type { UserSkillCardData } from '@/widgets/UserSkillCard'
 
 import { RecommendedSection } from './RecommendedSection'
 
 vi.mock('@/widgets/UserSkillsSection', () => ({
-  UserSkillsSection: ({ items }: { items: UserSkillsSectionItem[] }) => (
+  UserSkillsSection: ({ items }: { items: UserSkillCardData[] }) => (
     <div data-testid="recommended-list">
       {items.map((item) => (
         <div key={item.id} data-testid="recommended-card">
@@ -17,7 +17,7 @@ vi.mock('@/widgets/UserSkillsSection', () => ({
   ),
 }))
 
-const createItems = (count: number): UserSkillsSectionItem[] =>
+const createItems = (count: number): UserSkillCardData[] =>
   Array.from({ length: count }, (_, index) => ({
     id: `user-${index + 1}`,
     name: `Пользователь ${index + 1}`,
@@ -70,7 +70,7 @@ describe('RecommendedSection — infinite loading', () => {
     vi.unstubAllGlobals()
   })
 
-  const renderSection = (items: UserSkillsSectionItem[]) =>
+  const renderSection = (items: UserSkillCardData[]) =>
     render(<RecommendedSection items={items} onFavoriteClick={vi.fn()} onDetailsClick={vi.fn()} />)
 
   const intersectSentinel = () => {

@@ -136,7 +136,6 @@ export const restoreNotifications =
 
 // Возвращает активные уведомления текущего пользователя.
 export const selectNotifications = (state: RootState) => state.notifications.items
-export const selectNotificationsError = (state: RootState) => state.notifications.error
 
 // Уведомление для отображения: текст и дата не хранятся — дата берётся из
 // заявки (SwapRequest.createdAt), а получатель (toUser) — из users, чтобы
