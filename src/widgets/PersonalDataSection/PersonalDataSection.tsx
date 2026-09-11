@@ -77,6 +77,14 @@ export function PersonalDataSection({
   const [aboutError, setAboutError] = useState<string>()
   const [avatarError, setAvatarError] = useState<string>()
 
+  const hasChanges =
+    name.trim() !== data.name.trim() ||
+    formatBirthDate(birthDate) !== formatBirthDate(data.birthDate) ||
+    gender !== data.gender ||
+    city !== data.city ||
+    about.trim() !== data.about.trim() ||
+    avatar !== data.avatar
+
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value)
     setNameError(undefined)
@@ -178,7 +186,7 @@ export function PersonalDataSection({
           disabled={disabled}
         />
 
-        <Button type="submit" className={styles.saveButton} disabled={disabled}>
+        <Button type="submit" className={styles.saveButton} disabled={disabled || !hasChanges}>
           Сохранить
         </Button>
       </div>
