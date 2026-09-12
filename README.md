@@ -149,4 +149,4 @@ npm run build
 | Михаил Максименко | Фронтенд-разработчик | [maksimenkomv](https://github.com/maksimenkomv) |
 | Егор Смирнов | Фронтенд-разработчик | [kurumi177](https://github.com/kurumi177) |
 | Алёна Смирнова | Фронтенд-разработчик | [wruqlwx](https://github.com/wruqlwx) |
-| Алексей Сурков | Помощник тимлида | [person5494](https://github.com/person5494) |
+| Алексей Сурков | Помощник тимлида | [person5494](https://github.com/alexeydev42) |
