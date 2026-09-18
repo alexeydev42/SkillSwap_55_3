@@ -23,7 +23,7 @@ import { ProfileSidebar } from '@/widgets/ProfileSidebar'
 
 import styles from './ProfilePage.module.css'
 
-export type ProfileTab = 'requests' | 'exchanges' | 'favorites' | 'skills' | 'personal'
+export type ProfileTab = 'favorites' | 'personal'
 
 export interface ProfilePageProps {
   /** Начальная вкладка страницы профиля. */
@@ -31,19 +31,6 @@ export interface ProfilePageProps {
 }
 
 const DEFAULT_TAB: ProfileTab = 'personal'
-
-const PLACEHOLDER_TITLES: Record<Exclude<ProfileTab, 'personal' | 'favorites'>, string> = {
-  requests: 'Заявки',
-  exchanges: 'Мои обмены',
-  skills: 'Мои навыки',
-}
-
-const PlaceholderBlock = ({ title }: { title: string }) => (
-  <div className={styles.placeholder}>
-    <h2 className={styles.placeholderTitle}>{title}</h2>
-    <p className={styles.placeholderText}>Раздел находится в разработке</p>
-  </div>
-)
 
 export default function ProfilePage({ initialTab = DEFAULT_TAB }: ProfilePageProps) {
   const dispatch = useAppDispatch()
@@ -126,8 +113,6 @@ export default function ProfilePage({ initialTab = DEFAULT_TAB }: ProfilePagePro
 
       return
     }
-
-    setActiveTab(tabId as ProfileTab)
   }
 
   // Удаляет пользователя из Favorites.
@@ -164,11 +149,6 @@ export default function ProfilePage({ initialTab = DEFAULT_TAB }: ProfilePagePro
             onDetailsClick={handleDetailsClick}
           />
         )
-
-      case 'requests':
-      case 'exchanges':
-      case 'skills':
-        return <PlaceholderBlock title={PLACEHOLDER_TITLES[activeTab]} />
     }
   }
 

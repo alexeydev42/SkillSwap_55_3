@@ -4,8 +4,6 @@ import { describe, expect, it, vi } from 'vitest';
 import { ProfileSidebar } from './ProfileSidebar';
 
 const EXPECTED_ITEMS = [
-  { id: 'requests', label: 'Заявки' },
-  { id: 'exchanges', label: 'Мои обмены' },
   { id: 'favorites', label: 'Избранное' },
   { id: 'skills', label: 'Мои навыки' },
   { id: 'personal', label: 'Личные данные' },

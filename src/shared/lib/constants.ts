@@ -4,7 +4,6 @@ export const ROUTES = {
   SKILL: '/skill/:userId',
   PROFILE: '/profile',
   FAVORITES: '/favorites',
-  CREATE: '/create',
   LOGIN: '/login',
   REGISTER: '/register',
   REGISTER_STEP_2: '/register/step-2',
