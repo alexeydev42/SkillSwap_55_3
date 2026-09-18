@@ -5,8 +5,7 @@
 .container {
   display: flex;
   flex-direction: column;
-  margin-left: var(--space-36);
-  margin-right: var(--space-36);
+  margin-inline: var(--page-padding-inline);
 }
 
 .top {
@@ -18,8 +17,9 @@
 
 .nav {
   display: grid;
-  grid-template-columns: repeat(3, 324px);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-24);
+  min-width: 0;
   margin-top: var(--space-60);
   font-size: var(--font-size-body);
   font-family: var(--font-body);
@@ -41,7 +41,7 @@
 }
 
 .bottom {
-  margin-top:var(--space-32);
+  margin-top: var(--space-32);
   margin-bottom: var(--space-32);
   font-size: var(--font-size-caption);
   font-family: var(--font-body);
@@ -51,3 +51,21 @@
   color: var(--color-caption);
 }
 
+@media (width <= 1024px) {
+  .nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (width <= 767px) {
+  .top {
+    flex-direction: column;
+    gap: var(--space-32);
+  }
+
+  .nav {
+    width: 100%;
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: 0;
+  }
+}

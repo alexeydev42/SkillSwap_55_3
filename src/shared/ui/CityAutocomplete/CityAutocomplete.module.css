@@ -1,6 +1,8 @@
 .wrapper {
   position: relative;
-  width: 436px;
+  width: 100%;
+  max-width: 436px;
+  min-width: 0;
   height: var(--control-height);
   border: 1px solid #d1d5db;
   border-radius: 12px;
