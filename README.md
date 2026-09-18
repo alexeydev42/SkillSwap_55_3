@@ -1,152 +1,112 @@
 # SkillSwap
 
-SkillSwap — веб-приложение для обмена навыками. Пользователи могут находить людей с интересующими навыками, добавлять предложения в избранное и предлагать взаимный обмен опытом.
+SkillSwap is a web application for exchanging skills. Users can browse other people’s offers, save interesting profiles to favorites and propose a mutual skill exchange.
 
-Проект создан командой студентов в рамках обучения на курсе «Фронтенд-разработчик» Яндекс Практикума.
+The project was developed by a student team as the final project of the Yandex Practicum Frontend Developer program.
 
-## Статус проекта
+<!-- TODO: Add 2 screenshots here: the catalog page and a skill details / exchange flow screen. -->
 
-Учебный MVP завершён. Реализованы основные пользовательские сценарии, синхронизация состояния между разделами приложения, unit- и интеграционные тесты.
+## My contribution
 
-## Возможности
+I worked on the project as an assistant team lead and frontend developer.
 
-- просмотр каталога пользователей и их предложений;
-- поиск по названию предлагаемого навыка;
-- фильтрация по направлению обмена, категориям, полу и городу;
-- сортировка каталога по дате добавления;
-- секции «Популярное», «Новое» и «Рекомендуем»;
-- добавление пользователей в избранное с мгновенным обновлением количества лайков;
-- просмотр страницы навыка и похожих предложений;
-- трёхэтапная регистрация локального пользователя;
-- локальная авторизация, восстановление сессии и защищённые маршруты;
-- редактирование личных данных и изменение пароля;
-- создание предложения обмена;
-- уведомления о созданных заявках.
+My contribution was focused on frontend implementation and application logic across the shared codebase, including catalog behavior, reusable UI, state synchronization, routing and user flows.
 
-## Особенности реализации
+## Key features
 
-- Избранное, количество лайков и список «Хочу научиться» вычисляются из общего Redux-состояния и синхронно обновляются во всех представлениях.
-- Секция «Рекомендуем» перемешивает пользователей один раз и имитирует порционную загрузку при прокрутке.
-- Секция похожих предложений подбирает пользователей сначала по подкатегории, затем по общей категории навыка.
-- Защищённые маршруты сохраняют исходный адрес и возвращают пользователя на него после успешного входа.
-- Локальный пользователь, сессия, заявки и уведомления восстанавливаются после обновления страницы.
+- user catalog with search, filters and sorting;
+- “Popular”, “New” and “Recommended” sections;
+- favorites with synchronized like counts;
+- skill details and similar offers;
+- three-step local registration;
+- local authentication, session restoration and protected routes;
+- profile editing and password changes;
+- exchange requests and notifications.
 
-## Технологии
+## Technical decisions
 
-- React 18;
-- TypeScript;
-- Redux Toolkit и React Redux;
-- React Router;
-- React Hook Form и Yup;
-- CSS Modules;
-- Vite;
-- Vitest и Testing Library;
-- Storybook;
-- ESLint, Stylelint и Prettier.
+Redux Toolkit is used as the main source of application state. Favorites, like counts, profile data, requests, notifications and catalog parameters are synchronized through Redux and selectors.
 
-## Запуск проекта
+Protected routes preserve the originally requested URL and return the user to it after successful authentication.
 
-Для запуска необходимы Node.js 20 или новее и npm.
+The application also restores local user data, session state, requests and notifications after a page reload. Catalog filters and sorting are kept in `sessionStorage`, while longer-lived local data is stored in `localStorage`.
+
+The “Recommended” section uses a one-time shuffled user list and imitates incremental loading. Similar offers are selected first by subcategory and then by the broader skill category.
+
+## Tech stack
+
+- React 18
+- TypeScript
+- Redux Toolkit
+- React Router
+- React Hook Form
+- Yup
+- CSS Modules
+- Vite
+- Vitest
+- Testing Library
+- Storybook
+- ESLint, Stylelint and Prettier
+
+## Architecture
+
+The project is organized by layers and domain areas:
+
+```text
+src/
+├── api/          # loading mock data
+├── app/          # providers, routing and global styles
+├── entities/     # user, skill and request entities
+├── integration/  # integration tests
+├── pages/        # application pages
+├── shared/       # types, configuration, utilities and reusable UI
+├── store/        # Redux store, slices, selectors, thunks and middleware
+└── widgets/      # larger interface blocks
+```
+
+Presentational components receive data through props, while pages and containers connect them to Redux and routing. Local component state is used for interface behavior such as menus, modals and carousels.
+
+## Testing and CI
+
+The project includes unit and integration tests built with Vitest and Testing Library. They cover Redux logic, selectors, components and user flows such as registration, authentication, state restoration, profile editing, favorites, requests and notifications.
+
+GitHub Actions runs linting, TypeScript checks, tests and the production build for pull requests to `develop` and changes in `main` and `develop`.
+
+## Run locally
+
+Node.js 20+ and npm are required.
 
 ```bash
 npm install
 npm run dev
 ```
 
-После запуска приложение будет доступно по адресу [http://localhost:5173](http://localhost:5173).
+The development server is available at [http://localhost:5173](http://localhost:5173).
 
-## Доступные команды
-
-| Команда | Назначение |
-| --- | --- |
-| `npm run dev` | Запустить приложение в режиме разработки |
-| `npm run build` | Выполнить TypeScript-проверку и production-сборку |
-| `npm run preview` | Локально открыть production-сборку |
-| `npm run lint` | Проверить TypeScript, TSX, CSS и SCSS с помощью ESLint и Stylelint |
-| `npm run lint:fix` | Автоматически исправить доступные lint-ошибки |
-| `npm run format` | Отформатировать проект с помощью Prettier |
-| `npm run test` | Однократно запустить все тесты |
-| `npm run test:watch` | Запустить тесты в watch-режиме |
-| `npm run test:coverage` | Запустить тесты с отчётом о покрытии |
-| `npm run storybook` | Запустить Storybook на порте 6006 |
-| `npm run build-storybook` | Собрать статическую версию Storybook |
-
-## Основные маршруты
-
-| Маршрут | Назначение | Доступ |
-| --- | --- | --- |
-| `/` | Главная страница и каталог предложений | Публичный |
-| `/about` | Информация о проекте | Публичный |
-| `/skill/:userId` | Страница навыка выбранного пользователя | Публичный |
-| `/login` | Вход в локальный аккаунт | Публичный |
-| `/register` | Первый шаг регистрации | Публичный |
-| `/register/step-2` | Личные данные пользователя | Публичный |
-| `/register/step-3` | Создание предложения навыка | Публичный |
-| `/profile` | Редактирование профиля | Защищённый |
-| `/favorites` | Избранные предложения | Защищённый |
-
-При попытке открыть защищённый маршрут без активной сессии приложение перенаправляет пользователя на страницу входа, а после успешной авторизации возвращает на запрошенную страницу.
-
-## Данные и состояние
-
-Redux Toolkit используется как источник актуального состояния приложения. Через Redux и селекторы синхронизируются пользователи, избранное, количество лайков, заявки, уведомления, данные профиля и параметры каталога.
-
-| Источник | Содержимое |
-| --- | --- |
-| `public/db/users.json` | Моковые пользователи каталога |
-| `src/shared/config/categories.json` | Категории и подкатегории навыков |
-| `src/shared/config/cities.json` | Справочник городов |
-| `localStorage` | Локальный пользователь, аккаунт, сессия, избранное, заявки, уведомления и тема |
-| `sessionStorage` | Фильтры и сортировка каталога в пределах вкладки браузера |
-
-`localStorage` и `sessionStorage` отвечают за сохранение данных между обновлениями страницы, а во время работы приложения интерфейс получает актуальные значения из Redux.
-
-## Архитектура
-
-Код организован по слоям и предметным областям:
-
-```text
-src/
-├── api/       # загрузка моковых данных
-├── app/       # провайдеры, маршрутизация и глобальные стили
-├── entities/  # пользователь, навык и заявка
-├── integration/ # интеграционные тесты пользовательских сценариев
-├── pages/     # страницы приложения
-├── shared/    # типы, конфигурация, утилиты и переиспользуемый UI
-├── store/     # Redux store, slices, selectors, thunks и middleware
-└── widgets/   # крупные самостоятельные блоки интерфейса
-```
-
-Компоненты отображения получают данные через props, а контейнеры и страницы связывают их с Redux и маршрутизацией. Локальное состояние используется только для поведения интерфейса, например открытия меню, модальных окон, секций и переключения карусели.
-
-## Тестирование и CI
-
-Тесты написаны с использованием Vitest и Testing Library. Они проверяют Redux-логику, селекторы, компоненты и связанные пользовательские сценарии: регистрацию, авторизацию, восстановление состояния, работу профиля, Favorites, заявок и уведомлений.
-
-GitHub Actions запускает для pull request в `develop`, а также для изменений в `main` и `develop`:
+Useful commands:
 
 ```bash
 npm run lint
-npx tsc --noEmit
 npm run test
 npm run build
+npm run storybook
 ```
 
-## Ограничения учебной версии
+## Project limitations
 
-Проект работает без backend и использует локальные JSON-данные и хранилище браузера. Интерфейс реализован для desktop-разрешения. Поддерживается один локально зарегистрированный аккаунт: новая регистрация заменяет предыдущие локальные данные. Авторизация, заявки и уведомления демонстрируют клиентскую логику и не предназначены для хранения реальных пользовательских данных.
+This is a frontend-only educational MVP without a backend. The application uses local JSON data and browser storage. The interface was implemented for desktop layouts, and authentication, requests and notifications demonstrate client-side behavior rather than production data storage.
 
-## Команда
+## Team
 
-| Участник | Роль | GitHub |
+| Member | Role | GitHub |
 | --- | --- | --- |
-| Дарья Андреева | Тимлид | [DariAndreeva](https://github.com/DariAndreeva) |
-| Олег Болюх | Фронтенд-разработчик | [Jonk25](https://github.com/Jonk25) |
-| Альберт Валеев | Фронтенд-разработчик | [albertthecreature](https://github.com/albertthecreature) |
-| Аркадий Гальченко | Фронтенд-разработчик | [Arkadii233](https://github.com/Arkadii233) |
-| Юлия Дельцова | Фронтенд-разработчик | [JulieDelts](https://github.com/JulieDelts) |
-| Анастасия Королева | Фронтенд-разработчик | [AnastasiaK92](https://github.com/AnastasiaK92) |
-| Михаил Максименко | Фронтенд-разработчик | [maksimenkomv](https://github.com/maksimenkomv) |
-| Егор Смирнов | Фронтенд-разработчик | [kurumi177](https://github.com/kurumi177) |
-| Алёна Смирнова | Фронтенд-разработчик | [wruqlwx](https://github.com/wruqlwx) |
-| Алексей Сурков | Помощник тимлида | [person5494](https://github.com/alexeydev42) |
+| Daria Andreeva | Team lead | [DariAndreeva](https://github.com/DariAndreeva) |
+| Oleg Bolyukh | Frontend developer | [Jonk25](https://github.com/Jonk25) |
+| Albert Valeev | Frontend developer | [albertthecreature](https://github.com/albertthecreature) |
+| Arkadii Galchenko | Frontend developer | [Arkadii233](https://github.com/Arkadii233) |
+| Yulia Deltsova | Frontend developer | [JulieDelts](https://github.com/JulieDelts) |
+| Anastasia Koroleva | Frontend developer | [AnastasiaK92](https://github.com/AnastasiaK92) |
+| Mikhail Maksimenko | Frontend developer | [maksimenkomv](https://github.com/maksimenkomv) |
+| Egor Smirnov | Frontend developer | [kurumi177](https://github.com/kurumi177) |
+| Alyona Smirnova | Frontend developer | [wruqlwx](https://github.com/wruqlwx) |
+| Alexey Surkov | Assistant team lead | [alexeydev42](https://github.com/alexeydev42) |
