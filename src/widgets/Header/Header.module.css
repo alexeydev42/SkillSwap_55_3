@@ -109,3 +109,15 @@
 .registerBtn:hover {
   background: var(--color-accent-hover);
 }
+
+@media (width <= 767px) {
+  .header {
+    flex-wrap: wrap;
+    padding-inline: var(--page-padding-inline);
+  }
+
+  .search {
+    flex-basis: 100%;
+    min-width: 0;
+  }
+}

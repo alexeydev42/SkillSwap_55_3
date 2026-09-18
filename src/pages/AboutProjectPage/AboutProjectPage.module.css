@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 1440px;
+  max-width: var(--page-max-width);
   min-height: 100vh;
   margin: 0 auto;
 }
@@ -10,7 +10,7 @@
 .main {
   display: flex;
   flex: 1;
-  padding: var(--space-60) var(--space-36);
+  padding: var(--space-60) var(--page-padding-inline);
 }
 
 .team {
@@ -70,4 +70,21 @@
 
 .footer {
   background-color: var(--color-surface);
+}
+
+@media (width <= 767px) {
+  .list {
+    column-count: 1;
+    column-gap: 0;
+  }
+
+  .developer {
+    flex-wrap: wrap;
+  }
+
+  .name,
+  .githubLink {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
 }

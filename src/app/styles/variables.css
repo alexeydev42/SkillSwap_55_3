@@ -61,6 +61,20 @@
   --control-height: 48px;
   --icon-size: 24px;
   --tag-height: 32px;
+  --page-max-width: 1440px;
+  --page-padding-inline: var(--space-36);
+}
+
+@media (width <= 1024px) {
+  :root {
+    --page-padding-inline: var(--space-24);
+  }
+}
+
+@media (width <= 767px) {
+  :root {
+    --page-padding-inline: var(--space-16);
+  }
 }
 
 [data-theme='dark'] {

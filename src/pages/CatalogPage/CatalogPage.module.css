@@ -1,12 +1,12 @@
 .page {
   width: 100%;
-  max-width: 1440px;
+  max-width: var(--page-max-width);
   min-height: 100vh;
   margin: 0 auto;
 }
 
 .main {
-  margin: var(--space-32) var(--space-36) var(--space-60);
+  margin: var(--space-32) var(--page-padding-inline) var(--space-60);
 }
 
 .catalogGrid {
@@ -168,4 +168,20 @@
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
   color: var(--color-caption);
+}
+
+@media (width <= 1024px) {
+  .resultsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (width <= 767px) {
+  .catalogGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .resultsGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
