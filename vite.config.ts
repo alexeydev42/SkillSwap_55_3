@@ -4,14 +4,14 @@ import svgr from 'vite-plugin-svgr'
 import { resolve } from 'path'
 
 // https://vite.dev/config/
-export default defineConfig({
-  plugins: [
-    react(),
-    svgr(),
-  ],
+export default defineConfig(({ command }) => ({
+  base: command === 'build' ? '/SkillSwap_55_3/' : '/',
+
+  plugins: [react(), svgr()],
+
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
     },
   },
-})
+}))

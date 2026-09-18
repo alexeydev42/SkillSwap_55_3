@@ -62,8 +62,10 @@ const ServerErrorPage = lazy(() =>
   })),
 )
 
+const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/'
+
 export const AppRouter = () => (
-  <BrowserRouter>
+  <BrowserRouter basename={basename}>
     <Suspense fallback={<div>Загрузка...</div>}>
       <Routes>
         <Route path={ROUTES.HOME} element={<CatalogPageContainer />} />
