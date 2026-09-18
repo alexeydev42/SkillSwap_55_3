@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { HashRouter, Route, Routes } from 'react-router-dom'
 
 import { ROUTES } from '@/shared/lib/constants'
 
@@ -62,10 +62,8 @@ const ServerErrorPage = lazy(() =>
   })),
 )
 
-const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/'
-
 export const AppRouter = () => (
-  <BrowserRouter basename={basename}>
+  <HashRouter>
     <Suspense fallback={<div>Загрузка...</div>}>
       <Routes>
         <Route path={ROUTES.HOME} element={<CatalogPageContainer />} />
@@ -86,5 +84,5 @@ export const AppRouter = () => (
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Suspense>
-  </BrowserRouter>
+  </HashRouter>
 )
