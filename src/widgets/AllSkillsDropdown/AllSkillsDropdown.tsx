@@ -66,7 +66,10 @@ const categoryItems = CATEGORY_PRESENTATION.flatMap(({ id, icon, variant }) => {
       icon,
       variant,
       title: category.name,
-      subcategories: category.subcategories.map(({ name }) => name),
+      subcategories: category.subcategories.map(({ id, name }) => ({
+        id,
+        name,
+      })),
     },
   ]
 })
@@ -77,7 +80,11 @@ const categoryColumns = [
   categoryItems.filter((_, index) => index % 2 !== 0),
 ]
 
-export const AllSkillsDropdown = () => {
+type AllSkillsDropdownProps = {
+  onSubcategorySelect?: (subcategoryId: string) => void
+}
+
+export const AllSkillsDropdown = ({ onSubcategorySelect }: AllSkillsDropdownProps) => {
   return (
     <DropdownContainer className={styles.dropdown}>
       <div className={styles.grid}>
@@ -90,6 +97,7 @@ export const AllSkillsDropdown = () => {
                 title={category.title}
                 subcategories={category.subcategories}
                 variant={category.variant}
+                onSubcategoryClick={onSubcategorySelect}
               />
             ))}
           </div>

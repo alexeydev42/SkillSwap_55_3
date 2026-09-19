@@ -118,6 +118,7 @@ export const UserHeaderControls = ({
           className={styles.userInfo}
           type="button"
           onClick={onProfileClick}
+          aria-label={`Открыть меню пользователя ${userName}`}
           aria-expanded={isProfileMenuOpen}
           aria-haspopup="menu"
         >

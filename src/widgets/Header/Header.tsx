@@ -13,6 +13,8 @@ import type { NotificationView } from '@/store/slices/notificationsSlice'
 import { AllSkillsDropdown } from '../AllSkillsDropdown'
 import { UserHeaderControls } from './UserHeaderControls'
 
+import clsx from 'clsx'
+
 import styles from './Header.module.css'
 
 interface HeaderBaseProps {
@@ -31,6 +33,7 @@ interface HeaderBaseProps {
   onLogout?: () => void
   onRegister?: () => void
   onSearchChange?: (value: string) => void
+  onSubcategorySelect?: (subcategoryId: string) => void
   searchQuery?: string
 }
 
@@ -71,6 +74,7 @@ export const Header: FC<HeaderProps> = (props) => {
     onProfileClick,
     onProfileMenuClose,
     onAllSkillsMenuOpenChange,
+    onSubcategorySelect,
     onNotificationsClick,
     onNotificationsMenuClose,
     onFavoritesClick,
@@ -134,7 +138,7 @@ export const Header: FC<HeaderProps> = (props) => {
 
   return (
     <header className={styles.header}>
-      <Logo />
+      <Logo compactOnMobile />
 
       <nav className={styles.nav}>
         <Link to={ROUTES.ABOUT} className={styles.navLink}>
@@ -155,7 +159,12 @@ export const Header: FC<HeaderProps> = (props) => {
 
           {isSkillsMenuOpen && (
             <div className={styles.dropdownPanel}>
-              <AllSkillsDropdown />
+              <AllSkillsDropdown
+                onSubcategorySelect={(subcategoryId) => {
+                  onSubcategorySelect?.(subcategoryId)
+                  setIsSkillsMenuOpen(false)
+                }}
+              />
             </div>
           )}
         </div>
@@ -168,7 +177,11 @@ export const Header: FC<HeaderProps> = (props) => {
         onValueChange={onSearchChange}
       />
 
-      <div className={styles.right}>
+      <div
+        className={clsx(styles.right, {
+          [styles.guestRight]: !isAuthenticated,
+        })}
+      >
         <IconButton
           icon={isDark ? <SunIcon /> : <MoonIcon />}
           onClick={onToggleTheme}

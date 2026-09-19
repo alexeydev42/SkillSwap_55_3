@@ -60,7 +60,7 @@ const DEVELOPERS: Developer[] = [
   {
     firstName: 'Алексей',
     lastName: 'Сурков',
-    githubUrl: 'https://github.com/person5494',
+    githubUrl: 'https://github.com/alexeydev42',
   },
 ]
 

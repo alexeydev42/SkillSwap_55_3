@@ -12,7 +12,7 @@ import authReducer from '@/store/slices/authSlice'
 import notificationsReducer from '@/store/slices/notificationsSlice'
 import requestsReducer from '@/store/slices/requestsSlice'
 import usersReducer from '@/store/slices/usersSlice'
-import catalogFiltersReducer from '@/store/slices/catalogFiltersSlice'
+import catalogFiltersReducer, { setCatalogFilters } from '@/store/slices/catalogFiltersSlice'
 import favoritesReducer from '@/store/slices/favoritesSlice'
 import registrationReducer from '@/store/slices/registrationSlice'
 import { sendSwapRequest } from '@/store/thunks/sendSwapRequest'
@@ -391,5 +391,91 @@ describe('HeaderContainer', () => {
         name: 'Кнопка избранного',
       }),
     ).not.toBeInTheDocument()
+  })
+
+  it('заменяет выбранные подкатегории при выборе навыка из dropdown', async () => {
+    const user = userEvent.setup()
+    const { testStore } = renderHeader()
+
+    act(() => {
+      testStore.dispatch(
+        setCatalogFilters({
+          offerType: 'teaching',
+          gender: 'female',
+          subcategoryIds: ['photography', 'video-editing'],
+          cityIds: ['moscow'],
+        }),
+      )
+    })
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'Все навыки',
+      }),
+    )
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'Английский',
+      }),
+    )
+
+    expect(testStore.getState().catalogFilters.filters).toEqual({
+      offerType: 'teaching',
+      gender: 'female',
+      subcategoryIds: ['english'],
+      cityIds: ['moscow'],
+    })
+
+    expect(
+      screen.queryByRole('button', {
+        name: 'Английский',
+      }),
+    ).not.toBeInTheDocument()
+  })
+
+  it('переходит в каталог после выбора подкатегории с другой страницы', async () => {
+    const user = userEvent.setup()
+    const testStore = createTestStore()
+
+    render(
+      <Provider store={testStore}>
+        <MemoryRouter initialEntries={[ROUTES.ABOUT]}>
+          <Routes>
+            <Route
+              path={ROUTES.ABOUT}
+              element={
+                <>
+                  <HeaderContainer />
+                  <h1>О проекте</h1>
+                </>
+              }
+            />
+
+            <Route path={ROUTES.HOME} element={<h1>Каталог открыт</h1>} />
+          </Routes>
+        </MemoryRouter>
+      </Provider>,
+    )
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'Все навыки',
+      }),
+    )
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'Английский',
+      }),
+    )
+
+    expect(
+      screen.getByRole('heading', {
+        name: 'Каталог открыт',
+      }),
+    ).toBeInTheDocument()
+
+    expect(testStore.getState().catalogFilters.filters.subcategoryIds).toEqual(['english'])
   })
 })
