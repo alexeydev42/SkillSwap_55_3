@@ -405,6 +405,36 @@ describe('CatalogPage — loading/error states', () => {
   })
 })
 
+describe('CatalogPage — панель фильтров', () => {
+  it('раскрывает и сворачивает фильтры', async () => {
+    const user = userEvent.setup()
+
+    renderCatalogPage([baseUser])
+
+    const openButton = screen.getByRole('button', {
+      name: 'Показать фильтры',
+    })
+
+    expect(openButton).toHaveAttribute('aria-expanded', 'false')
+
+    await user.click(openButton)
+
+    const closeButton = screen.getByRole('button', {
+      name: 'Скрыть фильтры',
+    })
+
+    expect(closeButton).toHaveAttribute('aria-expanded', 'true')
+
+    await user.click(closeButton)
+
+    expect(
+      screen.getByRole('button', {
+        name: 'Показать фильтры',
+      }),
+    ).toHaveAttribute('aria-expanded', 'false')
+  })
+})
+
 describe('CatalogPage — поиск', () => {
   it('ищет по названию offeredSkill.title', async () => {
     const user = userEvent.setup()
