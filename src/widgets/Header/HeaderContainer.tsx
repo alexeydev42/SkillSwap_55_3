@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { ROUTES } from '@/shared/lib/constants'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
+import { setCatalogFilters } from '@/store/slices/catalogFiltersSlice'
 import {
   clearReadNotifications,
   markAllAsRead,
@@ -31,6 +32,7 @@ export const HeaderContainer = ({
   onNotificationsClick,
   onNotificationsMenuClose,
   onFavoritesClick,
+  onSubcategorySelect,
   onLogout,
   ...headerProps
 }: HeaderContainerProps) => {
@@ -40,6 +42,8 @@ export const HeaderContainer = ({
   const session = useAppSelector((state) => state.auth.session)
 
   const currentUser = useAppSelector(selectCurrentUser)
+
+  const catalogFilters = useAppSelector((state) => state.catalogFilters.filters)
 
   // Получает только итоговую валидную выдачу уведомлений.
   const notifications = useAppSelector(selectVisibleNotifications)
@@ -115,6 +119,19 @@ export const HeaderContainer = ({
     dispatch(clearReadNotifications())
   }
 
+  const handleSubcategorySelect = (subcategoryId: string) => {
+    dispatch(
+      setCatalogFilters({
+        ...catalogFilters,
+        subcategoryIds: [subcategoryId],
+      }),
+    )
+
+    onSubcategorySelect?.(subcategoryId)
+
+    navigate(ROUTES.HOME)
+  }
+
   const handleFavoritesClick = () => {
     navigate(ROUTES.FAVORITES)
   }
@@ -125,13 +142,20 @@ export const HeaderContainer = ({
   }
 
   if (!session || !currentUser) {
-    return <Header {...headerProps} isAuthenticated={false} />
+    return (
+      <Header
+        {...headerProps}
+        isAuthenticated={false}
+        onSubcategorySelect={handleSubcategorySelect}
+      />
+    )
   }
 
   return (
     <Header
       {...headerProps}
       isAuthenticated
+      onSubcategorySelect={handleSubcategorySelect}
       user={{
         userName: currentUser.name,
         avatarSrc: currentUser.avatarUrl ?? '',

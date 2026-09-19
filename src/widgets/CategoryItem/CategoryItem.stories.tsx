@@ -10,6 +10,8 @@ import PaletteIcon from '../../shared/assets/icons/icon-palette.svg?react'
 
 import { CategoryItem } from './CategoryItem'
 import type { CategoryItemVariant } from './CategoryItem'
+import { categories as skillCategories } from '@/shared/config'
+import type { Subcategory } from '@/shared/types'
 
 const meta: Meta<typeof CategoryItem> = {
   title: 'Widgets/CategoryItem',
@@ -23,95 +25,50 @@ export default meta
 
 type Story = StoryObj<typeof CategoryItem>
 
+const getSubcategories = (categoryId: string): Subcategory[] =>
+  skillCategories.find((category) => category.id === categoryId)?.subcategories ?? []
+
 const categories: {
   icon: ReactNode
   title: string
-  subcategories: string[]
+  subcategories: Subcategory[]
   variant: CategoryItemVariant
 }[] = [
   {
     icon: <BriefcaseIcon />,
     title: 'Бизнес и карьера',
     variant: 'business',
-    subcategories: [
-      'Управление командой',
-      'Маркетинг и реклама',
-      'Продажи и переговоры',
-      'Личный бренд',
-      'Резюме и собеседование',
-      'Тайм-менеджмент',
-      'Проектное управление',
-      'Предпринимательство',
-    ],
+    subcategories: getSubcategories('business-career'),
   },
   {
     icon: <PaletteIcon />,
     title: 'Творчество и искусство',
     variant: 'creative',
-    subcategories: [
-      'Рисование и иллюстрация',
-      'Фотография',
-      'Видеомонтаж',
-      'Музыка и звук',
-      'Актёрское мастерство',
-      'Креативное письмо',
-      'Арт-терапия',
-      'Декор и DIY',
-    ],
+    subcategories: getSubcategories('creativity-art'),
   },
   {
     icon: <GlobalIcon />,
     title: 'Иностранные языки',
     variant: 'languages',
-    subcategories: [
-      'Английский',
-      'Французский',
-      'Испанский',
-      'Немецкий',
-      'Китайский',
-      'Японский',
-      'Подготовка к экзаменам (IELTS, TOEFL)',
-    ],
+    subcategories: getSubcategories('foreign-languages'),
   },
   {
     icon: <BookIcon />,
     title: 'Образование и развитие',
     variant: 'education',
-    subcategories: [
-      'Личностное развитие',
-      'Навыки обучения',
-      'Когнитивные техники',
-      'Скорочтение',
-      'Навыки преподавания',
-      'Коучинг',
-    ],
+    subcategories: getSubcategories('education-development'),
   },
   {
     icon: <HomeIcon />,
     title: 'Дом и уют',
     variant: 'home',
-    subcategories: [
-      'Уборка и организация',
-      'Домашние финансы',
-      'Приготовление еды',
-      'Домашние растения',
-      'Ремонт',
-      'Хранение вещей',
-    ],
+    subcategories: getSubcategories('home-comfort'),
   },
   {
     icon: <LifestyleIcon />,
     title: 'Здоровье и лайфстайл',
     variant: 'health',
-    subcategories: [
-      'Йога и медитация',
-      'Питание и ЗОЖ',
-      'Ментальное здоровье',
-      'Осознанность',
-      'Физические тренировки',
-      'Сон и восстановление',
-      'Баланс жизни и работы',
-    ],
+    subcategories: getSubcategories('health-lifestyle'),
   },
 ]
 export const Default: Story = {

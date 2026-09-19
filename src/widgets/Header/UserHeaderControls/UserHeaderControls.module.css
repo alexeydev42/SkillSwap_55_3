@@ -63,3 +63,29 @@
   position: relative;
   flex-shrink: 0;
 }
+
+@media (width <= 1024px) {
+  .controls {
+    gap: var(--space-24);
+  }
+
+  .icons {
+    gap: var(--space-16);
+  }
+}
+
+@media (width <= 767px) {
+  .controls {
+    flex-shrink: 0;
+    gap: var(--space-8);
+  }
+
+  .icons {
+    flex-shrink: 0;
+    gap: var(--space-8);
+  }
+
+  .userName {
+    display: none;
+  }
+}

@@ -18,3 +18,20 @@
   letter-spacing: -0.264px;
   color: var(--color-text);
 }
+
+@media (width <= 767px) {
+  .mobileCompact {
+    gap: var(--space-8);
+  }
+
+  .mobileCompact .icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .mobileCompact .text {
+    font-size: var(--font-size-h3);
+    line-height: var(--line-height-h3);
+    letter-spacing: -0.22px;
+  }
+}

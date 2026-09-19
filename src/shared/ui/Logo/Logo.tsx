@@ -5,9 +5,14 @@ import { ROUTES } from '@/shared/lib/constants'
 import iconLogo from '../../assets/icons/icon-logo.svg'
 import styles from './Logo.module.css'
 
-export const Logo = () => {
+interface LogoProps {
+  compactOnMobile?: boolean
+}
+
+export const Logo = ({ compactOnMobile = false }: LogoProps) => {
   const location = useLocation()
   const isHomePage = location.pathname === ROUTES.HOME
+  const logoClassName = `${styles.logo} ${compactOnMobile ? styles.mobileCompact : ''}`
 
   const content = (
     <>
@@ -17,11 +22,11 @@ export const Logo = () => {
   )
 
   if (isHomePage) {
-    return <div className={styles.logo}>{content}</div>
+    return <div className={logoClassName}>{content}</div>
   }
 
   return (
-    <Link to={ROUTES.HOME} className={styles.logo} aria-label="На главную">
+    <Link to={ROUTES.HOME} className={logoClassName} aria-label="На главную">
       {content}
     </Link>
   )
