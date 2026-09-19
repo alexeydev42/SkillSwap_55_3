@@ -7,6 +7,24 @@ import { CatalogPage } from './CatalogPage'
 import { catalogPageMock } from './CatalogPage.mock'
 
 const catalogPageViewports = {
+  mobile: {
+    name: 'Mobile 360 × 800',
+    styles: {
+      width: '360px',
+      height: '800px',
+    },
+    type: 'mobile',
+  },
+
+  tablet: {
+    name: 'Tablet 768 × 1024',
+    styles: {
+      width: '768px',
+      height: '1024px',
+    },
+    type: 'tablet',
+  },
+
   catalogPage: {
     name: 'CatalogPage 1440 × 1372',
     styles: {
@@ -30,12 +48,6 @@ const meta = {
     layout: 'fullscreen',
     viewport: {
       options: catalogPageViewports,
-    },
-  },
-  globals: {
-    viewport: {
-      value: 'catalogPage',
-      isRotated: false,
     },
   },
 } satisfies Meta<typeof CatalogPage>
@@ -76,5 +88,27 @@ export const ProfileMenuOpen: Story = {
 
     // При открытии истории меню сразу показывается по макету.
     isProfileMenuInitiallyOpen: true,
+  },
+}
+
+export const Loading: Story = {
+  name: 'Состояние загрузки',
+  args: {
+    ...catalogPageMock,
+    users: [],
+    usersStatus: 'loading',
+    usersError: null,
+    hasMockUsers: false,
+  },
+}
+
+export const Error: Story = {
+  name: 'Состояние ошибки',
+  args: {
+    ...catalogPageMock,
+    users: [],
+    usersStatus: 'error',
+    usersError: 'Не удалось загрузить данные',
+    hasMockUsers: false,
   },
 }

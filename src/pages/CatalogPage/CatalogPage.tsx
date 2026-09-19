@@ -30,6 +30,7 @@ import {
   removeCatalogFilter,
 } from './CatalogPage.utils'
 
+import clsx from 'clsx'
 import styles from './CatalogPage.module.css'
 
 import { Spinner } from '@/shared/ui/Spinner'
@@ -138,6 +139,8 @@ export const CatalogPage = ({
       isAllSkillsMenuInitiallyOpen,
     ),
   )
+
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false)
 
   // Ограничивает секцию тремя или девятью популярными пользователями
   // и преобразует их в данные карточек.
@@ -320,18 +323,30 @@ export const CatalogPage = ({
                 <h2 className={styles.filtersTitle}>
                   Фильтры{filtersCount > 0 && ` (${filtersCount})`}
                 </h2>
+                <button
+                  type="button"
+                  className={styles.filtersToggle}
+                  onClick={() => setIsFiltersOpen((currentValue) => !currentValue)}
+                  aria-expanded={isFiltersOpen}
+                >
+                  {isFiltersOpen ? 'Скрыть фильтры' : 'Показать фильтры'}
+                </button>
                 {hasActiveCatalogOptions && (
                   <button type="button" className={styles.resetButton} onClick={handleReset}>
                     Сбросить ×
                   </button>
                 )}
               </div>
-              <FiltersSidebar
-                categories={categories}
-                cities={cities}
-                filters={filters}
-                onChange={(nextFilters) => dispatch(setCatalogFilters(nextFilters))}
-              />
+              <div
+                className={clsx(styles.filtersContent, isFiltersOpen && styles.filtersContentOpen)}
+              >
+                <FiltersSidebar
+                  categories={categories}
+                  cities={cities}
+                  filters={filters}
+                  onChange={(nextFilters) => dispatch(setCatalogFilters(nextFilters))}
+                />
+              </div>
             </div>
             {hasActiveCatalogOptions ? (
               <div className={styles.results}>
