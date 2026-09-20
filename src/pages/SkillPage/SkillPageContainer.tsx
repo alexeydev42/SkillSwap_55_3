@@ -3,10 +3,8 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { mapUserToCatalogCard } from '@/pages/CatalogPage/CatalogPage.utils'
 import { NotFoundPage } from '@/pages/NotFoundPage'
-import DoneIcon from '@/shared/assets/icons/icon-done.svg?react'
 import { categories, cities } from '@/shared/config'
 import { ROUTES } from '@/shared/lib/constants'
-import { Modal } from '@/shared/ui/Modal'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { addFavorite, removeFavorite, selectFavoriteUserIds } from '@/store/slices/favoritesSlice'
 import { selectHasRequestToUser } from '@/store/slices/requestsSlice'
@@ -19,7 +17,6 @@ import {
   selectUsersStatus,
 } from '@/store/slices/usersSlice'
 import { sendSwapRequest } from '@/store/thunks/sendSwapRequest'
-import { StatusModalContent } from '@/widgets/StatusModalContent'
 import { SuccessModal } from '@/widgets/SuccessModal'
 
 import { SkillPage } from './SkillPage'
