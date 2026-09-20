@@ -1,5 +1,8 @@
 .gallery {
   display: flex;
+  width: 100%;
+  max-width: 440px;
+  min-width: 0;
   align-items: flex-start;
   gap: var(--space-24);
 }
@@ -7,9 +10,12 @@
 /* Контейнер главного изображения и навигации */
 .main {
   position: relative;
-  width: 324px;
-  height: 324px;
-  flex-shrink: 0;
+  width: 100%;
+  max-width: 324px;
+  min-width: 0;
+  aspect-ratio: 1;
+  height: auto;
+  flex: 1 1 324px;
   overflow: hidden;
   border-radius: var(--radius-md);
   background-color: var(--color-background);
@@ -78,10 +84,11 @@
 /* Вертикальная колонка миниатюр */
 .thumbs {
   display: flex;
+  width: 92px;
+  flex: 0 0 92px;
   flex-direction: column;
   align-items: center;
   gap: var(--space-24);
-  width: 92px;
 }
 
 /* Отдельная миниатюра */
@@ -131,4 +138,32 @@
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-body);
   pointer-events: none;
+}
+
+@media (width <= 1200px) {
+  .gallery {
+    max-width: none;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-16);
+  }
+
+  .gallery .main {
+    max-width: 324px;
+    flex: none;
+  }
+
+  .thumbs {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(3, minmax(0, 92px));
+    justify-content: center;
+    gap: var(--space-12);
+  }
+
+  .thumb {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+  }
 }

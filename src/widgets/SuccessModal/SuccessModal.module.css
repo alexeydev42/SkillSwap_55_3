@@ -4,7 +4,24 @@
  * целиком приходит из StatusModalContent, здесь оно не дублируется.
  */
 
- .modal {
+.modal {
   max-inline-size: 556px;
   padding: 80px var(--space-60);
+}
+
+@media (width <= 1200px) {
+  .modal {
+    top: var(--space-24);
+    transform: translateX(-50%);
+    max-block-size: calc(100dvh - (2 * var(--space-24)));
+    padding: var(--space-48) var(--space-40);
+  }
+}
+
+@media (width <= 767px) {
+  .modal {
+    top: var(--space-16);
+    max-block-size: calc(100dvh - (2 * var(--space-16)));
+    padding: var(--space-32) var(--space-24);
+  }
 }
