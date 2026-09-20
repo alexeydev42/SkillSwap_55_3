@@ -21,6 +21,7 @@ import { HeaderContainer } from '@/widgets/Header/HeaderContainer'
 import { PersonalDataSectionContainer } from '@/widgets/PersonalDataSection'
 import { ProfileSidebar } from '@/widgets/ProfileSidebar'
 
+import clsx from 'clsx'
 import styles from './ProfilePage.module.css'
 
 export type ProfileTab = 'favorites' | 'personal'
@@ -160,7 +161,13 @@ export default function ProfilePage({ initialTab = DEFAULT_TAB }: ProfilePagePro
         <div className={styles.profileGrid}>
           <ProfileSidebar activeTab={activeTab} onTabClick={handleTabClick} />
 
-          <div className={styles.content}>{renderContent()}</div>
+          <div
+            className={clsx(styles.content, {
+              [styles.favoritesContent]: activeTab === 'favorites',
+            })}
+          >
+            {renderContent()}
+          </div>
         </div>
       </main>
 
