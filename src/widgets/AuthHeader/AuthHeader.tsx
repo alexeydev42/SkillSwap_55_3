@@ -16,7 +16,7 @@ export const AuthHeader = () => {
 
   return (
     <header className={styles.header}>
-      <Logo />
+      <Logo compactOnMobile />
 
       <Button
         className={styles.closeButton}
