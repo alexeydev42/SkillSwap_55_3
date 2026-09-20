@@ -41,8 +41,7 @@ export const ChangePasswordModal = ({ onClose }: ChangePasswordModalProps) => {
     event.preventDefault()
 
     const nextPasswordError = validatePassword(password)
-    const nextConfirmError =
-      password !== confirmPassword ? 'Пароли не совпадают' : undefined
+    const nextConfirmError = password !== confirmPassword ? 'Пароли не совпадают' : undefined
 
     setPasswordError(nextPasswordError?.message)
     setConfirmError(nextConfirmError)
@@ -63,7 +62,7 @@ export const ChangePasswordModal = ({ onClose }: ChangePasswordModalProps) => {
   }
 
   return (
-    <Modal>
+    <Modal className={styles.modal}>
       <form className={styles.form} onSubmit={handleSubmit} noValidate>
         <h2 className={styles.title}>Изменить пароль</h2>
 

@@ -175,7 +175,12 @@ export function PersonalDataSection({
 
         <div>
           <span className={styles.label}>Город</span>
-          <CityAutocomplete value={city} onChange={setCity} placeholder="Введите город" />
+          <CityAutocomplete
+            className={styles.cityAutocomplete}
+            value={city}
+            onChange={setCity}
+            placeholder="Введите город"
+          />
         </div>
 
         <Textarea

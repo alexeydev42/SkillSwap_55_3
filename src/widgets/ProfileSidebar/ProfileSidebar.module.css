@@ -9,3 +9,20 @@
   background: var(--color-surface);
   border-radius: var(--radius-pill);
 }
+
+@media (width <= 1024px) {
+  .sidebar {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-8);
+    height: auto;
+    padding: var(--space-16);
+  }
+}
+
+@media (width <= 767px) {
+  .sidebar {
+    padding: var(--space-8);
+    gap: var(--space-4);
+  }
+}

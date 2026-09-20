@@ -56,13 +56,29 @@
   color: var(--color-caption);
 }
 
+.favoritesContent {
+  padding: 0;
+  background: transparent;
+}
+
 .footer {
   background: var(--color-surface);
 }
 
-@media (width <= 767px) {
+@media (width <= 1024px) {
   .profileGrid {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .content {
+    padding: var(--space-24);
+  }
+}
+
+@media (width <= 767px) {
+  .main {
+    margin-top: var(--space-24);
+    margin-bottom: var(--space-40);
   }
 
   .content {
