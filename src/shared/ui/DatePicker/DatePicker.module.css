@@ -17,7 +17,8 @@
 
 .input-container {
   position: relative;
-  width: 208px;
+  width: 100%;
+  max-width: 208px;
   height: var(--control-height);
 }
 
@@ -383,4 +384,21 @@
 
 .helper-text {
   color: var(--color-text);
+}
+
+@media (width <= 767px) {
+  .input-container {
+    max-width: none;
+  }
+
+  .input {
+  padding-left: var(--space-12);
+  letter-spacing: 0;
+}
+
+.calendar-button {
+  width: var(--space-32);
+  height: var(--space-32);
+  flex-basis: var(--space-32);
+}
 }

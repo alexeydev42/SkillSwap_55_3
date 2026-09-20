@@ -106,11 +106,7 @@
   height: 168px;
   box-sizing: border-box;
   overflow: hidden;
-  padding:
-    calc(var(--control-height) + var(--space-8))
-    var(--space-12)
-    var(--space-8)
-    0;
+  padding: calc(var(--control-height) + var(--space-8)) var(--space-12) var(--space-8) 0;
   border: 1px solid var(--color-caption);
   border-radius: var(--radius-md);
   box-shadow: none;
@@ -127,31 +123,23 @@
 }
 
 /* Задаёт ширину скроллбара списка городов. */
-.cityAutocomplete.cityAutocomplete
-  > div:has(> ul)
-  > ul::-webkit-scrollbar {
+.cityAutocomplete.cityAutocomplete > div:has(> ul) > ul::-webkit-scrollbar {
   width: var(--space-4);
 }
 
 /* Оставляет дорожку скроллбара прозрачной. */
-.cityAutocomplete.cityAutocomplete
-  > div:has(> ul)
-  > ul::-webkit-scrollbar-track {
+.cityAutocomplete.cityAutocomplete > div:has(> ul) > ul::-webkit-scrollbar-track {
   background-color: transparent;
 }
 
 /* Оформляет бегунок скроллбара списка городов. */
-.cityAutocomplete.cityAutocomplete
-  > div:has(> ul)
-  > ul::-webkit-scrollbar-thumb {
+.cityAutocomplete.cityAutocomplete > div:has(> ul) > ul::-webkit-scrollbar-thumb {
   border-radius: var(--space-8);
   background-color: rgb(200 200 200 / 90%);
 }
 
 /* Скрывает стандартные кнопки скроллбара. */
-.cityAutocomplete.cityAutocomplete
-  > div:has(> ul)
-  > ul::-webkit-scrollbar-button {
+.cityAutocomplete.cityAutocomplete > div:has(> ul) > ul::-webkit-scrollbar-button {
   display: none;
   width: 0;
   height: 0;
@@ -181,10 +169,7 @@
   max-height: none;
   box-sizing: border-box;
   overflow: hidden;
-  padding:
-    calc(var(--control-height) + var(--space-8))
-    0
-    var(--space-8);
+  padding: calc(var(--control-height) + var(--space-8)) 0 var(--space-8);
   border: 1px solid var(--color-caption);
   border-radius: var(--radius-md);
   box-shadow: none;
@@ -221,10 +206,7 @@
   z-index: 1000;
   width: 100%;
   box-sizing: border-box;
-  padding:
-    calc(var(--control-height) + var(--space-8))
-    var(--space-12)
-    var(--space-8);
+  padding: calc(var(--control-height) + var(--space-8)) var(--space-12) var(--space-8);
   border: 1px solid var(--color-caption);
   border-radius: var(--radius-md);
   box-shadow: none;
@@ -261,4 +243,27 @@
   display: block;
   width: 100%;
   height: 100%;
+}
+
+@media (width <= 767px) {
+  .multiSelect.multiSelect > button[aria-expanded='true'] {
+    border-color: var(--color-caption);
+    border-bottom-color: var(--color-disabled);
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+  }
+
+  .multiSelect.multiSelect > div:last-child {
+    position: static;
+    width: 100%;
+    margin-top: calc(-1 * var(--space-4));
+    padding: var(--space-8) var(--space-12);
+    border: 1px solid var(--color-caption);
+    border-top: 0;
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+  }
+
+  .multiSelect.multiSelect > div:last-child > div {
+    max-height: 240px;
+    overflow-y: auto;
+  }
 }

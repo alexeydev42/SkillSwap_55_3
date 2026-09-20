@@ -6,8 +6,10 @@ import { SkillDetailsButtons } from '@/widgets/SkillDetailsButtons'
 
 import styles from './SkillConfirmationModal.module.css'
 
-export interface SkillConfirmationModalProps
-  extends Pick<SkillDetailsProps, 'title' | 'category' | 'subcategory' | 'description'> {
+export interface SkillConfirmationModalProps extends Pick<
+  SkillDetailsProps,
+  'title' | 'category' | 'subcategory' | 'description'
+> {
   /** Фотографии навыка — передаются как есть в SkillGallery (VERST-33). */
   images: string[]
   /** Клик по «Редактировать». */
@@ -37,14 +39,12 @@ export function SkillConfirmationModal({
     <Modal className={styles.modal}>
       <div className={styles.header}>
         <h2 className={styles.heading}>Ваше предложение</h2>
-        <p className={styles.subheading}>
-          Пожалуйста, проверьте и подтвердите правильность данных
-        </p>
+        <p className={styles.subheading}>Пожалуйста, проверьте и подтвердите правильность данных</p>
       </div>
 
       <div className={styles.body}>
         <div className={styles.gallery}>
-          <SkillGallery images={images} />
+          <SkillGallery images={images} keepSideLayoutOnTablet />
         </div>
 
         <div className={styles.info}>
@@ -54,7 +54,13 @@ export function SkillConfirmationModal({
             subcategory={subcategory}
             description={description}
           />
-          <SkillDetailsButtons variant="edit" onEdit={onEdit} onDone={onDone} disabled={disabled} />
+          <SkillDetailsButtons
+            className={styles.actions}
+            variant="edit"
+            onEdit={onEdit}
+            onDone={onDone}
+            disabled={disabled}
+          />
         </div>
       </div>
     </Modal>
