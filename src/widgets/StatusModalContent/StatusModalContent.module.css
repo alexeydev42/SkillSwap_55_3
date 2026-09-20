@@ -63,3 +63,29 @@
 .modal-content__button {
   inline-size: 100%;
 }
+
+@media (width <= 1200px) {
+  .modal-content__wrapper {
+    gap: var(--space-32);
+  }
+
+  .modal-content__icon-wrapper {
+    inline-size: 80px;
+    block-size: 80px;
+  }
+}
+
+@media (width <= 767px) {
+  .modal-content__wrapper {
+    gap: var(--space-24);
+  }
+
+  .modal-content__icon-wrapper {
+    inline-size: 72px;
+    block-size: 72px;
+  }
+
+  .modal-content__content {
+    gap: var(--space-24);
+  }
+}
