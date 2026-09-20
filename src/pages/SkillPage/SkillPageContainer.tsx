@@ -202,15 +202,7 @@ export const SkillPageContainer = () => {
       />
 
       {isRegistrationSuccessOpen && (
-        <Modal>
-          <StatusModalContent
-            icon={<DoneIcon />}
-            title="Ваше предложение создано"
-            text="Теперь вы можете предложить обмен"
-            buttonText="Готово"
-            onButtonClick={handleCloseRegistrationSuccess}
-          />
-        </Modal>
+        <SuccessModal variant="created" onDone={handleCloseRegistrationSuccess} />
       )}
 
       {isRequestSuccessOpen && (

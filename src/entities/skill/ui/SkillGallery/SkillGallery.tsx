@@ -11,11 +11,12 @@ import styles from './SkillGallery.module.css'
 
 export type SkillGalleryProps = {
   images: string[]
+  keepSideLayoutOnTablet?: boolean
 }
 
 const VISIBLE_THUMBS = 3
 
-export const SkillGallery = ({ images }: SkillGalleryProps) => {
+export const SkillGallery = ({ images, keepSideLayoutOnTablet = false }: SkillGalleryProps) => {
   const swiperRef = useRef<SwiperRef | null>(null)
   const [activeIndex, setActiveIndex] = useState(0)
 
@@ -58,7 +59,7 @@ export const SkillGallery = ({ images }: SkillGalleryProps) => {
   }
 
   return (
-    <div className={styles.gallery}>
+    <div className={clsx(styles.gallery, keepSideLayoutOnTablet && styles.keepSideLayoutOnTablet)}>
       <div className={styles.main}>
         <Swiper
           ref={swiperRef}
