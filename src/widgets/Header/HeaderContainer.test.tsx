@@ -154,6 +154,7 @@ describe('HeaderContainer', () => {
   beforeEach(() => {
     window.localStorage.clear()
     window.sessionStorage.clear()
+    delete document.documentElement.dataset.theme
   })
 
   it('открывает меню пользователя по имени и аватару', async () => {
@@ -477,5 +478,32 @@ describe('HeaderContainer', () => {
     ).toBeInTheDocument()
 
     expect(testStore.getState().catalogFilters.filters.subcategoryIds).toEqual(['english'])
+  })
+
+  it('восстанавливает сохранённую тёмную тему', () => {
+    window.localStorage.setItem(STORAGE_KEYS.THEME, 'dark')
+
+    renderHeader()
+
+    expect(document.documentElement.dataset.theme).toBe('dark')
+  })
+
+  it('переключает тему и сохраняет выбор', async () => {
+    const user = userEvent.setup()
+
+    window.localStorage.setItem(STORAGE_KEYS.THEME, 'light')
+
+    renderHeader()
+
+    expect(document.documentElement.dataset.theme).toBe('light')
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'Переключить тему',
+      }),
+    )
+
+    expect(document.documentElement.dataset.theme).toBe('dark')
+    expect(window.localStorage.getItem(STORAGE_KEYS.THEME)).toBe('dark')
   })
 })
