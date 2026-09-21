@@ -2,7 +2,7 @@ import { useState, type ChangeEvent, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { AvatarUpload } from '@/entities/user/ui/AvatarUpload'
-import UserInfoIllustration from '@/shared/assets/illustrations/illustration-user-info.svg'
+import UserInfoIllustration from '@/shared/assets/illustrations/illustration-user-info.svg?react'
 import { categories, cities } from '@/shared/config/referenceData'
 import { ROUTES } from '@/shared/lib/constants'
 import { validateBirthDate, validateName } from '@/shared/lib/validators'
@@ -217,7 +217,7 @@ export const RegistrationStep2 = () => {
     <AuthLayout
       topContent={<RegistrationProgress currentStep={2} />}
       infoBlockProps={{
-        illustration: <img className={styles.illustration} src={UserInfoIllustration} alt="" />,
+        illustration: <UserInfoIllustration className={styles.illustration} aria-hidden="true" />,
         title: 'Расскажите немного о себе',
         description: 'Это поможет другим людям лучше вас узнать, чтобы выбрать для обмена',
       }}

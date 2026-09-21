@@ -97,11 +97,11 @@
 }
 
 .option:hover {
-  background-color: var(--color-accent-hover);
+  background-color: var(--color-accent-subtle);
 }
 
 .optionSelected {
-  background-color: var(--color-accent);
+  background-color: var(--color-accent-selected);
   color: var(--color-text);
 }
 

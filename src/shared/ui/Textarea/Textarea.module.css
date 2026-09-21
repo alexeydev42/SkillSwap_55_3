@@ -35,7 +35,8 @@
   padding: var(--space-4)  var(--space-20)  var(--space-60);
   border: 0;
   outline: none;
-  background: var(--color-background);
+  background: var(--color-surface);
+  color: var(--color-text);
   resize: none;
   max-height: 96px;
   font-family: var(--font-body);

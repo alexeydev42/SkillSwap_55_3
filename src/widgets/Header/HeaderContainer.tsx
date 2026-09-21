@@ -1,7 +1,8 @@
-import { useState, type MouseEventHandler } from 'react'
+import { useEffect, useState, type MouseEventHandler } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { ROUTES } from '@/shared/lib/constants'
+import { applyTheme, getInitialTheme, saveTheme } from '@/shared/lib/theme'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { setCatalogFilters } from '@/store/slices/catalogFiltersSlice'
 import {
@@ -38,6 +39,7 @@ export const HeaderContainer = ({
 }: HeaderContainerProps) => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
+  const [isDark, setIsDark] = useState(() => getInitialTheme() === 'dark')
 
   const session = useAppSelector((state) => state.auth.session)
 
@@ -60,6 +62,20 @@ export const HeaderContainer = ({
   const isProfileMenuControlled = isProfileMenuOpen !== undefined
 
   const isNotificationsMenuControlled = isNotificationsMenuOpen !== undefined
+
+  useEffect(() => {
+    applyTheme(isDark ? 'dark' : 'light')
+  }, [isDark])
+
+  const handleToggleTheme = () => {
+    setIsDark((currentValue) => {
+      const nextTheme = currentValue ? 'light' : 'dark'
+
+      saveTheme(nextTheme)
+
+      return !currentValue
+    })
+  }
 
   const resolvedIsProfileMenuOpen = isProfileMenuControlled
     ? isProfileMenuOpen
@@ -147,6 +163,8 @@ export const HeaderContainer = ({
         {...headerProps}
         isAuthenticated={false}
         onSubcategorySelect={handleSubcategorySelect}
+        isDark={isDark}
+        onToggleTheme={handleToggleTheme}
       />
     )
   }
@@ -172,6 +190,8 @@ export const HeaderContainer = ({
       onClearReadNotifications={handleClearReadNotifications}
       onFavoritesClick={onFavoritesClick ?? handleFavoritesClick}
       onLogout={handleLogout}
+      isDark={isDark}
+      onToggleTheme={handleToggleTheme}
     />
   )
 }

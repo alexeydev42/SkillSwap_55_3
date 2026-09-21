@@ -1,7 +1,7 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react'
 import { generatePath, useNavigate } from 'react-router-dom'
 
-import SchoolBoardIllustration from '@/shared/assets/illustrations/illustration-school-board.svg'
+import SchoolBoardIllustration from '@/shared/assets/illustrations/illustration-school-board.svg?react'
 import { categories } from '@/shared/config/referenceData'
 import { ROUTES } from '@/shared/lib/constants'
 import { validateOfferedSkillDescription, validateOfferedSkillTitle } from '@/shared/lib/validators'
@@ -191,7 +191,7 @@ export const RegistrationStep3 = () => {
         topContent={<RegistrationProgress currentStep={3} />}
         infoBlockProps={{
           illustration: (
-            <img className={styles.illustration} src={SchoolBoardIllustration} alt="" />
+            <SchoolBoardIllustration className={styles.illustration} aria-hidden="true" />
           ),
           title: 'Укажите, чем вы готовы поделиться',
           description: 'Так другие люди смогут увидеть ваши предложения и предложить вам обмен!',

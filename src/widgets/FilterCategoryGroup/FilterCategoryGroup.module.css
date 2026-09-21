@@ -41,10 +41,11 @@
   width: var(--icon-size);
   height: var(--icon-size);
   margin-left: var(--space-8);
+  color: var(--color-text);
   transition: transform 0.3s ease-in-out;
 }
 
-.filter-category-group__header-icon img {
+.filter-category-group__header-icon svg {
   display: block;
   width: 100%;
   height: 100%;
