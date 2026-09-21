@@ -27,7 +27,7 @@ const CONTENT: Record<SuccessModalVariant, { icon: ReactNode; title: string; tex
   },
 }
 
- // SuccessModal — модалка успешного действия, два состояния: "Ваше предложение создано" и "Вы предложили обмен"
+ //SuccessModal — модалка успешного действия, два состояния: "Ваше предложение создано" и "Вы предложили обмен"
 
  export function SuccessModal({ variant = 'created', onDone }: SuccessModalProps) {
   const { icon, title, text } = CONTENT[variant]

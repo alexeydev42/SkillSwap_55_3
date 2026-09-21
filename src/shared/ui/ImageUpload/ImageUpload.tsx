@@ -103,6 +103,7 @@ export const ImageUpload = ({
               tabIndex={0}
               onKeyDown={(event) => {
                 if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault()
                   handleClick()
                 }
               }}
