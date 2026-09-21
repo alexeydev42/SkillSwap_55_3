@@ -58,3 +58,30 @@
   background-color: var(--color-surface);
   margin-top: var(--space-24);
 }
+
+@media (width <= 767px) {
+  .main {
+    margin-top: 0;
+    padding-inline: var(--page-padding-inline);
+  }
+
+  .error {
+    width: 100%;
+    margin-top: var(--space-60);
+  }
+
+  .image {
+    width: 100%;
+    height: auto;
+  }
+
+  .buttons {
+    flex-direction: column;
+    gap: var(--space-16);
+  }
+
+  .buttons > * {
+    flex: none;
+    width: 100%;
+  }
+}

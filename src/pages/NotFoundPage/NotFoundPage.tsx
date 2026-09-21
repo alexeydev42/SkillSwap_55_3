@@ -20,7 +20,7 @@ export const NotFoundPage = () => {
         </p>
         <div className={styles.buttons}>
           <Button variant="secondary" className={styles.button}>
-            Собщить об ошибке
+            Сообщить об ошибке
           </Button>
           <Button className={styles.button} onClick={() => navigate(ROUTES.HOME)}>
             На главную

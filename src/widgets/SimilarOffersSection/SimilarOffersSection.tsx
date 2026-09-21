@@ -11,21 +11,64 @@ export interface SimilarOffersSectionProps {
   items: UserSkillCardProps[]
 }
 
-const ITEMS_PER_GROUP = 4
 const MAX_ITEMS = 8
+
+const getItemsPerGroup = () => {
+  if (typeof window === 'undefined' || !window.matchMedia) {
+    return 4
+  }
+
+  if (window.matchMedia('(width <= 767px)').matches) {
+    return 1
+  }
+
+  if (window.matchMedia('(width <= 1024px)').matches) {
+    return 2
+  }
+
+  if (window.matchMedia('(width <= 1200px)').matches) {
+    return 3
+  }
+
+  return 4
+}
 
 export const SimilarOffersSection = ({ items }: SimilarOffersSectionProps) => {
   const [currentGroup, setCurrentGroup] = useState(0)
+  const [itemsPerGroup, setItemsPerGroup] = useState(getItemsPerGroup)
 
   const limitedItems = items.slice(0, MAX_ITEMS)
   const itemsKey = limitedItems.map(({ user }) => user.id).join('|')
-  const hasSeveralGroups = limitedItems.length > ITEMS_PER_GROUP
+  const groupsCount = Math.ceil(limitedItems.length / itemsPerGroup)
+  const hasSeveralGroups = groupsCount > 1
 
   // При переходе на страницу другого пользователя начинает показ
   // нового набора похожих предложений с первой группы.
   useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) {
+      return
+    }
+
+    const mediaQueries = [
+      window.matchMedia('(width <= 767px)'),
+      window.matchMedia('(width <= 1024px)'),
+      window.matchMedia('(width <= 1200px)'),
+    ]
+
+    const handleMediaChange = () => {
+      setItemsPerGroup(getItemsPerGroup())
+    }
+
+    mediaQueries.forEach((query) => query.addEventListener('change', handleMediaChange))
+
+    return () => {
+      mediaQueries.forEach((query) => query.removeEventListener('change', handleMediaChange))
+    }
+  }, [])
+
+  useEffect(() => {
     setCurrentGroup(0)
-  }, [itemsKey])
+  }, [itemsKey, itemsPerGroup])
 
   if (limitedItems.length === 0) {
     return null
@@ -33,11 +76,11 @@ export const SimilarOffersSection = ({ items }: SimilarOffersSectionProps) => {
 
   // Защищает выдачу от пустой второй группы, если новый список стал короче.
   const visibleGroup = hasSeveralGroups ? currentGroup : 0
-  const startIndex = visibleGroup * ITEMS_PER_GROUP
-  const visibleItems = limitedItems.slice(startIndex, startIndex + ITEMS_PER_GROUP)
+  const startIndex = visibleGroup * itemsPerGroup
+  const visibleItems = limitedItems.slice(startIndex, startIndex + itemsPerGroup)
 
   const handleNextGroup = () => {
-    setCurrentGroup((group) => (group === 0 ? 1 : 0))
+    setCurrentGroup((group) => (group + 1) % groupsCount)
   }
 
   return (
