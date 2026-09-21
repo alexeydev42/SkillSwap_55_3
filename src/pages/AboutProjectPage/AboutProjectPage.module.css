@@ -68,10 +68,6 @@
   color: var(--color-text);
 }
 
-.footer {
-  background-color: var(--color-surface);
-}
-
 @media (width <= 1024px) {
   .list {
     column-count: 1;

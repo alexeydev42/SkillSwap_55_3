@@ -98,10 +98,6 @@
   max-width: none;
 }
 
-.footer {
-  background: var(--color-surface);
-}
-
 .state {
   display: flex;
   min-height: 400px;

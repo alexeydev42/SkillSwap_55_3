@@ -27,9 +27,7 @@ export const NotFoundPage = () => {
           </Button>
         </div>
       </section>
-      <div className={styles.footer}>
-        <Footer />
-      </div>
+      <Footer />
     </div>
   )
 }

@@ -61,10 +61,6 @@
   background: transparent;
 }
 
-.footer {
-  background: var(--color-surface);
-}
-
 @media (width <= 1024px) {
   .profileGrid {
     grid-template-columns: minmax(0, 1fr);
