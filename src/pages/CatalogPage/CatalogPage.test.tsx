@@ -28,9 +28,19 @@ vi.mock('@/widgets/RecommendedSection', () => ({
 vi.mock('@/widgets/AppliedFiltersBar', () => ({ AppliedFiltersBar: () => null }))
 vi.mock('@/widgets/SortButton', () => ({ SortButton: () => null }))
 vi.mock('@/widgets/UserSkillCard', () => ({
-  UserSkillCard: ({ user }: { user: User }) => (
-    <article>
+  UserSkillCard: ({
+    user,
+    isFavoriteDisabled,
+  }: {
+    user: { id: string; name: string }
+    isFavoriteDisabled?: boolean
+  }) => (
+    <article data-testid={`user-card-${user.id}`}>
       <span>{user.name}</span>
+
+      <button type="button" disabled={isFavoriteDisabled}>
+        Избранное
+      </button>
     </article>
   ),
 }))
@@ -149,6 +159,7 @@ function renderCatalogPage(
           usersStatus="success"
           usersError={null}
           hasMockUsers={mockUsers.length > 0}
+          currentUserId={localUser?.id}
           onRetry={vi.fn()}
           onFavoriteClick={vi.fn()}
           onDetailsClick={vi.fn()}
@@ -322,6 +333,40 @@ describe('CatalogPage — секция «Новое»', () => {
     const newSection = screen.getByRole('region', { name: 'Новое' })
 
     expect(within(newSection).getByText('Локальный пользователь')).toBeInTheDocument()
+  })
+})
+
+describe('CatalogPage — Favorites', () => {
+  it('блокирует Favorite на собственной карточке пользователя', async () => {
+    const user = userEvent.setup()
+
+    const localUser: User = {
+      ...baseUser,
+      id: 'local-user',
+      name: 'Локальный пользователь',
+      offeredSkill: {
+        ...baseUser.offeredSkill,
+        title: 'Локальный навык',
+      },
+      createdAt: '2026-09-21T12:00:00.000Z',
+    }
+
+    renderCatalogPage([baseUser], localUser)
+
+    await user.type(
+      screen.getByRole('searchbox', {
+        name: 'Поиск по навыкам',
+      }),
+      'Локальный',
+    )
+
+    const ownCard = screen.getByTestId('user-card-local-user')
+
+    expect(
+      within(ownCard).getByRole('button', {
+        name: 'Избранное',
+      }),
+    ).toBeDisabled()
   })
 })
 

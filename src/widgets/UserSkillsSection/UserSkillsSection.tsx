@@ -13,6 +13,7 @@ export interface UserSkillsSectionProps {
   onFavoriteClick: (id: string) => void
   onDetailsClick: (id: string) => void
   isFavoriteDisabled?: boolean
+  currentUserId?: string
 }
 
 export const UserSkillsSection = ({
@@ -25,6 +26,7 @@ export const UserSkillsSection = ({
   onFavoriteClick,
   onDetailsClick,
   isFavoriteDisabled = false,
+  currentUserId,
 }: UserSkillsSectionProps) => {
   return (
     <div className={styles.section}>
@@ -41,7 +43,7 @@ export const UserSkillsSection = ({
           <UserSkillCard
             key={item.id}
             user={item}
-            isFavoriteDisabled={isFavoriteDisabled}
+            isFavoriteDisabled={isFavoriteDisabled || item.id === currentUserId}
             onFavoriteClick={() => onFavoriteClick(item.id)}
             onDetailsClick={() => onDetailsClick(item.id)}
             className={styles.card}

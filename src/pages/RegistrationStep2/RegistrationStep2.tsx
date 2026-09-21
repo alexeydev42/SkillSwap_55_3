@@ -1,5 +1,5 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 
 import { AvatarUpload } from '@/entities/user/ui/AvatarUpload'
 import UserInfoIllustration from '@/shared/assets/illustrations/illustration-user-info.svg?react'
@@ -113,6 +113,12 @@ export const RegistrationStep2 = () => {
   const [cityError, setCityError] = useState<string>()
   const [subcategoryError, setSubcategoryError] = useState<string>()
   const [avatarError, setAvatarError] = useState<string>()
+
+  const hasStep1Data = Boolean(draft.email && draft.password)
+
+  if (!hasStep1Data) {
+    return <Navigate to={ROUTES.REGISTER} replace />
+  }
 
   const selectedCategoryId = selectedCategoryIds[0] ?? ''
   const subcategoryOptions = getSubcategoryOptions(selectedCategoryId)

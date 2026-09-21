@@ -104,15 +104,15 @@ export const SkillPageContainer = () => {
   }
 
   // Переключает Favorite открытого или похожего пользователя.
-  const handleFavoriteClick = (similarUserId: string) => {
-    if (!isAuthenticated) {
+  const handleFavoriteClick = (targetUserId: string) => {
+    if (!isAuthenticated || targetUserId === authSession?.userId) {
       return
     }
 
-    if (favoriteUserIds.includes(similarUserId)) {
-      dispatch(removeFavorite(similarUserId))
+    if (favoriteUserIds.includes(targetUserId)) {
+      dispatch(removeFavorite(targetUserId))
     } else {
-      dispatch(addFavorite(similarUserId))
+      dispatch(addFavorite(targetUserId))
     }
   }
 
@@ -178,7 +178,7 @@ export const SkillPageContainer = () => {
       effectiveLikesCountByUserId[similarUser.id] ?? similarUser.likesCount,
       effectiveLearningSubcategoryIdsByUserId[similarUser.id] ?? similarUser.learningSubcategoryIds,
     ),
-    isFavoriteDisabled: !isAuthenticated,
+    isFavoriteDisabled: !isAuthenticated || similarUser.id === authSession?.userId,
     onFavoriteClick: () => handleFavoriteClick(similarUser.id),
     onDetailsClick: () => handleDetailsClick(similarUser.id),
   }))

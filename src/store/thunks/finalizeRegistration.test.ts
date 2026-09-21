@@ -195,4 +195,70 @@ describe('finalizeRegistration', () => {
     expect(storageService.get(STORAGE_KEYS.REQUESTS)).toBeNull()
     expect(storageService.get(STORAGE_KEYS.NOTIFICATIONS)).toBeNull()
   })
+
+  it('восстанавливает прежние данные, если регистрация сохранилась не полностью', () => {
+    const previousAccount: AuthAccount = {
+      userId: oldLocalUser.id,
+      email: 'old@example.com',
+      password: 'OldPassword1!',
+    }
+
+    const previousSession: AuthSession = {
+      userId: oldLocalUser.id,
+    }
+
+    storageService.set(STORAGE_KEYS.LOCAL_USER, oldLocalUser)
+    storageService.set(STORAGE_KEYS.AUTH_ACCOUNT, previousAccount)
+    storageService.set(STORAGE_KEYS.AUTH_SESSION, previousSession)
+
+    const testStore = createTestStore()
+
+    testStore.dispatch(
+      updateStep1Draft({
+        email: 'new-user@example.com',
+        password: 'Password1!',
+      }),
+    )
+
+    testStore.dispatch(
+      updateStep2Draft({
+        name: 'Новый пользователь',
+        birthDate: '1993-04-15',
+        gender: 'preferNotToSay',
+        cityId: 'saint-petersburg',
+        avatarUrl: null,
+        learningSubcategoryIds: ['english'],
+      }),
+    )
+
+    testStore.dispatch(
+      updateStep3Draft({
+        offeredSkill: {
+          title: 'Видеомонтаж',
+          categoryId: 'creativity-art',
+          subcategoryId: 'video-editing',
+          description: 'Научу основам видеомонтажа',
+          imageUrls: ['data:image/webp;base64,dGVzdA=='],
+        },
+      }),
+    )
+
+    const originalSet = storageService.set.bind(storageService)
+
+    vi.spyOn(storageService, 'set').mockImplementation((key, value, storageType = 'local') => {
+      if (key === STORAGE_KEYS.AUTH_SESSION) {
+        return false
+      }
+
+      return originalSet(key, value, storageType)
+    })
+
+    const result = testStore.dispatch(finalizeRegistration())
+
+    expect(result).toBeNull()
+
+    expect(storageService.get<User>(STORAGE_KEYS.LOCAL_USER)).toEqual(oldLocalUser)
+    expect(storageService.get<AuthAccount>(STORAGE_KEYS.AUTH_ACCOUNT)).toEqual(previousAccount)
+    expect(storageService.get<AuthSession>(STORAGE_KEYS.AUTH_SESSION)).toEqual(previousSession)
+  })
 })

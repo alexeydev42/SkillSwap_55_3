@@ -1,10 +1,8 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
-import AppleIcon from '@/shared/assets/icons/icon-apple.svg?react'
 import EyeIcon from '@/shared/assets/icons/icon-eye.svg?react'
 import EyeOffIcon from '@/shared/assets/icons/icon-eye-slash.svg?react'
-import GoogleIcon from '@/shared/assets/icons/icon-google.svg?react'
 import LightBulb from '@/shared/assets/illustrations/illustration-light-bulb.svg?react'
 import { ROUTES } from '@/shared/lib/constants'
 import { Button } from '@/shared/ui/Button'
@@ -59,19 +57,6 @@ export default function LoginPage({ hasError = false }: LoginPageProps) {
       }}
     >
       <div className={styles.formSection}>
-        <div className={styles.socialButtons}>
-          <Button variant="secondary" icon={<GoogleIcon />} className={styles.socialButton}>
-            Продолжить с Google
-          </Button>
-
-          <Button variant="secondary" icon={<AppleIcon />} className={styles.socialButton}>
-            Продолжить с Apple
-          </Button>
-        </div>
-
-        <div className={styles.divider}>
-          <span>или</span>
-        </div>
 
         <form className={styles.form} onSubmit={handleSubmit} noValidate>
           <Input

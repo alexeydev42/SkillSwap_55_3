@@ -14,6 +14,7 @@ export interface RecommendedSectionProps {
   onDetailsClick: (id: string) => void
   /** Блокирует Favorites для гостя. */
   isFavoriteDisabled?: boolean
+  currentUserId?: string
 }
 
 const ITEMS_PER_BATCH = 6
@@ -39,6 +40,7 @@ export function RecommendedSection({
   onFavoriteClick,
   onDetailsClick,
   isFavoriteDisabled = false,
+  currentUserId,
 }: RecommendedSectionProps) {
   const [shuffledItemIds, setShuffledItemIds] = useState<string[]>([])
   const [visibleItemsCount, setVisibleItemsCount] = useState(ITEMS_PER_BATCH)
@@ -104,6 +106,7 @@ export function RecommendedSection({
         items={visibleItems}
         showViewAll={false}
         isFavoriteDisabled={isFavoriteDisabled}
+        currentUserId={currentUserId}
         onFavoriteClick={onFavoriteClick}
         onDetailsClick={onDetailsClick}
       />

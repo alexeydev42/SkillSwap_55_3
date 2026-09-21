@@ -49,6 +49,13 @@
   order: 1;
 }
 
+.error {
+  margin: 0;
+  color: var(--color-error);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
+}
+
 @media (width <= 1200px) {
   .modal {
     top: var(--space-24);
