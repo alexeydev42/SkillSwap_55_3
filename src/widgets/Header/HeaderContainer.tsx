@@ -1,7 +1,7 @@
-import { useState, type MouseEventHandler } from 'react'
+import { useEffect, useState, type MouseEventHandler } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { ROUTES } from '@/shared/lib/constants'
+import { ROUTES, STORAGE_KEYS } from '@/shared/lib/constants'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { setCatalogFilters } from '@/store/slices/catalogFiltersSlice'
 import {
@@ -38,6 +38,23 @@ export const HeaderContainer = ({
 }: HeaderContainerProps) => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
+  const [isDark, setIsDark] = useState(() => {
+    const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME)
+
+    if (savedTheme === 'dark') {
+      return true
+    }
+
+    if (savedTheme === 'light') {
+      return false
+    }
+
+    if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches
+    }
+
+    return false
+  })
 
   const session = useAppSelector((state) => state.auth.session)
 
@@ -60,6 +77,17 @@ export const HeaderContainer = ({
   const isProfileMenuControlled = isProfileMenuOpen !== undefined
 
   const isNotificationsMenuControlled = isNotificationsMenuOpen !== undefined
+
+  useEffect(() => {
+    const theme = isDark ? 'dark' : 'light'
+
+    document.documentElement.dataset.theme = theme
+    localStorage.setItem(STORAGE_KEYS.THEME, theme)
+  }, [isDark])
+
+  const handleToggleTheme = () => {
+    setIsDark((currentValue) => !currentValue)
+  }
 
   const resolvedIsProfileMenuOpen = isProfileMenuControlled
     ? isProfileMenuOpen
@@ -147,6 +175,8 @@ export const HeaderContainer = ({
         {...headerProps}
         isAuthenticated={false}
         onSubcategorySelect={handleSubcategorySelect}
+        isDark={isDark}
+        onToggleTheme={handleToggleTheme}
       />
     )
   }
@@ -172,6 +202,8 @@ export const HeaderContainer = ({
       onClearReadNotifications={handleClearReadNotifications}
       onFavoritesClick={onFavoritesClick ?? handleFavoritesClick}
       onLogout={handleLogout}
+      isDark={isDark}
+      onToggleTheme={handleToggleTheme}
     />
   )
 }
