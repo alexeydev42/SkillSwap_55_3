@@ -1,7 +1,8 @@
 import { useEffect, useState, type MouseEventHandler } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { ROUTES, STORAGE_KEYS } from '@/shared/lib/constants'
+import { ROUTES } from '@/shared/lib/constants'
+import { applyTheme, getInitialTheme, saveTheme } from '@/shared/lib/theme'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { setCatalogFilters } from '@/store/slices/catalogFiltersSlice'
 import {
@@ -38,23 +39,7 @@ export const HeaderContainer = ({
 }: HeaderContainerProps) => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const [isDark, setIsDark] = useState(() => {
-    const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME)
-
-    if (savedTheme === 'dark') {
-      return true
-    }
-
-    if (savedTheme === 'light') {
-      return false
-    }
-
-    if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches
-    }
-
-    return false
-  })
+  const [isDark, setIsDark] = useState(() => getInitialTheme() === 'dark')
 
   const session = useAppSelector((state) => state.auth.session)
 
@@ -79,14 +64,17 @@ export const HeaderContainer = ({
   const isNotificationsMenuControlled = isNotificationsMenuOpen !== undefined
 
   useEffect(() => {
-    const theme = isDark ? 'dark' : 'light'
-
-    document.documentElement.dataset.theme = theme
-    localStorage.setItem(STORAGE_KEYS.THEME, theme)
+    applyTheme(isDark ? 'dark' : 'light')
   }, [isDark])
 
   const handleToggleTheme = () => {
-    setIsDark((currentValue) => !currentValue)
+    setIsDark((currentValue) => {
+      const nextTheme = currentValue ? 'light' : 'dark'
+
+      saveTheme(nextTheme)
+
+      return !currentValue
+    })
   }
 
   const resolvedIsProfileMenuOpen = isProfileMenuControlled
