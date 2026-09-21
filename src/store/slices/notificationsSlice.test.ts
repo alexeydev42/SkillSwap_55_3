@@ -117,21 +117,31 @@ describe('notificationsSlice', () => {
     expect(freshState.items).toEqual(testStore.getState().notifications.items)
   })
 
-  it('при ошибке сохранения notification не добавляется в Redux, request остаётся созданным', () => {
+  it('откатывает request, если notification сохранить не удалось', () => {
     const testStore = createTestStore()
+
     testStore.dispatch(setMockUsers([recipient]))
     loginAsUserA(testStore)
 
-    vi.spyOn(storageService, 'set').mockImplementation((key: string) => {
-      // Сохранение заявки проходит успешно, а вот уведомления — нет.
-      return key !== STORAGE_KEYS.NOTIFICATIONS
+    const originalSet = storageService.set.bind(storageService)
+
+    vi.spyOn(storageService, 'set').mockImplementation((key, value) => {
+      if (key === STORAGE_KEYS.NOTIFICATIONS) {
+        return false
+      }
+
+      return originalSet(key, value)
     })
 
     const result = testStore.dispatch(sendSwapRequest(recipient.id))
 
-    expect(result).toBe(true)
-    expect(testStore.getState().requests.items).toHaveLength(1)
+    expect(result).toBe(false)
+
+    expect(testStore.getState().requests.items).toEqual([])
+    expect(storageService.get(STORAGE_KEYS.REQUESTS)).toEqual([])
+
     expect(testStore.getState().notifications.items).toEqual([])
+
     expect(testStore.getState().notifications.error).toBe('Не удалось сохранить уведомление.')
   })
 

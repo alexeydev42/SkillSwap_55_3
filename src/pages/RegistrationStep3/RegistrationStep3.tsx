@@ -4,7 +4,11 @@ import { generatePath, Navigate, useNavigate } from 'react-router-dom'
 import SchoolBoardIllustration from '@/shared/assets/illustrations/illustration-school-board.svg?react'
 import { categories } from '@/shared/config/referenceData'
 import { ROUTES } from '@/shared/lib/constants'
-import { validateOfferedSkillDescription, validateOfferedSkillTitle } from '@/shared/lib/validators'
+import {
+  TEXT_LIMITS,
+  validateOfferedSkillDescription,
+  validateOfferedSkillTitle,
+} from '@/shared/lib/validators'
 import { Button } from '@/shared/ui/Button'
 import { ImageUpload } from '@/shared/ui/ImageUpload'
 import { Input } from '@/shared/ui/Input'
@@ -231,6 +235,7 @@ export const RegistrationStep3 = () => {
               value={title}
               onChange={handleTitleChange}
               error={titleError}
+              maxLength={TEXT_LIMITS.offeredSkillTitle.max}
             />
 
             <Select
@@ -258,6 +263,7 @@ export const RegistrationStep3 = () => {
               value={description}
               onChange={handleDescriptionChange}
               error={descriptionError}
+              maxLength={TEXT_LIMITS.offeredSkillDescription.max}
             />
 
             <ImageUpload

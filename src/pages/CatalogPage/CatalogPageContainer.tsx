@@ -65,6 +65,7 @@ export function CatalogPageContainer() {
       usersError={usersError}
       hasMockUsers={mockUsers.length > 0}
       isFavoriteDisabled={!authSession}
+      currentUserId={currentUserId}
       onRetry={handleRetry}
       onFavoriteClick={handleFavoriteClick}
       onDetailsClick={handleDetailsClick}

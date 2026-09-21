@@ -5,7 +5,7 @@ import { AvatarUpload } from '@/entities/user/ui/AvatarUpload'
 import UserInfoIllustration from '@/shared/assets/illustrations/illustration-user-info.svg?react'
 import { categories, cities } from '@/shared/config/referenceData'
 import { ROUTES } from '@/shared/lib/constants'
-import { validateBirthDate, validateName } from '@/shared/lib/validators'
+import { TEXT_LIMITS, validateBirthDate, validateName } from '@/shared/lib/validators'
 import type { Gender } from '@/shared/types'
 import { Button } from '@/shared/ui/Button'
 import { CityAutocomplete } from '@/shared/ui/CityAutocomplete'
@@ -243,6 +243,7 @@ export const RegistrationStep2 = () => {
             value={name}
             onChange={handleNameChange}
             error={nameError}
+            maxLength={TEXT_LIMITS.name.max}
           />
 
           <div className={styles.row}>

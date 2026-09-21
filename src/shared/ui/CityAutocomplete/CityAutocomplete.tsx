@@ -12,6 +12,7 @@ interface CityAutocompleteProps {
   onChange: (value: string) => void
   placeholder?: string
   className?: string
+  disabled?: boolean
 }
 
 export const CityAutocomplete = ({
@@ -19,6 +20,7 @@ export const CityAutocomplete = ({
   onChange,
   placeholder = 'Введите город',
   className,
+  disabled = false,
 }: CityAutocompleteProps) => {
   // При первом отображении список должен быть закрыт даже при заполненном поле.
   const [isOpen, setIsOpen] = useState(false)
@@ -56,6 +58,7 @@ export const CityAutocomplete = ({
           placeholder={placeholder}
           value={value}
           onChange={handleInputChange}
+          disabled={disabled}
           borderless
           trailingIcon={
             value ? (
@@ -63,6 +66,7 @@ export const CityAutocomplete = ({
                 icon={<CrossIcon />}
                 onClick={handleClear}
                 aria-label="Очистить поле"
+                disabled={disabled}
               />
             ) : null
           }

@@ -81,4 +81,36 @@ describe('PersonalDataSection', () => {
 
     expect(handleSave).not.toHaveBeenCalled()
   })
+
+  it('не сохраняет город, которого нет в справочнике', () => {
+  const handleSave = vi.fn()
+
+  render(
+    <PersonalDataSection
+      data={testData}
+      onSave={handleSave}
+    />,
+  )
+
+  fireEvent.change(
+    screen.getByPlaceholderText('Введите город'),
+    {
+      target: {
+        value: 'Неизвестный город',
+      },
+    },
+  )
+
+  fireEvent.click(
+    screen.getByRole('button', {
+      name: 'Сохранить',
+    }),
+  )
+
+  expect(handleSave).not.toHaveBeenCalled()
+
+  expect(
+    screen.getByText('Город: выберите значение из списка'),
+  ).toBeInTheDocument()
+})
 })

@@ -16,6 +16,25 @@ const UPPERCASE_REGEX = /\p{Lu}/u
 const DIGIT_REGEX = /\p{Nd}/u
 const SPECIAL_CHARACTER_REGEX = /[\p{P}\p{S}]/u
 
+export const TEXT_LIMITS = {
+  name: {
+    min: 1,
+    max: 50,
+  },
+  offeredSkillTitle: {
+    min: 1,
+    max: 60,
+  },
+  offeredSkillDescription: {
+    min: 20,
+    max: 1000,
+  },
+  userDescription: {
+    min: 0,
+    max: 500,
+  },
+} as const
+
 /** Проверяет email: обязателен, базовый формат по regex. */
 export function validateEmail(value: string): FieldError | null {
   if (value.length === 0) {
@@ -77,24 +96,42 @@ function validateTrimmedLength(
   return null
 }
 
-/** Проверяет имя пользователя (1-30 символов после trim). */
+/** Проверяет имя пользователя. */
 export function validateName(value: string): FieldError | null {
-  return validateTrimmedLength(value, 'name', 1, 30, 'Имя')
+  return validateTrimmedLength(value, 'name', TEXT_LIMITS.name.min, TEXT_LIMITS.name.max, 'Имя')
 }
 
-/** Проверяет название навыка offeredSkill.title (1-30 символов после trim). */
+/** Проверяет название предлагаемого навыка. */
 export function validateOfferedSkillTitle(value: string): FieldError | null {
-  return validateTrimmedLength(value, 'offeredSkill.title', 1, 30, 'Название навыка')
+  return validateTrimmedLength(
+    value,
+    'offeredSkill.title',
+    TEXT_LIMITS.offeredSkillTitle.min,
+    TEXT_LIMITS.offeredSkillTitle.max,
+    'Название навыка',
+  )
 }
 
-/** Проверяет описание навыка offeredSkill.description (20-500 символов после trim). */
+/** Проверяет описание предлагаемого навыка. */
 export function validateOfferedSkillDescription(value: string): FieldError | null {
-  return validateTrimmedLength(value, 'offeredSkill.description', 20, 500, 'Описание навыка')
+  return validateTrimmedLength(
+    value,
+    'offeredSkill.description',
+    TEXT_LIMITS.offeredSkillDescription.min,
+    TEXT_LIMITS.offeredSkillDescription.max,
+    'Описание навыка',
+  )
 }
 
-/** Проверяет описание пользователя User.description (0-160 символов после trim). */
+/** Проверяет описание пользователя. */
 export function validateUserDescription(value: string): FieldError | null {
-  return validateTrimmedLength(value, 'description', 0, 160, 'Описание профиля')
+  return validateTrimmedLength(
+    value,
+    'description',
+    TEXT_LIMITS.userDescription.min,
+    TEXT_LIMITS.userDescription.max,
+    'Описание профиля',
+  )
 }
 
 /**

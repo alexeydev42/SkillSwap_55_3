@@ -104,14 +104,22 @@ describe('updatePersonalData', () => {
     )
   })
 
-  it('оставляет cityId прежним, если название города не найдено в справочнике', () => {
+  it('не сохраняет данные, если название города отсутствует в справочнике', () => {
     const testStore = createTestStore()
+
     testStore.dispatch(setLocalUser(existingUser))
     storageService.set(STORAGE_KEYS.LOCAL_USER, existingUser)
 
-    testStore.dispatch(updatePersonalData({ ...validFormData, city: 'Неизвестный город' }))
+    const result = testStore.dispatch(
+      updatePersonalData({
+        ...validFormData,
+        city: 'Неизвестный город',
+      }),
+    )
 
-    expect(testStore.getState().users.localUser?.cityId).toBe(existingUser.cityId)
+    expect(result).toBe(false)
+    expect(testStore.getState().users.localUser).toEqual(existingUser)
+    expect(storageService.get<User>(STORAGE_KEYS.LOCAL_USER)).toEqual(existingUser)
   })
 
   it('сохраняет avatarUrl как null, если аватар не выбран', () => {

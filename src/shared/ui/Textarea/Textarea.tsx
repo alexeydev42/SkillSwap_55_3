@@ -11,12 +11,14 @@ interface TextareaProps {
   helperText?: string
   disabled?: boolean
   className?: string
+  maxLength?: number
 }
 
 export const Textarea = (props: TextareaProps) => {
   const textareaId = useId()
   const messageId = `${textareaId}-message`
-  const { label, placeholder, value, onChange, error, helperText, disabled, className } = props
+  const { label, placeholder, value, onChange, error, helperText, disabled, className, maxLength } =
+    props
 
   return (
     <div className={clsx(styles['textarea-container'], className)}>
@@ -40,6 +42,7 @@ export const Textarea = (props: TextareaProps) => {
           disabled={disabled}
           onChange={onChange}
           value={value}
+          maxLength={maxLength}
           aria-invalid={Boolean(error)}
           aria-describedby={error || helperText ? messageId : undefined}
         />

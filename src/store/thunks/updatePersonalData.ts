@@ -21,10 +21,9 @@ function formatBirthDate(date: Date | null): string {
 }
 
 /**
- * Сохраняет отредактированные личные данные текущего локального пользователя
- * (LOGIC-30). offeredSkill, learningSubcategoryIds, likesCount, createdAt и id
- * не затрагиваются — редактирование навыка вне рамок этой задачи. Пароль
- * здесь не меняется — это отдельный флоу (LOGIC-33). Если email в форме
+ * Сохраняет отредактированные личные данные текущего локального пользователя.
+ * offeredSkill, learningSubcategoryIds, likesCount, createdAt и id
+ * не затрагиваются — редактирование навыка вне рамок этой задачи. Если email в форме
  * отличается от текущего auth.account.email, обновляем и AuthAccount, чтобы
  * email в системе оставался согласован с личными данными.
  * Персистентность — по установленному в проекте паттерну (finalizeRegistration):
@@ -41,12 +40,16 @@ export const updatePersonalData =
 
     const city = cities.find(({ name }) => name === formData.city)
 
+    if (!city) {
+      return false
+    }
+
     const updatedUser: User = {
       ...localUser,
       name: formData.name.trim(),
       birthDate: formatBirthDate(formData.birthDate),
       gender: formData.gender as Gender,
-      cityId: city?.id ?? localUser.cityId,
+      cityId: city.id,
       description: formData.about.trim(),
       avatarUrl: formData.avatar ?? null,
     }
