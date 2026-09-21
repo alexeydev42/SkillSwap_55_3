@@ -39,6 +39,12 @@ export const ImageUpload = ({
   const maxLimit = isAvatar ? 1 : 5
   const canAddImages = !isAvatar && images.length < maxLimit
 
+  const customActionLabel = isAvatar
+    ? hasImages
+      ? 'Изменить аватар'
+      : 'Выбрать аватар'
+    : actionText
+
   const handleClick = () => {
     inputRef.current?.click()
   }
@@ -93,6 +99,7 @@ export const ImageUpload = ({
               className={styles.customContent}
               onClick={handleClick}
               role="button"
+              aria-label={customActionLabel}
               tabIndex={0}
               onKeyDown={(event) => {
                 if (event.key === 'Enter' || event.key === ' ') {
@@ -136,9 +143,11 @@ export const ImageUpload = ({
             className={styles.customContent}
             onClick={handleClick}
             role="button"
+            aria-label={customActionLabel}
             tabIndex={0}
             onKeyDown={(event) => {
               if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault()
                 handleClick()
               }
             }}

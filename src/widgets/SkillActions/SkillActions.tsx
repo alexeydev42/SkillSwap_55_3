@@ -34,8 +34,8 @@ export const SkillActions = ({
       />
     )}
 
-    <IconButton icon={<ShareIcon />} onClick={onShare} aria-label="Поделиться" />
+    {onShare && <IconButton icon={<ShareIcon />} onClick={onShare} aria-label="Поделиться" />}
 
-    <IconButton icon={<MoreIcon />} onClick={onMore} aria-label="Больше действий" />
+    {onMore && <IconButton icon={<MoreIcon />} onClick={onMore} aria-label="Больше действий" />}
   </div>
 )

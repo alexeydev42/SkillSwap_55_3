@@ -36,7 +36,7 @@ export function SkillConfirmationModal({
   disabled,
 }: SkillConfirmationModalProps) {
   return (
-    <Modal className={styles.modal}>
+    <Modal className={styles.modal} ariaLabel="Подтверждение навыка">
       <div className={styles.header}>
         <h2 className={styles.heading}>Ваше предложение</h2>
         <p className={styles.subheading}>Пожалуйста, проверьте и подтвердите правильность данных</p>

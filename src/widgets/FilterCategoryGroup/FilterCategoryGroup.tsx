@@ -52,23 +52,23 @@ export const FilterCategoryGroup = ({
   return (
     <section className={styles['filter-category-group__sidebar']}>
       <header className={styles['filter-category-group__header']}>
-        <div
+        <div className={styles['filter-category-group__header-checkbox']}>
+          <Checkbox
+            label=""
+            aria-label={`Выбрать все навыки категории ${category}`}
+            checked={isAllChecked}
+            indeterminate={isIndeterminate}
+            onChange={handleParentChange}
+          />
+        </div>
+
+        <button
+          type="button"
           className={styles['filter-category-group__header-title']}
           onClick={() => onOpenChange(!isOpen)}
+          aria-expanded={isOpen}
         >
-          <div
-            className={styles['filter-category-group__header-checkbox']}
-            onClick={(event) => event.stopPropagation()}
-          >
-            <Checkbox
-              label=""
-              checked={isAllChecked}
-              indeterminate={isIndeterminate}
-              onChange={handleParentChange}
-            />
-          </div>
-
-          <p className={styles['filter-category-group__header-text']}>{category}</p>
+          <span className={styles['filter-category-group__header-text']}>{category}</span>
 
           <span
             className={clsx(
@@ -78,7 +78,7 @@ export const FilterCategoryGroup = ({
           >
             <ChevronDownIcon aria-hidden="true" />
           </span>
-        </div>
+        </button>
       </header>
 
       {isOpen && (

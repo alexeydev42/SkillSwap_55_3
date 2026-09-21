@@ -8,7 +8,7 @@ import styles from './SuccessModal.module.css'
 export type SuccessModalVariant = 'created' | 'proposed'
 
 export interface SuccessModalProps {
-  /** Какое состояние модалки показать. По умолчанию — «Ваше предложение создано» (VERST-60). */
+  /** Какое состояние модалки показать. По умолчанию — «Ваше предложение создано» */
   variant?: SuccessModalVariant
   /** Клик по кнопке «Готово». */
   onDone: () => void
@@ -27,18 +27,12 @@ const CONTENT: Record<SuccessModalVariant, { icon: ReactNode; title: string; tex
   },
 }
 
-/**
- * SuccessModal — модалка успешного действия, два состояния:
- * VERST-60 «Ваше предложение создано» (variant="created", по умолчанию) и
- * VERST-78 «Вы предложили обмен» (variant="proposed"). Оба состояния
- * собраны из одних и тех же готовых компонентов (Modal, StatusModalContent)
- * — меняются только данные (иконка/заголовок/текст) через пропс variant,
- * собственной вёрстки для второго состояния не добавлено.
- */
-export function SuccessModal({ variant = 'created', onDone }: SuccessModalProps) {
+ // SuccessModal — модалка успешного действия, два состояния: "Ваше предложение создано" и "Вы предложили обмен"
+
+ export function SuccessModal({ variant = 'created', onDone }: SuccessModalProps) {
   const { icon, title, text } = CONTENT[variant]
   return (
-    <Modal className={styles.modal}>
+    <Modal className={styles.modal} ariaLabel={title}>
       <StatusModalContent
         icon={icon}
         title={title}

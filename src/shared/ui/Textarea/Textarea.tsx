@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useId } from 'react'
 import styles from './Textarea.module.css'
 import clsx from 'clsx'
 
@@ -14,11 +14,17 @@ interface TextareaProps {
 }
 
 export const Textarea = (props: TextareaProps) => {
+  const textareaId = useId()
+  const messageId = `${textareaId}-message`
   const { label, placeholder, value, onChange, error, helperText, disabled, className } = props
 
   return (
     <div className={clsx(styles['textarea-container'], className)}>
-      {label && <label className={styles['textarea-label']}>{label}</label>}
+      {label && (
+        <label className={styles['textarea-label']} htmlFor={textareaId}>
+          {label}
+        </label>
+      )}
 
       <div
         className={clsx(
@@ -28,18 +34,27 @@ export const Textarea = (props: TextareaProps) => {
         )}
       >
         <textarea
+          id={textareaId}
           className={styles.textarea}
           placeholder={placeholder}
           disabled={disabled}
           onChange={onChange}
           value={value}
+          aria-invalid={Boolean(error)}
+          aria-describedby={error || helperText ? messageId : undefined}
         />
       </div>
 
       {error ? (
-        <span className={styles['textarea-error']}>{error}</span>
+        <span id={messageId} className={styles['textarea-error']}>
+          {error}
+        </span>
       ) : (
-        helperText && <span className={styles['textarea-helperText']}>{helperText}</span>
+        helperText && (
+          <span id={messageId} className={styles['textarea-helperText']}>
+            {helperText}
+          </span>
+        )
       )}
     </div>
   )
