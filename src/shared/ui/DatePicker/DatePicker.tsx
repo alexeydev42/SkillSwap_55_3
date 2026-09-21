@@ -214,6 +214,7 @@ export const DatePicker = ({
                   setIsYearPickerOpen(false)
                 }}
                 aria-label="Выбрать месяц"
+                aria-expanded={isMonthPickerOpen}
               >
                 <span>{MONTHS[date.getMonth()]}</span>
                 <ChevronDownIcon />
@@ -228,6 +229,7 @@ export const DatePicker = ({
                   setIsMonthPickerOpen(false)
                 }}
                 aria-label="Выбрать год"
+                aria-expanded={isYearPickerOpen}
               >
                 <span>{date.getFullYear()}</span>
                 <ChevronDownIcon />

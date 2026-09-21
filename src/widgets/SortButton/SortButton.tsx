@@ -1,4 +1,4 @@
-import sortIcon from '../../shared/assets/icons/icon-sort.svg'
+import SortIcon from '../../shared/assets/icons/icon-sort.svg?react'
 
 import { Button } from '../../shared/ui/Button'
 
@@ -11,7 +11,7 @@ export function SortButton({ onChange }: SortButtonProps) {
     <Button
       variant="tertiary"
       size="md"
-      icon={<img src={sortIcon} alt="" />}
+      icon={<SortIcon />}
       iconPosition="left"
       onClick={() => onChange?.('новые')}
     >

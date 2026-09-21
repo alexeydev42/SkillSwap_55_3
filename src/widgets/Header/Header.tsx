@@ -150,6 +150,7 @@ export const Header: FC<HeaderProps> = (props) => {
             className={styles.navLink}
             onClick={() => setIsSkillsMenuOpen(!isSkillsMenuOpen)}
             type="button"
+            aria-expanded={isSkillsMenuOpen}
           >
             Все навыки
             <ChevronIcon

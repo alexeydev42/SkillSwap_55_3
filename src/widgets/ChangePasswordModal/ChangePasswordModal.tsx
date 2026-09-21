@@ -62,7 +62,7 @@ export const ChangePasswordModal = ({ onClose }: ChangePasswordModalProps) => {
   }
 
   return (
-    <Modal className={styles.modal}>
+    <Modal className={styles.modal} ariaLabel="Изменить пароль">
       <form className={styles.form} onSubmit={handleSubmit} noValidate>
         <h2 className={styles.title}>Изменить пароль</h2>
 

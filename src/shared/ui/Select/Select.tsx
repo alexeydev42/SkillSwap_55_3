@@ -1,22 +1,22 @@
-import { useState, useRef, useEffect, useId } from 'react';
-import clsx from 'clsx';
-import styles from './Select.module.css';
+import { useState, useRef, useEffect, useId } from 'react'
+import clsx from 'clsx'
+import styles from './Select.module.css'
 
 export type SelectOption = {
-  value: string;
-  label: string;
-};
+  value: string
+  label: string
+}
 
 export type SelectProps = {
-  options: SelectOption[];
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
-  label?: string;
-  disabled?: boolean;
-  error?: string;
-  className?: string;
-};
+  options: SelectOption[]
+  value: string
+  onChange: (value: string) => void
+  placeholder?: string
+  label?: string
+  disabled?: boolean
+  error?: string
+  className?: string
+}
 
 export function Select({
   options,
@@ -28,42 +28,42 @@ export function Select({
   error,
   className,
 }: SelectProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const rootRef = useRef<HTMLDivElement>(null);
-  const id = useId();
+  const [isOpen, setIsOpen] = useState(false)
+  const rootRef = useRef<HTMLDivElement>(null)
+  const id = useId()
 
-  const selectedLabel = options.find((opt) => opt.value === value)?.label;
+  const selectedLabel = options.find((opt) => opt.value === value)?.label
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (rootRef.current && !rootRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
+        setIsOpen(false)
       }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && isOpen) {
-        setIsOpen(false);
+        setIsOpen(false)
       }
-    };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen]);
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen])
 
   const handleToggle = () => {
     if (!disabled) {
-      setIsOpen((prev) => !prev);
+      setIsOpen((prev) => !prev)
     }
-  };
+  }
 
   const handleSelect = (val: string) => {
-    onChange(val);
-    setIsOpen(false);
-  };
+    onChange(val)
+    setIsOpen(false)
+  }
 
   return (
     <div className={clsx(styles.root, className)} ref={rootRef}>
@@ -84,18 +84,26 @@ export function Select({
         onClick={handleToggle}
         disabled={disabled}
         aria-expanded={isOpen}
+        aria-haspopup="listbox"
         aria-invalid={!!error}
       >
         <span className={selectedLabel ? styles.value : styles.placeholder}>
           {selectedLabel ?? placeholder}
         </span>
-        <span className={clsx(styles.chevron, { [styles.chevronOpen]: isOpen })} aria-hidden="true" />
+        <span
+          className={clsx(styles.chevron, { [styles.chevronOpen]: isOpen })}
+          aria-hidden="true"
+        />
       </button>
 
       {isOpen && (
-        <ul className={styles.list}>
+        <ul className={styles.list} role="listbox">
           {options.length === 0 ? (
-            <li className={styles.option} style={{ color: 'var(--color-disabled-text)' }}>
+            <li
+              className={styles.option}
+              style={{ color: 'var(--color-disabled-text)' }}
+              aria-disabled="true"
+            >
               Нет доступных опций
             </li>
           ) : (
@@ -105,8 +113,17 @@ export function Select({
                 className={clsx(styles.option, {
                   [styles.optionSelected]: option.value === value,
                 })}
-                onMouseDown={(e) => e.preventDefault()} //
+                role="option"
+                aria-selected={option.value === value}
+                tabIndex={0}
+                onMouseDown={(event) => event.preventDefault()}
                 onClick={() => handleSelect(option.value)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault()
+                    handleSelect(option.value)
+                  }
+                }}
               >
                 {option.label}
               </li>
@@ -117,5 +134,5 @@ export function Select({
 
       {error && <span className={styles.errorText}>{error}</span>}
     </div>
-  );
+  )
 }
