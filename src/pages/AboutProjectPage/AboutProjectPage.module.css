@@ -72,19 +72,23 @@
   background-color: var(--color-surface);
 }
 
-@media (width <= 767px) {
+@media (width <= 1024px) {
   .list {
     column-count: 1;
     column-gap: 0;
-  }
-
-  .developer {
-    flex-wrap: wrap;
   }
 
   .name,
   .githubLink {
     min-width: 0;
     overflow-wrap: anywhere;
+  }
+}
+
+@media (width <= 767px) {
+  .developer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-12);
   }
 }
