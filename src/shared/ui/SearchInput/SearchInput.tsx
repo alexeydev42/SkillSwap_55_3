@@ -3,8 +3,8 @@ import { useState } from 'react'
 import { Input } from '@/shared/ui/Input'
 import type { InputProps } from '@/shared/ui/Input'
 
-import iconSearch from '@/shared/assets/icons/icon-search.svg'
-import iconCross from '@/shared/assets/icons/icon-cross.svg'
+import SearchIcon from '@/shared/assets/icons/icon-search.svg?react'
+import CrossIcon from '@/shared/assets/icons/icon-cross.svg?react'
 
 import styles from './SearchInput.module.css'
 
@@ -50,7 +50,7 @@ export function SearchInput({
       placeholder={placeholder}
       value={currentValue}
       onChange={(event) => handleValueChange(event.target.value)}
-      icon={<img src={iconSearch} alt="" />}
+      icon={<SearchIcon />}
       trailingIcon={
         currentValue ? (
           <button
@@ -59,7 +59,7 @@ export function SearchInput({
             aria-label="Очистить поле поиска"
             className={styles['clear-button']}
           >
-            <img src={iconCross} alt="" />
+            <CrossIcon />
           </button>
         ) : undefined
       }

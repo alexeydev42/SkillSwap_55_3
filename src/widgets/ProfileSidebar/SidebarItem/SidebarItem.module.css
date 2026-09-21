@@ -22,7 +22,7 @@
 }
 
 .item:hover {
-  background: var(--color-accent-hover);
+  background: var(--color-accent-subtle);
 }
 
 .item:focus-visible {
@@ -31,7 +31,7 @@
 }
 
 .active {
-  background: var(--color-accent-hover);
+  background: var(--color-accent-subtle);
 }
 
 .icon {

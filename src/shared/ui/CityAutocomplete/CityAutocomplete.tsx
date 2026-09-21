@@ -4,7 +4,7 @@ import { Input } from '../Input'
 import { IconButton } from '../IconButton'
 import { DropdownContainer } from '../DropdownContainer'
 import { cities } from '../../config/referenceData'
-import crossIcon from '../../assets/icons/icon-cross.svg'
+import CrossIcon from '../../assets/icons/icon-cross.svg?react'
 import styles from './CityAutocomplete.module.css'
 
 interface CityAutocompleteProps {
@@ -60,7 +60,7 @@ export const CityAutocomplete = ({
           trailingIcon={
             value ? (
               <IconButton
-                icon={<img src={crossIcon} alt="" />}
+                icon={<CrossIcon />}
                 onClick={handleClear}
                 aria-label="Очистить поле"
               />

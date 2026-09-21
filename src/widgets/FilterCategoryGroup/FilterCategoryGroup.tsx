@@ -3,7 +3,7 @@ import clsx from 'clsx'
 
 import type { Subcategory } from '@/shared/types'
 import { Checkbox } from '@/shared/ui/Checkbox'
-import chevronDown from '@/shared/assets/icons/icon-chevron-down.svg'
+import ChevronDownIcon from '@/shared/assets/icons/icon-chevron-down.svg?react'
 
 import styles from './FilterCategoryGroup.module.css'
 
@@ -76,7 +76,7 @@ export const FilterCategoryGroup = ({
               isOpen && styles['is-open'],
             )}
           >
-            <img src={chevronDown} alt="" aria-hidden="true" />
+            <ChevronDownIcon aria-hidden="true" />
           </span>
         </div>
       </header>

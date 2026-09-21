@@ -1,6 +1,6 @@
 import { UserSkillCard, type UserSkillCardData } from '@/widgets/UserSkillCard'
 import styles from './FavoritesSection.module.css'
-import illustrationUserInfo from '../../shared/assets/illustrations/illustration-user-info.svg'
+import IllustrationUserInfo from '../../shared/assets/illustrations/illustration-user-info.svg?react'
 
 export interface FavoritesSectionProps {
   favoriteUsers: UserSkillCardData[]
@@ -19,7 +19,7 @@ export const FavoritesSection = ({
     <section className={styles.section}>
       {isEmpty ? (
         <div className={styles.emptyState}>
-          <img className={styles.illustration} src={illustrationUserInfo} alt="" />
+          <IllustrationUserInfo className={styles.illustration} aria-hidden="true" />
           <h2 className={styles.descriptionText}>В избранном пока ничего нет</h2>
         </div>
       ) : (

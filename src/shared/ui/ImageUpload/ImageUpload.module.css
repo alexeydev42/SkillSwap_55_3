@@ -116,7 +116,9 @@
 }
 
 .addTile:hover {
-  background-color: var(--color-accent-hover);
+  color: var(--color-text);
+  background-color: var(--color-accent-subtle);
+  border-color: var(--color-accent);
 }
 
 .addTileText {

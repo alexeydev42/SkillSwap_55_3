@@ -22,7 +22,12 @@
 
 /* Сохраняет естественный размер загрузчика аватара. */
 .fields > :first-child {
-  width: auto;
+  width: min(244px, 100%);
+  align-self: center;
+}
+
+.fields > :first-child > div:first-child {
+  margin-inline: auto;
 }
 
 /* Располагает дату и пол в ряд и поднимает их списки над следующими полями. */

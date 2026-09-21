@@ -35,3 +35,19 @@
   font-weight: var(--font-weight-regular);
   letter-spacing: 0.32px;
 }
+
+.authInfo_illustration [fill='#253017'] {
+  fill: var(--color-illustration-ink);
+}
+
+.authInfo_illustration [fill='#ABD27A'] {
+  fill: var(--color-accent);
+}
+
+.authInfo_illustration [fill='#508826'] {
+  fill: var(--color-accent-pressed);
+}
+
+.authInfo_illustration [fill='#DEEBC5'] {
+  fill: var(--color-accent-hover);
+}

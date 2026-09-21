@@ -17,6 +17,22 @@
   object-fit: contain;
 }
 
+.illustration [fill='#253017'] {
+  fill: var(--color-illustration-ink);
+}
+
+.illustration [fill='#ABD27A'] {
+  fill: var(--color-accent);
+}
+
+.illustration [fill='#508826'] {
+  fill: var(--color-accent-pressed);
+}
+
+.illustration [fill='#DEEBC5'] {
+  fill: var(--color-accent-hover);
+}
+
 .descriptionText {
   font-family: var(--font-heading);
   font-size: var(--font-size-h2);

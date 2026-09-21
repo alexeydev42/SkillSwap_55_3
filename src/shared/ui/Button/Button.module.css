@@ -71,7 +71,7 @@
 
 .primary {
   background-color: var(--color-accent);
-  color: var(--color-text);
+  color: var(--color-on-accent);
 }
 
 .primary:hover:not(:disabled) {
@@ -80,7 +80,7 @@
 
 .primary:active:not(:disabled) {
   background-color: var(--color-accent-pressed);
-  color: var(--color-surface);
+  color: var(--color-on-accent);
 }
 
 .primary:disabled {
