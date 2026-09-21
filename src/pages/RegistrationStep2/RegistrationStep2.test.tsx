@@ -23,8 +23,21 @@ const validStep2Draft = {
   learningSubcategoryIds: ['english'],
 }
 
-const renderRegistrationStep2 = () =>
-  render(
+const fillStep1Draft = () => {
+  store.dispatch(
+    updateStep1Draft({
+      email: 'user@example.com',
+      password: 'Password1!',
+    }),
+  )
+}
+
+const renderRegistrationStep2 = (withStep1Data = true) => {
+  if (withStep1Data) {
+    fillStep1Draft()
+  }
+
+  return render(
     <Provider store={store}>
       <MemoryRouter initialEntries={[ROUTES.REGISTER_STEP_2]}>
         <Routes>
@@ -35,6 +48,7 @@ const renderRegistrationStep2 = () =>
       </MemoryRouter>
     </Provider>,
   )
+}
 
 describe('RegistrationStep2', () => {
   beforeEach(() => {
@@ -54,7 +68,10 @@ describe('RegistrationStep2', () => {
     expect(screen.getByText('Город: выберите значение из списка')).toBeInTheDocument()
     expect(screen.getByText('Выберите одну подкатегорию')).toBeInTheDocument()
     expect(screen.queryByText('Третий шаг')).not.toBeInTheDocument()
-    expect(store.getState().registration.draft).toEqual({})
+    expect(store.getState().registration.draft).toEqual({
+      email: 'user@example.com',
+      password: 'Password1!',
+    })
   })
 
   it('не принимает город, которого нет в справочнике', async () => {
@@ -134,12 +151,6 @@ describe('RegistrationStep2', () => {
   it('сохраняет изменённый draft и возвращает пользователя на Step 1', async () => {
     const user = userEvent.setup()
 
-    store.dispatch(
-      updateStep1Draft({
-        email: 'user@example.com',
-        password: 'Password1!',
-      }),
-    )
     store.dispatch(updateStep2Draft(validStep2Draft))
 
     renderRegistrationStep2()
@@ -156,5 +167,12 @@ describe('RegistrationStep2', () => {
       ...validStep2Draft,
       name: 'Мария',
     })
+  })
+
+  it('возвращает на Step 1 при прямом открытии без данных первого шага', () => {
+    renderRegistrationStep2(false)
+
+    expect(screen.getByText('Первый шаг')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Продолжить' })).not.toBeInTheDocument()
   })
 })

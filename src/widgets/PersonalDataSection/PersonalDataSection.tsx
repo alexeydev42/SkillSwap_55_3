@@ -1,8 +1,14 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react'
 import { AvatarUpload } from '@/entities/user/ui/AvatarUpload'
-import { validateBirthDate, validateName, validateUserDescription } from '@/shared/lib/validators'
+import {
+  TEXT_LIMITS,
+  validateBirthDate,
+  validateName,
+  validateUserDescription,
+} from '@/shared/lib/validators'
 import { Button } from '@/shared/ui/Button'
 import { CityAutocomplete } from '@/shared/ui/CityAutocomplete'
+import { cities } from '@/shared/config'
 import { DatePicker } from '@/shared/ui/DatePicker'
 import { Input } from '@/shared/ui/Input'
 import { Select, type SelectOption } from '@/shared/ui/Select'
@@ -76,6 +82,7 @@ export function PersonalDataSection({
   const [birthDateError, setBirthDateError] = useState<string>()
   const [aboutError, setAboutError] = useState<string>()
   const [avatarError, setAvatarError] = useState<string>()
+  const [cityError, setCityError] = useState<string>()
 
   const hasChanges =
     name.trim() !== data.name.trim() ||
@@ -105,6 +112,11 @@ export function PersonalDataSection({
     setAvatarError(undefined)
   }
 
+  const handleCityChange = (value: string) => {
+    setCity(value)
+    setCityError(undefined)
+  }
+
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
@@ -112,11 +124,16 @@ export function PersonalDataSection({
     const nextBirthDateError = validateBirthDate(formatBirthDate(birthDate))
     const nextAboutError = validateUserDescription(about)
 
+    const hasValidCity = cities.some(({ name }) => name === city)
+
+    const nextCityError = hasValidCity ? undefined : 'Город: выберите значение из списка'
+
     setNameError(nextNameError?.message)
     setBirthDateError(nextBirthDateError?.message)
     setAboutError(nextAboutError?.message)
+    setCityError(nextCityError)
 
-    if (nextNameError || nextBirthDateError || nextAboutError) {
+    if (nextNameError || nextBirthDateError || nextCityError || nextAboutError) {
       return
     }
 
@@ -153,6 +170,7 @@ export function PersonalDataSection({
           onChange={handleNameChange}
           error={nameError}
           disabled={disabled}
+          maxLength={TEXT_LIMITS.name.max}
         />
 
         <div className={styles.row}>
@@ -173,14 +191,18 @@ export function PersonalDataSection({
           />
         </div>
 
-        <div>
+        <div className={styles.cityField}>
           <span className={styles.label}>Город</span>
+
           <CityAutocomplete
             className={styles.cityAutocomplete}
             value={city}
-            onChange={setCity}
+            onChange={handleCityChange}
             placeholder="Введите город"
+            disabled={disabled}
           />
+
+          {cityError && <span className={styles.error}>{cityError}</span>}
         </div>
 
         <Textarea
@@ -189,6 +211,7 @@ export function PersonalDataSection({
           onChange={handleAboutChange}
           error={aboutError}
           disabled={disabled}
+          maxLength={TEXT_LIMITS.userDescription.max}
         />
 
         <Button type="submit" className={styles.saveButton} disabled={disabled || !hasChanges}>

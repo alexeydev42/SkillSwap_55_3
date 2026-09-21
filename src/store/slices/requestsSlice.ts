@@ -42,6 +42,10 @@ const requestsSlice = createSlice({
       state.items.push(action.payload)
     },
 
+    removeRequest(state, action: PayloadAction<string>) {
+      state.items = state.items.filter((request) => request.id !== action.payload)
+    },
+
     // Очищает только активное состояние Redux.
     clearRequests(state) {
       state.items = []
@@ -49,7 +53,7 @@ const requestsSlice = createSlice({
   },
 })
 
-export const { setRequests, addRequest, clearRequests } = requestsSlice.actions
+export const { setRequests, addRequest, removeRequest, clearRequests } = requestsSlice.actions
 
 // Создаёт и сохраняет новую заявку на обмен.
 export const createSwapRequest =
@@ -130,5 +134,27 @@ export const selectHasRequestToUser = (state: RootState, toUserId: string) => {
     (request) => request.fromUserId === currentUserId && request.toUserId === toUserId,
   )
 }
+
+export const removeSwapRequest =
+  (requestId: string) =>
+  (dispatch: AppDispatch, getState: () => RootState): boolean => {
+    const requests = getState().requests.items
+
+    if (!requests.some((request) => request.id === requestId)) {
+      return false
+    }
+
+    const updatedRequests = requests.filter((request) => request.id !== requestId)
+
+    const isSaved = storageService.set(STORAGE_KEYS.REQUESTS, updatedRequests)
+
+    if (!isSaved) {
+      return false
+    }
+
+    dispatch(removeRequest(requestId))
+
+    return true
+  }
 
 export default requestsSlice.reducer

@@ -13,6 +13,7 @@ export interface SkillConfirmationModalProps extends Pick<
   /** Фотографии навыка — передаются как есть в SkillGallery (VERST-33). */
   images: string[]
   /** Клик по «Редактировать». */
+  error?: string
   onEdit?: () => void
   /** Клик по «Готово». */
   onDone?: () => void
@@ -31,6 +32,7 @@ export function SkillConfirmationModal({
   category,
   subcategory,
   description,
+  error,
   onEdit,
   onDone,
   disabled,
@@ -54,6 +56,11 @@ export function SkillConfirmationModal({
             subcategory={subcategory}
             description={description}
           />
+          {error && (
+            <p className={styles.error} role="alert">
+              {error}
+            </p>
+          )}
           <SkillDetailsButtons
             className={styles.actions}
             variant="edit"

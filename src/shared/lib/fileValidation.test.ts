@@ -94,8 +94,8 @@ describe('validateAndConvertFiles', () => {
       expect(result.success).toBe(true)
     })
 
-    it('принимает ровно 5 изображений', async () => {
-      const files = Array.from({ length: 5 }, (_, index) =>
+    it('принимает ровно 6 изображений', async () => {
+      const files = Array.from({ length: 6 }, (_, index) =>
         createFile(`skill-${index + 1}.jpg`, 'image/jpeg'),
       )
 
@@ -104,12 +104,12 @@ describe('validateAndConvertFiles', () => {
       expect(result.success).toBe(true)
 
       if (result.success) {
-        expect(result.files).toHaveLength(5)
+        expect(result.files).toHaveLength(6)
       }
     })
 
-    it('отклоняет 6 изображений', async () => {
-      const files = Array.from({ length: 6 }, (_, index) =>
+    it('отклоняет 7 изображений', async () => {
+      const files = Array.from({ length: 7 }, (_, index) =>
         createFile(`skill-${index + 1}.jpg`, 'image/jpeg'),
       )
 
@@ -117,7 +117,7 @@ describe('validateAndConvertFiles', () => {
 
       expect(result).toEqual({
         success: false,
-        error: 'Можно загрузить не более 5 изображений',
+        error: 'Можно загрузить не более 6 изображений',
       })
     })
   })
@@ -134,19 +134,19 @@ describe('validateAndConvertFiles', () => {
       })
     })
 
-    it('отклоняет файл размером больше 1 МБ', async () => {
-      const file = createFile('large.jpg', 'image/jpeg', 1024 * 1024 + 1)
+    it('отклоняет файл размером больше 5 МБ', async () => {
+      const file = createFile('large.jpg', 'image/jpeg', 5 * 1024 * 1024 + 1)
 
       const result = await validateAndConvertFiles([file], 'avatar')
 
       expect(result).toEqual({
         success: false,
-        error: 'Размер изображения не должен превышать 1 МБ',
+        error: 'Размер исходного изображения не должен превышать 5 МБ',
       })
     })
 
-    it('принимает файл размером ровно 1 МБ', async () => {
-      const file = createFile('max-size.jpg', 'image/jpeg', 1024 * 1024)
+    it('принимает исходный файл размером ровно 5 МБ', async () => {
+      const file = createFile('max-size.jpg', 'image/jpeg', 5 * 1024 * 1024)
 
       const result = await validateAndConvertFiles([file], 'avatar')
 

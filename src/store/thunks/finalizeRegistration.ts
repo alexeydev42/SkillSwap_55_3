@@ -37,6 +37,15 @@ const isCompleteRegistrationDraft = (
     draft.offeredSkill,
   )
 
+const restoreStorageValue = <T>(key: string, value: T | null) => {
+  if (value === null) {
+    storageService.remove(key)
+    return
+  }
+
+  storageService.set(key, value)
+}
+
 // Создаёт локального пользователя и завершает регистрацию.
 export const finalizeRegistration =
   () =>
@@ -73,11 +82,33 @@ export const finalizeRegistration =
       userId,
     }
 
+    const previousLocalUser = storageService.get<User>(STORAGE_KEYS.LOCAL_USER)
+    const previousAccount = storageService.get<AuthAccount>(STORAGE_KEYS.AUTH_ACCOUNT)
+    const previousSession = storageService.get<AuthSession>(STORAGE_KEYS.AUTH_SESSION)
+
+    const rollbackRegistrationStorage = () => {
+      restoreStorageValue(STORAGE_KEYS.LOCAL_USER, previousLocalUser)
+      restoreStorageValue(STORAGE_KEYS.AUTH_ACCOUNT, previousAccount)
+      restoreStorageValue(STORAGE_KEYS.AUTH_SESSION, previousSession)
+    }
+
     const isUserSaved = storageService.set(STORAGE_KEYS.LOCAL_USER, localUser)
+
+    if (!isUserSaved) {
+      return null
+    }
+
     const isAccountSaved = storageService.set(STORAGE_KEYS.AUTH_ACCOUNT, account)
+
+    if (!isAccountSaved) {
+      rollbackRegistrationStorage()
+      return null
+    }
+
     const isSessionSaved = storageService.set(STORAGE_KEYS.AUTH_SESSION, session)
 
-    if (!isUserSaved || !isAccountSaved || !isSessionSaved) {
+    if (!isSessionSaved) {
+      rollbackRegistrationStorage()
       return null
     }
 

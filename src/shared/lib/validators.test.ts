@@ -11,7 +11,10 @@ import {
 
 describe('validateEmail', () => {
   it('возвращает ошибку для пустой строки', () => {
-    expect(validateEmail('')).toEqual({ field: 'email', message: 'Email обязателен для заполнения' })
+    expect(validateEmail('')).toEqual({
+      field: 'email',
+      message: 'Email обязателен для заполнения',
+    })
   })
 
   it('возвращает ошибку для некорректного формата', () => {
@@ -116,14 +119,14 @@ describe('validateName', () => {
     expect(validateName('Иван  Петров')).toBeNull()
   })
 
-  it('принимает имя ровно из 30 символов', () => {
-    expect(validateName('a'.repeat(30))).toBeNull()
+  it('принимает имя ровно из 50 символов', () => {
+    expect(validateName('a'.repeat(50))).toBeNull()
   })
 
-  it('отклоняет имя длиннее 30 символов', () => {
-    expect(validateName('a'.repeat(31))).toEqual({
+  it('отклоняет имя длиннее 50 символов', () => {
+    expect(validateName('a'.repeat(51))).toEqual({
       field: 'name',
-      message: 'Имя: максимальная длина 30 символов',
+      message: 'Имя: максимальная длина 50 символов',
     })
   })
 })
@@ -136,12 +139,15 @@ describe('validateOfferedSkillTitle', () => {
     })
   })
 
-  it('принимает строку ровно из 30 символов', () => {
-    expect(validateOfferedSkillTitle('a'.repeat(30))).toBeNull()
+  it('принимает строку ровно из 60 символов', () => {
+    expect(validateOfferedSkillTitle('a'.repeat(60))).toBeNull()
   })
 
-  it('отклоняет строку длиннее 30 символов', () => {
-    expect(validateOfferedSkillTitle('a'.repeat(31))).not.toBeNull()
+  it('отклоняет строку длиннее 60 символов', () => {
+    expect(validateOfferedSkillTitle('a'.repeat(61))).toEqual({
+      field: 'offeredSkill.title',
+      message: 'Название навыка: максимальная длина 60 символов',
+    })
   })
 })
 
@@ -157,14 +163,14 @@ describe('validateOfferedSkillDescription', () => {
     expect(validateOfferedSkillDescription('a'.repeat(20))).toBeNull()
   })
 
-  it('принимает описание ровно из 500 символов', () => {
-    expect(validateOfferedSkillDescription('a'.repeat(500))).toBeNull()
+  it('принимает описание ровно из 1000 символов', () => {
+    expect(validateOfferedSkillDescription('a'.repeat(1000))).toBeNull()
   })
 
-  it('отклоняет описание длиннее 500 символов', () => {
-    expect(validateOfferedSkillDescription('a'.repeat(501))).toEqual({
+  it('отклоняет описание длиннее 1000 символов', () => {
+    expect(validateOfferedSkillDescription('a'.repeat(1001))).toEqual({
       field: 'offeredSkill.description',
-      message: 'Описание навыка: максимальная длина 500 символов',
+      message: 'Описание навыка: максимальная длина 1000 символов',
     })
   })
 })
@@ -175,14 +181,14 @@ describe('validateUserDescription', () => {
     expect(validateUserDescription('   ')).toBeNull()
   })
 
-  it('принимает описание ровно из 160 символов', () => {
-    expect(validateUserDescription('a'.repeat(160))).toBeNull()
+  it('принимает описание ровно из 500 символов', () => {
+    expect(validateUserDescription('a'.repeat(500))).toBeNull()
   })
 
-  it('отклоняет описание длиннее 160 символов', () => {
-    expect(validateUserDescription('a'.repeat(161))).toEqual({
+  it('отклоняет описание длиннее 500 символов', () => {
+    expect(validateUserDescription('a'.repeat(501))).toEqual({
       field: 'description',
-      message: 'Описание профиля: максимальная длина 160 символов',
+      message: 'Описание профиля: максимальная длина 500 символов',
     })
   })
 })

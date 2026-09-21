@@ -1,10 +1,14 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react'
-import { generatePath, useNavigate } from 'react-router-dom'
+import { generatePath, Navigate, useNavigate } from 'react-router-dom'
 
 import SchoolBoardIllustration from '@/shared/assets/illustrations/illustration-school-board.svg?react'
 import { categories } from '@/shared/config/referenceData'
 import { ROUTES } from '@/shared/lib/constants'
-import { validateOfferedSkillDescription, validateOfferedSkillTitle } from '@/shared/lib/validators'
+import {
+  TEXT_LIMITS,
+  validateOfferedSkillDescription,
+  validateOfferedSkillTitle,
+} from '@/shared/lib/validators'
 import { Button } from '@/shared/ui/Button'
 import { ImageUpload } from '@/shared/ui/ImageUpload'
 import { Input } from '@/shared/ui/Input'
@@ -16,6 +20,7 @@ import { AuthLayout } from '@/widgets/AuthLayout'
 import { RegistrationProgress } from '@/widgets/RegistrationProgress'
 import { finalizeRegistration } from '@/store/thunks/finalizeRegistration'
 import { SkillConfirmationModal } from '@/widgets/SkillConfirmationModal'
+import { FILE_LIMITS } from '@/shared/lib/fileValidation'
 
 import styles from './RegistrationStep3.module.css'
 
@@ -51,6 +56,28 @@ export const RegistrationStep3 = () => {
   const [imageError, setImageError] = useState<string>()
 
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false)
+
+  const [registrationError, setRegistrationError] = useState<string>()
+
+  const hasStep1Data = Boolean(draft.email && draft.password)
+
+  const hasStep2Data = Boolean(
+    draft.name &&
+    draft.birthDate &&
+    draft.gender !== null &&
+    draft.gender !== undefined &&
+    draft.cityId &&
+    draft.avatarUrl !== undefined &&
+    draft.learningSubcategoryIds?.length,
+  )
+
+  if (!hasStep1Data) {
+    return <Navigate to={ROUTES.REGISTER} replace />
+  }
+
+  if (!hasStep2Data) {
+    return <Navigate to={ROUTES.REGISTER_STEP_2} replace />
+  }
 
   const subcategoryOptions = getSubcategoryOptions(categoryId)
 
@@ -129,8 +156,8 @@ export const RegistrationStep3 = () => {
     const nextImageError =
       offeredSkill.imageUrls.length === 0
         ? 'Необходимо выбрать хотя бы одно изображение'
-        : offeredSkill.imageUrls.length > 5
-          ? 'Можно загрузить не более 5 изображений'
+        : offeredSkill.imageUrls.length > FILE_LIMITS.skillImages.max
+          ? `Можно загрузить не более ${FILE_LIMITS.skillImages.max} изображений`
           : undefined
 
     setTitleError(nextTitleError?.message)
@@ -167,9 +194,12 @@ export const RegistrationStep3 = () => {
   }
 
   const handleDone = () => {
+    setRegistrationError(undefined)
+
     const localUser = dispatch(finalizeRegistration())
 
     if (!localUser) {
+      setRegistrationError('Не удалось завершить регистрацию. Попробуйте ещё раз.')
       return
     }
 
@@ -205,6 +235,7 @@ export const RegistrationStep3 = () => {
               value={title}
               onChange={handleTitleChange}
               error={titleError}
+              maxLength={TEXT_LIMITS.offeredSkillTitle.max}
             />
 
             <Select
@@ -232,6 +263,7 @@ export const RegistrationStep3 = () => {
               value={description}
               onChange={handleDescriptionChange}
               error={descriptionError}
+              maxLength={TEXT_LIMITS.offeredSkillDescription.max}
             />
 
             <ImageUpload
@@ -271,6 +303,7 @@ export const RegistrationStep3 = () => {
             category={confirmationCategory.name}
             subcategory={confirmationSubcategory.name}
             description={confirmationSkill.description}
+            error={registrationError}
             onEdit={handleEdit}
             onDone={handleDone}
           />

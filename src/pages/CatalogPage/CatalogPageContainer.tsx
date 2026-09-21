@@ -26,6 +26,8 @@ export function CatalogPageContainer() {
   const usersError = useAppSelector(selectUsersError)
   const authSession = useAppSelector((state) => state.auth.session)
 
+  const currentUserId = authSession?.userId
+
   useEffect(() => {
     if (usersStatus === 'idle') {
       dispatch(fetchUsers())
@@ -34,7 +36,7 @@ export function CatalogPageContainer() {
 
   const handleFavoriteClick = (userId: string) => {
     // Не позволяет изменить Favorites без активной сессии.
-    if (!authSession) {
+    if (!authSession || userId === currentUserId) {
       return
     }
 
@@ -63,6 +65,7 @@ export function CatalogPageContainer() {
       usersError={usersError}
       hasMockUsers={mockUsers.length > 0}
       isFavoriteDisabled={!authSession}
+      currentUserId={currentUserId}
       onRetry={handleRetry}
       onFavoriteClick={handleFavoriteClick}
       onDetailsClick={handleDetailsClick}

@@ -3,7 +3,7 @@ import clsx from 'clsx'
 
 import GalleryAddIcon from '../../assets/icons/icon-gallery-add.svg?react'
 import CrossIcon from '../../assets/icons/icon-cross.svg?react'
-import { validateAndConvertFiles, type FileUploadType } from '../../lib/fileValidation'
+import { FILE_LIMITS, validateAndConvertFiles, type FileUploadType } from '../../lib/fileValidation'
 import styles from './ImageUpload.module.css'
 
 type ImageUploadProps = {
@@ -36,7 +36,7 @@ export const ImageUpload = ({
   const hasImages = images.length > 0
   const isAvatar = uploadType === 'avatar'
 
-  const maxLimit = isAvatar ? 1 : 5
+  const maxLimit = FILE_LIMITS[uploadType].max
   const canAddImages = !isAvatar && images.length < maxLimit
 
   const customActionLabel = isAvatar
@@ -56,8 +56,14 @@ export const ImageUpload = ({
     event.target.value = ''
 
     //проверяем общее количество файлов до конвератции
-    if (images.length + files.length > maxLimit) {
-      onError?.(`Можно загрузить не более ${maxLimit} изображений`)
+    const nextImagesCount = isAvatar ? files.length : images.length + files.length
+
+    if (nextImagesCount > maxLimit) {
+      onError?.(
+        isAvatar
+          ? 'Можно загрузить только один аватар'
+          : `Можно загрузить не более ${maxLimit} изображений`,
+      )
       return
     }
 

@@ -20,6 +20,8 @@ import {
 } from '@/store/slices/registrationSlice'
 import { clearRequests } from '@/store/slices/requestsSlice'
 import { clearLocalUser } from '@/store/slices/usersSlice'
+import { STORAGE_KEYS } from '@/shared/lib/constants'
+import { storageService } from '@/shared/lib/storageService'
 
 const savedOfferedSkill = {
   title: 'Видеомонтаж',
@@ -29,7 +31,7 @@ const savedOfferedSkill = {
   imageUrls: ['data:image/png;base64,c2F2ZWQ='],
 }
 
-const fillCompleteRegistrationDraft = () => {
+const fillRegistrationPrerequisites = () => {
   store.dispatch(
     updateStep1Draft({
       email: 'user@example.com',
@@ -47,6 +49,10 @@ const fillCompleteRegistrationDraft = () => {
       learningSubcategoryIds: ['english'],
     }),
   )
+}
+
+const fillCompleteRegistrationDraft = () => {
+  fillRegistrationPrerequisites()
 
   store.dispatch(
     updateStep3Draft({
@@ -55,11 +61,16 @@ const fillCompleteRegistrationDraft = () => {
   )
 }
 
-const renderRegistrationStep3 = () =>
-  render(
+const renderRegistrationStep3 = (withPrerequisites = true) => {
+  if (withPrerequisites) {
+    fillRegistrationPrerequisites()
+  }
+
+  return render(
     <Provider store={store}>
       <MemoryRouter initialEntries={[ROUTES.REGISTER_STEP_3]}>
         <Routes>
+          <Route path={ROUTES.REGISTER} element={<div>Первый шаг</div>} />
           <Route path={ROUTES.REGISTER_STEP_2} element={<div>Второй шаг</div>} />
           <Route path={ROUTES.REGISTER_STEP_3} element={<RegistrationStep3 />} />
           <Route path={ROUTES.SKILL} element={<div>Страница навыка</div>} />
@@ -67,6 +78,7 @@ const renderRegistrationStep3 = () =>
       </MemoryRouter>
     </Provider>,
   )
+}
 
 describe('RegistrationStep3', () => {
   beforeEach(() => {
@@ -96,7 +108,16 @@ describe('RegistrationStep3', () => {
     expect(screen.getByText('Подкатегория навыка: выберите значение из списка')).toBeInTheDocument()
     expect(screen.getByText('Описание навыка: обязательное поле')).toBeInTheDocument()
     expect(screen.getByText('Необходимо выбрать хотя бы одно изображение')).toBeInTheDocument()
-    expect(store.getState().registration.draft).toEqual({})
+    expect(store.getState().registration.draft).toEqual({
+      email: 'user@example.com',
+      password: 'Password1!',
+      name: 'Алексей',
+      birthDate: '1993-04-15',
+      gender: 'preferNotToSay',
+      cityId: 'saint-petersburg',
+      avatarUrl: null,
+      learningSubcategoryIds: ['english'],
+    })
   })
 
   it('сохраняет валидное предлагаемое умение в draft', async () => {
@@ -170,7 +191,7 @@ describe('RegistrationStep3', () => {
     expect(screen.getByText('Подкатегория навыка: выберите значение из списка')).toBeInTheDocument()
   })
 
-  it('показывает ошибку при попытке загрузить больше пяти изображений', async () => {
+  it('показывает ошибку при попытке загрузить больше шести изображений', async () => {
     const user = userEvent.setup()
     const { container } = renderRegistrationStep3()
 
@@ -178,7 +199,7 @@ describe('RegistrationStep3', () => {
 
     expect(fileInput).not.toBeNull()
 
-    const images = Array.from({ length: 6 }, (_, index) => {
+    const images = Array.from({ length: 7 }, (_, index) => {
       return new File([`image ${index + 1}`], `skill-${index + 1}.png`, {
         type: 'image/png',
       })
@@ -186,7 +207,7 @@ describe('RegistrationStep3', () => {
 
     await user.upload(fileInput as HTMLInputElement, images)
 
-    expect(screen.getByText('Можно загрузить не более 5 изображений')).toBeInTheDocument()
+    expect(screen.getByText('Можно загрузить не более 6 изображений')).toBeInTheDocument()
     expect(screen.queryByAltText('Превью изображения 1')).not.toBeInTheDocument()
   })
 
@@ -333,5 +354,71 @@ describe('RegistrationStep3', () => {
     })
 
     expect(store.getState().registration.draft).toEqual({})
+  })
+
+  it('показывает ошибку, если регистрацию не удалось сохранить', async () => {
+    const user = userEvent.setup()
+
+    fillCompleteRegistrationDraft()
+    renderRegistrationStep3()
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'Продолжить',
+      }),
+    )
+
+    expect(
+      screen.getByRole('heading', {
+        name: 'Ваше предложение',
+      }),
+    ).toBeInTheDocument()
+
+    const originalSet = storageService.set.bind(storageService)
+
+    vi.spyOn(storageService, 'set').mockImplementation((key, value, storageType = 'local') => {
+      if (key === STORAGE_KEYS.LOCAL_USER) {
+        return false
+      }
+
+      return originalSet(key, value, storageType)
+    })
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'Готово',
+      }),
+    )
+
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'Не удалось завершить регистрацию. Попробуйте ещё раз.',
+    )
+
+    expect(
+      screen.getByRole('heading', {
+        name: 'Ваше предложение',
+      }),
+    ).toBeInTheDocument()
+  })
+
+  it('возвращает на Step 1 при прямом открытии без данных регистрации', () => {
+    renderRegistrationStep3(false)
+
+    expect(screen.getByText('Первый шаг')).toBeInTheDocument()
+    expect(screen.queryByLabelText('Название навыка')).not.toBeInTheDocument()
+  })
+
+  it('возвращает на Step 2, если данные первого шага есть, а второго нет', () => {
+    store.dispatch(
+      updateStep1Draft({
+        email: 'user@example.com',
+        password: 'Password1!',
+      }),
+    )
+
+    renderRegistrationStep3(false)
+
+    expect(screen.getByText('Второй шаг')).toBeInTheDocument()
+    expect(screen.queryByLabelText('Название навыка')).not.toBeInTheDocument()
   })
 })

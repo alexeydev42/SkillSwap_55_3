@@ -48,6 +48,7 @@ export interface CatalogPageProps {
   usersError: string | null
   hasMockUsers: boolean
   isFavoriteDisabled?: boolean
+  currentUserId?: string
   isProfileMenuInitiallyOpen?: boolean
   isNotificationsMenuInitiallyOpen?: boolean
   isAllSkillsMenuInitiallyOpen?: boolean
@@ -85,6 +86,7 @@ export const CatalogPage = ({
   categories,
   cities,
   isFavoriteDisabled = false,
+  currentUserId,
   usersStatus,
   usersError,
   hasMockUsers,
@@ -363,7 +365,7 @@ export const CatalogPage = ({
                       <UserSkillCard
                         key={item.id}
                         user={item}
-                        isFavoriteDisabled={isFavoriteDisabled}
+                        isFavoriteDisabled={isFavoriteDisabled || item.id === currentUserId}
                         onFavoriteClick={() => onFavoriteClick(item.id)}
                         onDetailsClick={() => onDetailsClick(item.id)}
                         className={styles.resultsCard}
@@ -388,6 +390,7 @@ export const CatalogPage = ({
                   viewAllLabel={isPopularExpanded ? 'Свернуть' : 'Смотреть все'}
                   isExpanded={isPopularExpanded}
                   isFavoriteDisabled={isFavoriteDisabled}
+                  currentUserId={currentUserId}
                   onViewAllClick={() => setIsPopularExpanded((currentValue) => !currentValue)}
                   onFavoriteClick={onFavoriteClick}
                   onDetailsClick={onDetailsClick}
@@ -399,6 +402,7 @@ export const CatalogPage = ({
                   viewAllLabel={isNewExpanded ? 'Свернуть' : 'Смотреть все'}
                   isExpanded={isNewExpanded}
                   isFavoriteDisabled={isFavoriteDisabled}
+                  currentUserId={currentUserId}
                   onViewAllClick={() => setIsNewExpanded((currentValue) => !currentValue)}
                   onFavoriteClick={onFavoriteClick}
                   onDetailsClick={onDetailsClick}
@@ -406,6 +410,7 @@ export const CatalogPage = ({
                 <RecommendedSection
                   items={recommendedItems}
                   isFavoriteDisabled={isFavoriteDisabled}
+                  currentUserId={currentUserId}
                   onFavoriteClick={onFavoriteClick}
                   onDetailsClick={onDetailsClick}
                 />

@@ -13,8 +13,6 @@ import { updateStep1Draft } from '@/store/slices/registrationSlice'
 import LightBulbIllustration from '@/shared/assets/illustrations/illustration-light-bulb.svg?react'
 import EyeIcon from '@/shared/assets/icons/icon-eye.svg?react'
 import EyeSlashIcon from '@/shared/assets/icons/icon-eye-slash.svg?react'
-import GoogleIcon from '@/shared/assets/icons/icon-google.svg?react'
-import AppleIcon from '@/shared/assets/icons/icon-apple.svg?react'
 
 import styles from './RegistrationStep1.module.css'
 
@@ -89,19 +87,6 @@ export const RegistrationStep1 = ({
     >
       <form className={styles.form} onSubmit={handleSubmit} noValidate>
         <div className={styles.formContent}>
-          <div className={styles.socialButtons}>
-            <Button variant="secondary" icon={<GoogleIcon />} className={styles.socialButton}>
-              Продолжить с Google
-            </Button>
-
-            <Button variant="secondary" icon={<AppleIcon />} className={styles.socialButton}>
-              Продолжить с Apple
-            </Button>
-          </div>
-
-          <div className={styles.divider}>
-            <span>или</span>
-          </div>
 
           <div className={styles.inputs}>
             <Input
