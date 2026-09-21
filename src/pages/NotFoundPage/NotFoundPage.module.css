@@ -16,10 +16,6 @@
   margin: 117px auto 84px;
 }
 
-.footer {
-  background: var(--color-surface);
-}
-
 .error404image {
   padding: 0 var(--space-4) var(--space-20);
 }

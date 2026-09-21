@@ -80,11 +80,6 @@
   min-width: 0;
 }
 
-/* Задаёт фон области с подвалом страницы */
-.footer {
-  background-color: var(--color-surface);
-}
-
 @media (width <= 1024px) {
   .content {
     grid-template-columns: minmax(0, 1fr);

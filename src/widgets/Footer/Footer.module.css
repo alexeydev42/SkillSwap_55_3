@@ -1,50 +1,44 @@
 .footer {
   width: 100%;
+  padding-inline: var(--page-padding-inline);
 }
 
 .container {
   display: flex;
-  flex-direction: column;
-  margin-inline: var(--page-padding-inline);
-}
-
-.top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-top: var(--space-32);
+  align-items: center;
+  gap: var(--space-32);
+  width: 100%;
+  padding: var(--space-24) var(--space-32);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  background: var(--color-surface);
 }
 
 .nav {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-24);
-  min-width: 0;
-  margin-top: var(--space-60);
-  font-size: var(--font-size-body);
+  display: flex;
+  align-items: center;
+  gap: var(--space-32);
+  margin-left: auto;
   font-family: var(--font-body);
+  font-size: var(--font-size-body);
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-body);
   letter-spacing: var(--letter-spacing-caption);
   color: var(--color-text);
 }
 
-.menu {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-12);
-  list-style: none;
+.nav a {
+  transition: color 0.2s;
 }
 
-.menu a {
-  text-decoration: none;
+.nav a:hover {
+  color: var(--color-accent-pressed);
 }
 
-.bottom {
-  margin-top: var(--space-32);
-  margin-bottom: var(--space-32);
-  font-size: var(--font-size-caption);
+.copyright {
+  flex-shrink: 0;
+  margin-left: var(--space-32);
   font-family: var(--font-body);
+  font-size: var(--font-size-caption);
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-caption);
   letter-spacing: var(--letter-spacing-caption);
@@ -52,20 +46,35 @@
 }
 
 @media (width <= 1024px) {
+  .container {
+    gap: var(--space-24);
+    padding-inline: var(--space-24);
+  }
+
   .nav {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-24);
+  }
+
+  .copyright {
+    margin-left: 0;
   }
 }
 
 @media (width <= 767px) {
-  .top {
+  .container {
     flex-direction: column;
-    gap: var(--space-32);
+    align-items: flex-start;
+    gap: var(--space-20);
+    padding: var(--space-24) var(--space-16);
   }
 
   .nav {
-    width: 100%;
-    grid-template-columns: minmax(0, 1fr);
-    margin-top: 0;
+    flex-wrap: wrap;
+    gap: var(--space-12) var(--space-24);
+    margin-left: 0;
+  }
+
+  .copyright {
+    margin-left: 0;
   }
 }

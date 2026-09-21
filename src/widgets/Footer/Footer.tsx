@@ -1,45 +1,23 @@
 import { Link } from 'react-router-dom'
+
 import { ROUTES } from '@/shared/lib/constants'
+import { Logo } from '@/shared/ui/Logo'
+
 import styles from './Footer.module.css'
-import { Logo } from '../../shared/ui/Logo'
 
 export const Footer = () => {
   return (
     <footer className={styles.footer}>
       <div className={styles.container}>
-        <div className={styles.top}>
-          <Logo />
-          <nav className={styles.nav} aria-label="Навигация в подвале">
-            <ul className={styles.menu}>
-              <li>
-                <Link to={ROUTES.ABOUT}>О проекте</Link>
-              </li>
-              <li>
-                <a href="#">Все навыки</a>
-              </li>
-            </ul>
+        <Logo />
 
-            <ul className={styles.menu}>
-              <li>
-                <a href="#">Контакты</a>
-              </li>
-              <li>
-                <a href="#">Блог</a>
-              </li>
-            </ul>
+        <nav className={styles.nav} aria-label="Навигация в подвале">
+          <Link to={ROUTES.ABOUT}>О проекте</Link>
+          <Link to={ROUTES.HOME}>Все навыки</Link>
+          <Link to={ROUTES.CONTACTS}>Контакты</Link>
+        </nav>
 
-            <ul className={styles.menu}>
-              <li>
-                <a href="#">Политика конфиденциальности</a>
-              </li>
-              <li>
-                <a href="#">Пользовательское соглашение</a>
-              </li>
-            </ul>
-          </nav>
-        </div>
-
-        <div className={styles.bottom}>SkillSwap — 2026</div>
+        <div className={styles.copyright}>SkillSwap 2026</div>
       </div>
     </footer>
   )

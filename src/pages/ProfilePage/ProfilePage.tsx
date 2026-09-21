@@ -171,9 +171,7 @@ export default function ProfilePage({ initialTab = DEFAULT_TAB }: ProfilePagePro
         </div>
       </main>
 
-      <div className={styles.footer}>
-        <Footer />
-      </div>
+      <Footer />
 
       {isChangePasswordOpen && (
         <ChangePasswordModal onClose={() => setIsChangePasswordOpen(false)} />

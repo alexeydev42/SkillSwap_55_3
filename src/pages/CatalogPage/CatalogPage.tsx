@@ -414,9 +414,7 @@ export const CatalogPage = ({
           </div>
         )}
       </main>
-      <div className={styles.footer}>
-        <Footer />
-      </div>
+      <Footer />
     </div>
   )
 }

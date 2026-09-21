@@ -17,6 +17,12 @@ const AboutProjectPage = lazy(() =>
   })),
 )
 
+const ContactsPage = lazy(() =>
+  import('@/pages/ContactsPage').then((module) => ({
+    default: module.ContactsPage,
+  })),
+)
+
 const SkillPageContainer = lazy(() =>
   import('@/pages/SkillPage/SkillPageContainer').then((module) => ({
     default: module.SkillPageContainer,
@@ -67,6 +73,7 @@ export const AppRouter = () => (
       <Routes>
         <Route path={ROUTES.HOME} element={<CatalogPageContainer />} />
         <Route path={ROUTES.ABOUT} element={<AboutProjectPage />} />
+        <Route path={ROUTES.CONTACTS} element={<ContactsPage />} />
         <Route path={ROUTES.SKILL} element={<SkillPageContainer />} />
         <Route path={ROUTES.LOGIN} element={<LoginPage />} />
         <Route path={ROUTES.REGISTER} element={<RegistrationStep1 />} />

@@ -9,7 +9,6 @@ interface Developer {
   githubUrl: string
 }
 
-
 // Содержит данные участников команды для вывода на странице.
 const DEVELOPERS: Developer[] = [
   {
@@ -67,7 +66,6 @@ const DEVELOPERS: Developer[] = [
 export const AboutProjectPage = () => {
   // Подготавливает Header для гостя или авторизованного пользователя.
 
-
   return (
     <div className={styles.page}>
       <HeaderContainer />
@@ -99,9 +97,7 @@ export const AboutProjectPage = () => {
         </section>
       </main>
 
-      <div className={styles.footer}>
-        <Footer />
-      </div>
+      <Footer />
     </div>
   )
 }
