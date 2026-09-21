@@ -75,6 +75,7 @@
 
 .cityAutocomplete.cityAutocomplete {
   width: 100%;
+  max-width: none;
   height: var(--control-height);
   overflow: visible;
   border-color: transparent;
@@ -251,6 +252,11 @@
 }
 
 @media (width <= 767px) {
+    .row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-16);
+  }
+  
   .multiSelect.multiSelect > button[aria-expanded='true'] {
     border-color: var(--color-caption);
     border-bottom-color: var(--color-disabled);

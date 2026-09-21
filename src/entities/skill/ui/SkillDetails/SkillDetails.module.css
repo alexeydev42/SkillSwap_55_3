@@ -20,6 +20,7 @@
   font-size: var(--font-size-h1);
   line-height: var(--line-height-h1);
   letter-spacing: -0.352px;
+  overflow-wrap: anywhere;
 }
 
 .category {
@@ -33,4 +34,5 @@
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
   letter-spacing: 0.32px;
+  overflow-wrap: anywhere;
 }
