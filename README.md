@@ -8,12 +8,12 @@ The project was developed by a student team as the final project of the Yandex P
 
 ## Screenshots
 
-<p>
+<p align="center">
   <a href="docs/screenshots/catalog-desktop.png">
     <img
       src="docs/screenshots/catalog-desktop.png"
       alt="SkillSwap catalog"
-      width="420"
+      width="47%"
     />
   </a>
 
@@ -21,7 +21,7 @@ The project was developed by a student team as the final project of the Yandex P
     <img
       src="docs/screenshots/skill-page-dark.png"
       alt="Skill page in dark theme"
-      width="420"
+      width="47%"
     />
   </a>
 </p>
@@ -31,7 +31,7 @@ The project was developed by a student team as the final project of the Yandex P
     <img
       src="docs/screenshots/catalog-mobile.jpg"
       alt="SkillSwap mobile catalog"
-      width="220"
+      width="28%"
     />
   </a>
 
@@ -39,7 +39,7 @@ The project was developed by a student team as the final project of the Yandex P
     <img
       src="docs/screenshots/edit-skill-mobile.jpg"
       alt="Editing a skill on mobile"
-      width="220"
+      width="28%"
     />
   </a>
 </p>
