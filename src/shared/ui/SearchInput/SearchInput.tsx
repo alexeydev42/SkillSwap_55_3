@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type KeyboardEvent } from 'react'
 
 import { Input } from '@/shared/ui/Input'
 import type { InputProps } from '@/shared/ui/Input'
@@ -14,6 +14,7 @@ export interface SearchInputProps extends Pick<
 > {
   value?: string
   onValueChange?: (value: string) => void
+  onSearchSubmit?: (value: string) => void
   /** По умолчанию — текст плейсхолдера из макета. */
   placeholder?: string
 }
@@ -27,6 +28,7 @@ export function SearchInput({
   placeholder = 'Искать навык',
   value,
   onValueChange,
+  onSearchSubmit,
   ...rest
 }: SearchInputProps) {
   const [internalValue, setInternalValue] = useState('')
@@ -42,6 +44,15 @@ export function SearchInput({
     onValueChange?.(nextValue)
   }
 
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== 'Enter') {
+      return
+    }
+
+    event.preventDefault()
+    onSearchSubmit?.(currentValue)
+  }
+
   return (
     <Input
       {...rest}
@@ -50,6 +61,7 @@ export function SearchInput({
       placeholder={placeholder}
       value={currentValue}
       onChange={(event) => handleValueChange(event.target.value)}
+      onKeyDown={handleKeyDown}
       icon={<SearchIcon />}
       trailingIcon={
         currentValue ? (

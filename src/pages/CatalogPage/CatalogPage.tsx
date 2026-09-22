@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import type { Category, City, User } from '@/shared/types'
 import { Footer } from '@/widgets/Footer'
 import { HeaderContainer } from '@/widgets/Header/HeaderContainer'
@@ -81,6 +82,10 @@ function getInitialHeaderMenu(
   return null
 }
 
+interface CatalogLocationState {
+  searchQuery?: string
+}
+
 export const CatalogPage = ({
   users,
   categories,
@@ -98,13 +103,16 @@ export const CatalogPage = ({
   onRetry,
 }: CatalogPageProps) => {
   const dispatch = useAppDispatch()
+  const location = useLocation()
 
   // Хранит все выбранные фильтры каталога.
   const filters = useAppSelector((state) => state.catalogFilters.filters)
 
   const sort = useAppSelector((state) => state.catalogFilters.sort)
 
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchQuery, setSearchQuery] = useState(
+    () => (location.state as CatalogLocationState | null)?.searchQuery ?? '',
+  )
 
   // Список id пользователей, находящихся в избранном.
   const favoriteUserIds = useAppSelector(selectFavoriteUserIds)
