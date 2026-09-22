@@ -34,6 +34,7 @@ export const HeaderContainer = ({
   onNotificationsMenuClose,
   onFavoritesClick,
   onSubcategorySelect,
+  onSearchSubmit,
   onLogout,
   ...headerProps
 }: HeaderContainerProps) => {
@@ -148,6 +149,25 @@ export const HeaderContainer = ({
     navigate(ROUTES.HOME)
   }
 
+  const handleSearchSubmit = (value: string) => {
+    const searchQuery = value.trim()
+
+    if (!searchQuery) {
+      return
+    }
+
+    if (onSearchSubmit) {
+      onSearchSubmit(searchQuery)
+      return
+    }
+
+    navigate(ROUTES.HOME, {
+      state: {
+        searchQuery,
+      },
+    })
+  }
+
   const handleFavoritesClick = () => {
     navigate(ROUTES.FAVORITES)
   }
@@ -163,6 +183,7 @@ export const HeaderContainer = ({
         {...headerProps}
         isAuthenticated={false}
         onSubcategorySelect={handleSubcategorySelect}
+        onSearchSubmit={handleSearchSubmit}
         isDark={isDark}
         onToggleTheme={handleToggleTheme}
       />
@@ -174,6 +195,7 @@ export const HeaderContainer = ({
       {...headerProps}
       isAuthenticated
       onSubcategorySelect={handleSubcategorySelect}
+      onSearchSubmit={handleSearchSubmit}
       user={{
         userName: currentUser.name,
         avatarSrc: currentUser.avatarUrl ?? '',

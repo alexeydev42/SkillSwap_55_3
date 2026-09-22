@@ -33,6 +33,7 @@ interface HeaderBaseProps {
   onLogout?: () => void
   onRegister?: () => void
   onSearchChange?: (value: string) => void
+  onSearchSubmit?: (value: string) => void
   onSubcategorySelect?: (subcategoryId: string) => void
   searchQuery?: string
 }
@@ -82,6 +83,7 @@ export const Header: FC<HeaderProps> = (props) => {
     onRegister,
     searchQuery,
     onSearchChange,
+    onSearchSubmit,
     onLogout,
   } = props
 
@@ -176,6 +178,7 @@ export const Header: FC<HeaderProps> = (props) => {
         wrapperClassName={styles.searchField}
         value={searchQuery}
         onValueChange={onSearchChange}
+        onSearchSubmit={onSearchSubmit}
       />
 
       <div

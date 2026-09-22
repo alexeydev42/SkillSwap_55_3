@@ -63,6 +63,10 @@
   letter-spacing: 0.32px;
 }
 
+.input[type='search']::-webkit-search-cancel-button {
+  appearance: none;
+}
+
 .input::placeholder {
   color: var(--color-caption);
 }

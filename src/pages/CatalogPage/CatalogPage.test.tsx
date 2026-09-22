@@ -7,6 +7,7 @@ import authReduser from '@/store/slices/authSlice'
 import notificationsReducer from '@/store/slices/notificationsSlice'
 import requestsReducer from '@/store/slices/requestsSlice'
 import { MemoryRouter } from 'react-router-dom'
+import { ROUTES } from '@/shared/lib/constants'
 
 import catalogFiltersReducer, {
   defaultFilters,
@@ -121,6 +122,7 @@ function renderCatalogPage(
     filters: defaultFilters,
     sort: defaultSort,
   },
+  initialSearchQuery?: string,
 ) {
   const users = localUser
     ? [...mockUsers.filter((user) => user.id !== localUser.id), localUser]
@@ -150,7 +152,14 @@ function renderCatalogPage(
   })
 
   const renderResult = render(
-    <MemoryRouter>
+    <MemoryRouter
+      initialEntries={[
+        {
+          pathname: ROUTES.HOME,
+          state: initialSearchQuery ? { searchQuery: initialSearchQuery } : null,
+        },
+      ]}
+    >
       <Provider store={testStore}>
         <CatalogPage
           users={users}
@@ -517,6 +526,40 @@ describe('CatalogPage — поиск', () => {
     expect(screen.queryByText('Иван')).not.toBeInTheDocument()
   })
 
+  it('применяет поисковый запрос, переданный при переходе с другой страницы', () => {
+    const users: User[] = [
+      {
+        ...baseUser,
+        id: 'user-design',
+        name: 'Анна',
+        offeredSkill: {
+          ...baseUser.offeredSkill,
+          title: 'Веб-дизайн',
+        },
+      },
+      {
+        ...baseUser,
+        id: 'user-python',
+        name: 'Иван',
+        offeredSkill: {
+          ...baseUser.offeredSkill,
+          title: 'Python',
+        },
+      },
+    ]
+
+    renderCatalogPage(users, null, undefined, 'дизайн')
+
+    expect(
+      screen.getByRole('searchbox', {
+        name: 'Поиск по навыкам',
+      }),
+    ).toHaveValue('дизайн')
+
+    expect(screen.getByText('Анна')).toBeInTheDocument()
+    expect(screen.queryByText('Иван')).not.toBeInTheDocument()
+  })
+  
   it('ищет без учёта регистра и поддерживает частичное совпадение', async () => {
     const user = userEvent.setup()
 

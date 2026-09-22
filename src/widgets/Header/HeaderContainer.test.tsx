@@ -2,7 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import { act, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Provider } from 'react-redux'
-import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom'
 import { beforeEach, describe, expect, it } from 'vitest'
 
 import { ROUTES, STORAGE_KEYS } from '@/shared/lib/constants'
@@ -147,6 +147,18 @@ const openNotifications = async (user: ReturnType<typeof userEvent.setup>) => {
     screen.getByRole('button', {
       name: 'Кнопка уведомлений',
     }),
+  )
+}
+
+const CatalogSearchProbe = () => {
+  const location = useLocation()
+  const searchQuery = (location.state as { searchQuery?: string } | null)?.searchQuery ?? ''
+
+  return (
+    <>
+      <h1>Каталог открыт</h1>
+      <output aria-label="Поисковый запрос каталога">{searchQuery}</output>
+    </>
   )
 }
 
@@ -478,6 +490,46 @@ describe('HeaderContainer', () => {
     ).toBeInTheDocument()
 
     expect(testStore.getState().catalogFilters.filters.subcategoryIds).toEqual(['english'])
+  })
+
+  it('переходит в каталог с поисковым запросом после Enter на другой странице', async () => {
+    const user = userEvent.setup()
+    const testStore = createTestStore()
+
+    render(
+      <Provider store={testStore}>
+        <MemoryRouter initialEntries={[ROUTES.ABOUT]}>
+          <Routes>
+            <Route
+              path={ROUTES.ABOUT}
+              element={
+                <>
+                  <HeaderContainer />
+                  <h1>О проекте</h1>
+                </>
+              }
+            />
+
+            <Route path={ROUTES.HOME} element={<CatalogSearchProbe />} />
+          </Routes>
+        </MemoryRouter>
+      </Provider>,
+    )
+
+    const searchInput = screen.getByRole('searchbox', {
+      name: 'Поиск по навыкам',
+    })
+
+    await user.type(searchInput, '  Фото  ')
+    await user.keyboard('{Enter}')
+
+    expect(
+      screen.getByRole('heading', {
+        name: 'Каталог открыт',
+      }),
+    ).toBeInTheDocument()
+
+    expect(screen.getByLabelText('Поисковый запрос каталога')).toHaveTextContent('Фото')
   })
 
   it('восстанавливает сохранённую тёмную тему', () => {
