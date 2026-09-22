@@ -5,7 +5,7 @@ import { ProfileSidebar } from './ProfileSidebar';
 
 const EXPECTED_ITEMS = [
   { id: 'favorites', label: 'Избранное' },
-  { id: 'skills', label: 'Мои навыки' },
+  { id: 'skills', label: 'Мой навык' },
   { id: 'personal', label: 'Личные данные' },
 ];
 
