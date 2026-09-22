@@ -13,7 +13,7 @@ export interface ProfileSidebarProps {
 
 const menuItems = [
   { id: 'favorites', label: 'Избранное', icon: <LikeIcon /> },
-  { id: 'skills', label: 'Мои навыки', icon: <IdeaIcon /> },
+  { id: 'skills', label: 'Мой навык', icon: <IdeaIcon /> },
   { id: 'personal', label: 'Личные данные', icon: <UserIcon /> },
 ]
 

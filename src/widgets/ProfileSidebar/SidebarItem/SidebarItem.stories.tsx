@@ -52,7 +52,7 @@ export const Menu: Story = {
       { icon: <RequestIcon />, label: 'Заявки' },
       { icon: <MessageIcon />, label: 'Мои обмены' },
       { icon: <LikeIcon />, label: 'Избранное' },
-      { icon: <IdeaIcon />, label: 'Мои навыки' },
+      { icon: <IdeaIcon />, label: 'Мой навык' },
       { icon: <UserIcon />, label: 'Личные данные' },
     ]
     const [activeIndex, setActiveIndex] = useState(items.length - 1)

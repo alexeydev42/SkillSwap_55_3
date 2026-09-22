@@ -18,6 +18,7 @@ import {
 } from '@/store/slices/usersSlice'
 import { sendSwapRequest } from '@/store/thunks/sendSwapRequest'
 import { SuccessModal } from '@/widgets/SuccessModal'
+import { EditSkillModal } from '@/widgets/EditSkillModal'
 
 import { SkillPage } from './SkillPage'
 import { mapUserToSkillPageProps } from './SkillPage.utils'
@@ -36,6 +37,8 @@ export const SkillPageContainer = () => {
   const [isRegistrationSuccessOpen, setIsRegistrationSuccessOpen] = useState(() =>
     Boolean((location.state as SkillPageLocationState | null)?.registrationCompleted),
   )
+
+  const [isEditSkillOpen, setIsEditSkillOpen] = useState(false)
 
   // Управляет результатом предложения обмена.
   const [isRequestSuccessOpen, setIsRequestSuccessOpen] = useState(false)
@@ -192,6 +195,7 @@ export const SkillPageContainer = () => {
         isFavorite={isFavorite}
         isFavoriteDisabled={!isAuthenticated}
         onFavoriteClick={() => handleFavoriteClick(userId)}
+        onEdit={() => setIsEditSkillOpen(true)}
         onOffer={handleOffer}
         isOfferDisabled={isOwnSkill || hasExistingRequest}
         offerText={hasExistingRequest ? 'Обмен предложен' : 'Предложить обмен'}
@@ -204,6 +208,10 @@ export const SkillPageContainer = () => {
 
       {isRequestSuccessOpen && (
         <SuccessModal variant="proposed" onDone={() => setIsRequestSuccessOpen(false)} />
+      )}
+
+      {isEditSkillOpen && isOwnSkill && (
+        <EditSkillModal skill={user.offeredSkill} onClose={() => setIsEditSkillOpen(false)} />
       )}
     </>
   )

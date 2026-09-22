@@ -150,14 +150,14 @@ describe('ProfilePage', () => {
     localStorage.clear()
   })
 
-  it('открывает SkillPage текущего пользователя по пункту «Мои навыки»', async () => {
+  it('открывает SkillPage текущего пользователя по пункту «Мой навык»', async () => {
     const user = userEvent.setup()
 
     renderProfilePage()
 
     await user.click(
       screen.getByRole('button', {
-        name: 'Мои навыки',
+        name: 'Мой навык',
       }),
     )
 

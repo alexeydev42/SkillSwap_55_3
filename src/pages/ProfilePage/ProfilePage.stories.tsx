@@ -57,7 +57,7 @@ export const PlaceholderTab: Story = {
 }
 
 export const SkillsTab: Story = {
-  name: 'Заглушка вкладки (Мои навыки)',
+  name: 'Заглушка вкладки (Мой навык)',
   args: {
     initialTab: 'skills' as ProfileTab,
   },

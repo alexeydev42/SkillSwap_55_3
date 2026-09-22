@@ -25,12 +25,14 @@ vi.mock('./SkillPage', () => ({
     isFavorite,
     isFavoriteDisabled,
     onFavoriteClick,
+    onEdit,
     skills,
   }: {
     isOwnSkill: boolean
     isFavorite: boolean
     isFavoriteDisabled: boolean
     onFavoriteClick: () => void
+    onEdit?: () => void
     skills: {
       wantsToLearn: Array<{
         label: string
@@ -45,6 +47,12 @@ vi.mock('./SkillPage', () => ({
       <output data-testid="learning-skills">
         {skills.wantsToLearn.map((skill) => skill.label).join(', ')}
       </output>
+
+      {isOwnSkill && onEdit && (
+        <button type="button" onClick={onEdit}>
+          Редактировать навык
+        </button>
+      )}
 
       {!isOwnSkill && (
         <button type="button" disabled={isFavoriteDisabled} onClick={onFavoriteClick}>
@@ -281,5 +289,62 @@ describe('SkillPageContainer', () => {
     )
 
     expect(store.getState().favorites.favoriteUserIds).toEqual([favoriteUser.id])
+  })
+
+  it('показывает редактирование только на собственной SkillPage', () => {
+    const { unmount } = renderSkillPageContainer(false)
+
+    expect(
+      screen.getByRole('button', {
+        name: 'Редактировать навык',
+      }),
+    ).toBeInTheDocument()
+
+    unmount()
+
+    renderSkillPageContainer(false, favoriteUser.id)
+
+    expect(
+      screen.queryByRole('button', {
+        name: 'Редактировать навык',
+      }),
+    ).not.toBeInTheDocument()
+  })
+
+  it('открывает редактирование и сохраняет изменения собственного навыка', async () => {
+    const user = userEvent.setup()
+
+    renderSkillPageContainer(false)
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'Редактировать навык',
+      }),
+    )
+
+    expect(
+      screen.getByRole('dialog', {
+        name: 'Редактировать навык',
+      }),
+    ).toBeInTheDocument()
+
+    const titleInput = screen.getByLabelText('Название навыка')
+
+    await user.clear(titleInput)
+    await user.type(titleInput, 'Монтаж видео')
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'Сохранить',
+      }),
+    )
+
+    expect(store.getState().users.localUser?.offeredSkill.title).toBe('Монтаж видео')
+
+    expect(
+      screen.queryByRole('dialog', {
+        name: 'Редактировать навык',
+      }),
+    ).not.toBeInTheDocument()
   })
 })

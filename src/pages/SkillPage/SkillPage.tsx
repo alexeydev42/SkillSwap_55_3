@@ -24,6 +24,7 @@ export interface SkillPageProps {
   isFavorite: boolean
   isFavoriteDisabled?: boolean
   onFavoriteClick: () => void
+  onEdit?: () => void
   onOffer: () => void
   isOfferDisabled?: boolean
   offerText?: string
@@ -41,6 +42,7 @@ export const SkillPage = ({
   isFavorite,
   isFavoriteDisabled = false,
   onFavoriteClick,
+  onEdit,
   onOffer,
   isOfferDisabled = false,
   offerText = 'Предложить обмен',
@@ -63,6 +65,7 @@ export const SkillPage = ({
                 isFavorite={isFavorite}
                 isFavoriteDisabled={isFavoriteDisabled}
                 onFavoriteClick={onFavoriteClick}
+                onEdit={isOwnSkill ? onEdit : undefined}
               />
             </div>
 

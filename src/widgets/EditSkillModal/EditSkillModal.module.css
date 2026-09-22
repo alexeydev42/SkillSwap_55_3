@@ -1,0 +1,73 @@
+.modal {
+  max-inline-size: 720px;
+  padding: var(--space-32);
+}
+
+.form {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--space-24);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-h2);
+  letter-spacing: -0.264px;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  width: 100%;
+}
+
+.fields > * {
+  width: 100%;
+}
+
+.saveError {
+  margin: 0;
+  color: var(--color-error);
+  font-family: var(--font-body);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-12);
+}
+
+@media (width <= 1200px) {
+  .modal {
+    top: var(--space-24);
+    transform: translateX(-50%);
+    max-block-size: calc(100dvh - (2 * var(--space-24)));
+  }
+}
+
+@media (width <= 767px) {
+  .modal {
+    top: var(--space-16);
+    inline-size: calc(100% - (2 * var(--space-16)));
+    max-inline-size: none;
+    max-block-size: calc(100dvh - (2 * var(--space-16)));
+    padding: var(--space-24) var(--space-16);
+  }
+
+  .actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .actions > button {
+    width: 100%;
+  }
+}

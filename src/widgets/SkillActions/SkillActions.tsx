@@ -2,6 +2,7 @@ import LikeFilledIcon from '@/shared/assets/icons/icon-like-filled.svg?react'
 import LikeIcon from '@/shared/assets/icons/icon-like.svg?react'
 import MoreIcon from '@/shared/assets/icons/icon-more-square.svg?react'
 import ShareIcon from '@/shared/assets/icons/icon-share.svg?react'
+import EditIcon from '@/shared/assets/icons/icon-edit.svg?react'
 import { IconButton } from '@/shared/ui/IconButton'
 
 import styles from './SkillActions.module.css'
@@ -11,6 +12,7 @@ export interface SkillActionsProps {
   isFavorite?: boolean
   isFavoriteDisabled?: boolean
   onFavoriteClick?: () => void
+  onEdit?: () => void
   onShare?: () => void
   onMore?: () => void
 }
@@ -20,6 +22,7 @@ export const SkillActions = ({
   isFavorite = false,
   isFavoriteDisabled = false,
   onFavoriteClick,
+  onEdit,
   onShare,
   onMore,
 }: SkillActionsProps) => (
@@ -33,6 +36,8 @@ export const SkillActions = ({
         onClick={onFavoriteClick}
       />
     )}
+
+    {onEdit && <IconButton icon={<EditIcon />} onClick={onEdit} aria-label="Редактировать навык" />}
 
     {onShare && <IconButton icon={<ShareIcon />} onClick={onShare} aria-label="Поделиться" />}
 
