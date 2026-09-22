@@ -4,13 +4,71 @@ SkillSwap is a web application for exchanging skills. Users can browse other peo
 
 The project was developed by a student team as the final project of the Yandex Practicum Frontend Developer program.
 
-<!-- TODO: Add 2 screenshots here: the catalog page and a skill details / exchange flow screen. -->
+**Live Demo:** [alexeydev42.github.io/SkillSwap_55_3](https://alexeydev42.github.io/SkillSwap_55_3/)
+
+## Screenshots
+
+## Screenshots
+
+<p>
+  <a href="docs/screenshots/catalog-desktop.jpg">
+    <img
+      src="docs/screenshots/catalog-desktop.jpg"
+      alt="SkillSwap catalog"
+      width="420"
+    />
+  </a>
+
+  <a href="docs/screenshots/skill-page-dark.jpg">
+    <img
+      src="docs/screenshots/skill-page-dark.jpg"
+      alt="Skill page in dark theme"
+      width="420"
+    />
+  </a>
+</p>
+
+<p align="center">
+  <a href="docs/screenshots/catalog-mobile.jpg">
+    <img
+      src="docs/screenshots/catalog-mobile.jpg"
+      alt="SkillSwap mobile catalog"
+      width="220"
+    />
+  </a>
+
+  <a href="docs/screenshots/edit-skill-mobile.jpg">
+    <img
+      src="docs/screenshots/edit-skill-mobile.jpg"
+      alt="Editing a skill on mobile"
+      width="220"
+    />
+  </a>
+</p>
 
 ## My contribution
 
-I worked on the project as an assistant team lead and frontend developer.
+I worked on the original team project as an assistant team lead and frontend developer.
 
-My contribution was focused on frontend implementation and application logic across the shared codebase, including catalog behavior, reusable UI, state synchronization, routing and user flows.
+During the team phase, my contribution included frontend implementation and application logic across the shared codebase, including catalog behavior, reusable UI, routing, Redux-based state synchronization and user flows.
+
+### Independent work after the team project
+
+After the team project was completed, I continued developing this fork independently. The changes below were implemented by me after the team phase and are not presented as team work:
+
+- deployed the application to GitHub Pages and added a CI-based deployment workflow;
+- switched routing to `HashRouter` so direct page refresh works correctly on GitHub Pages;
+- fixed production asset paths for user avatars and skill images;
+- added responsive layouts for desktop, tablet and mobile;
+- added light and dark themes with persisted manual theme selection;
+- improved accessibility of interactive controls, forms, modals and expandable UI;
+- completed a production smoke-test pass and fixed issues found during it;
+- added editing of the local user’s published skill, including validation and storage rollback behavior;
+- fixed Header search so a query entered on internal pages opens the catalog with the search already applied;
+- removed the duplicate native browser clear control from the search input;
+- fixed the mobile Contacts layout;
+- replaced the raw lazy-route loading text with the shared Spinner loading state;
+- added and updated regression tests for the new behavior.
 
 ## Key features
 
@@ -18,10 +76,13 @@ My contribution was focused on frontend implementation and application logic acr
 - “Popular”, “New” and “Recommended” sections;
 - favorites with synchronized like counts;
 - skill details and similar offers;
+- editing of the local user’s published skill;
 - three-step local registration;
 - local authentication, session restoration and protected routes;
 - profile editing and password changes;
-- exchange requests and notifications.
+- exchange requests and notifications;
+- responsive layouts for desktop, tablet and mobile;
+- light and dark themes.
 
 ## Technical decisions
 
@@ -29,9 +90,11 @@ Redux Toolkit is used as the main source of application state. Favorites, like c
 
 Protected routes preserve the originally requested URL and return the user to it after successful authentication.
 
-The application also restores local user data, session state, requests and notifications after a page reload. Catalog filters and sorting are kept in `sessionStorage`, while longer-lived local data is stored in `localStorage`.
+The application restores local user data, session state, requests and notifications after a page reload. Catalog filters and sorting are kept in `sessionStorage`, while longer-lived local data is stored in `localStorage`.
 
 The “Recommended” section uses a one-time shuffled user list and imitates incremental loading. Similar offers are selected first by subcategory and then by the broader skill category.
+
+For the portfolio deployment, the fork uses `HashRouter` so direct route refresh works correctly on GitHub Pages.
 
 ## Tech stack
 
@@ -68,9 +131,11 @@ Presentational components receive data through props, while pages and containers
 
 ## Testing and CI
 
-The project includes unit and integration tests built with Vitest and Testing Library. They cover Redux logic, selectors, components and user flows such as registration, authentication, state restoration, profile editing, favorites, requests and notifications.
+The project includes unit and integration tests built with Vitest and Testing Library. They cover Redux logic, selectors, components and user flows such as registration, authentication, state restoration, profile editing, skill editing, favorites, requests, notifications and search navigation.
 
 GitHub Actions runs linting, TypeScript checks, tests and the production build for pull requests to `develop` and changes in `main` and `develop`.
+
+The portfolio fork is also deployed to GitHub Pages through CI.
 
 ## Run locally
 
@@ -94,7 +159,7 @@ npm run storybook
 
 ## Project limitations
 
-This is a frontend-only educational MVP without a backend. The application uses local JSON data and browser storage. The interface was implemented for desktop layouts, and authentication, requests and notifications demonstrate client-side behavior rather than production data storage.
+This is a frontend-only educational MVP without a backend. The application uses local JSON data and browser storage. Authentication, requests, notifications and other persisted user data demonstrate client-side behavior rather than production data storage.
 
 ## Team
 
