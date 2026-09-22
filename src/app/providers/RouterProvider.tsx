@@ -5,6 +5,10 @@ import { ROUTES } from '@/shared/lib/constants'
 
 import { ProtectedRoute } from './ProtectedRoute'
 
+import { Spinner } from '@/shared/ui/Spinner'
+
+import styles from './RouterProvider.module.css'
+
 const CatalogPageContainer = lazy(() =>
   import('@/pages/CatalogPage/CatalogPageContainer').then((module) => ({
     default: module.CatalogPageContainer,
@@ -69,7 +73,13 @@ const ServerErrorPage = lazy(() =>
 
 export const AppRouter = () => (
   <HashRouter>
-    <Suspense fallback={<div>Загрузка...</div>}>
+    <Suspense
+      fallback={
+        <div className={styles.routeLoader}>
+          <Spinner />
+        </div>
+      }
+    >
       <Routes>
         <Route path={ROUTES.HOME} element={<CatalogPageContainer />} />
         <Route path={ROUTES.ABOUT} element={<AboutProjectPage />} />
