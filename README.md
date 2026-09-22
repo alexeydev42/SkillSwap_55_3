@@ -8,20 +8,18 @@ The project was developed by a student team as the final project of the Yandex P
 
 ## Screenshots
 
-## Screenshots
-
 <p>
-  <a href="docs/screenshots/catalog-desktop.jpg">
+  <a href="docs/screenshots/catalog-desktop.png">
     <img
-      src="docs/screenshots/catalog-desktop.jpg"
+      src="docs/screenshots/catalog-desktop.png"
       alt="SkillSwap catalog"
       width="420"
     />
   </a>
 
-  <a href="docs/screenshots/skill-page-dark.jpg">
+  <a href="docs/screenshots/skill-page-dark.png">
     <img
-      src="docs/screenshots/skill-page-dark.jpg"
+      src="docs/screenshots/skill-page-dark.png"
       alt="Skill page in dark theme"
       width="420"
     />
