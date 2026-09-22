@@ -2,7 +2,7 @@ import LikeFilledIcon from '@/shared/assets/icons/icon-like-filled.svg?react'
 import LikeIcon from '@/shared/assets/icons/icon-like.svg?react'
 import MoreIcon from '@/shared/assets/icons/icon-more-square.svg?react'
 import ShareIcon from '@/shared/assets/icons/icon-share.svg?react'
-import EditIcon from '@/shared/assets/icons/icon-gallery-edit.svg?react'
+import EditIcon from '@/shared/assets/icons/icon-edit.svg?react'
 import { IconButton } from '@/shared/ui/IconButton'
 
 import styles from './SkillActions.module.css'
