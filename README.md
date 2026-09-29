@@ -4,7 +4,7 @@ SkillSwap is a web application for exchanging skills. Users can browse other peo
 
 The project was developed by a student team as the final project of the Yandex Practicum Frontend Developer program.
 
-**Live Demo:** [alexeydev42.github.io/SkillSwap_55_3](https://alexeydev42.github.io/SkillSwap_55_3/)
+**Live Demo:** [alexeydev42.com/SkillSwap_55_3/](https://alexeydev42.com/SkillSwap_55_3/)
 
 ## Screenshots
 
